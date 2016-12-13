@@ -210,9 +210,10 @@ OpenSSLHMAC::OpenSSLHMAC(string hashName, const shared_ptr<PrgFromOpenSSLAES> & 
 	const EVP_MD *md = EVP_get_digestbyname(hashName.c_str());
 
 	// Create an Hmac object and initialize it with the created hash and default key.
-	int res = HMAC_Init_ex(hmac, "012345678", 0, md, NULL);
-	if (0 == res)
-		throw runtime_error("failed to create hmac");
+	//int res = HMAC_Init_ex(hmac, "012345678", 0, md, NULL);
+	HMAC_Init_ex(hmac, "012345678", 0, md, NULL);
+	//if (0 == res)
+	//	throw runtime_error("failed to create hmac");
 
 	this->random = random;
 }
@@ -265,12 +266,12 @@ void OpenSSLHMAC::computeBlock(const vector<byte> & inBytes, int inOffset, int i
 		outBytes.resize(outOffset + size);
 
 	//Compute the final function and copy the output the the given output array.
-	if (0 == (HMAC_Final(hmac, outBytes.data(), NULL)))
-		throw runtime_error("failed to init hmac object");
+	HMAC_Final(hmac, outBytes.data(), NULL);
+	//	throw runtime_error("failed to init hmac object");
 
 	// initialize the Hmac again in order to enable repeated calls.
-	if (0 == (HMAC_Init_ex(hmac, hmac->key, hmac->key_length, hmac->md, NULL)))
-		throw runtime_error("failed to init hmac object");
+	HMAC_Init_ex(hmac, hmac->key, hmac->key_length, hmac->md, NULL);
+	//	throw runtime_error("failed to init hmac object");
 }
 
 SecretKey OpenSSLHMAC::generateKey(int keySize) {
@@ -342,12 +343,12 @@ void OpenSSLHMAC::doFinal(vector<byte> & msg, int offset, int msgLength, vector<
 		tag_res.resize(getMacSize());
 
 	// compute the final function and copy the output the the given output array
-	if (0 == (HMAC_Final(hmac, tag_res.data(), NULL)))
-		throw runtime_error("failed to init hmac object");
+	HMAC_Final(hmac, tag_res.data(), NULL);
+		//throw runtime_error("failed to init hmac object");
 
 	//initialize the Hmac again in order to enable repeated calls.
-	if (0 == (HMAC_Init_ex(hmac, hmac->key, hmac->key_length, hmac->md, NULL)))
-		throw runtime_error("failed to init hmac object");
+	HMAC_Init_ex(hmac, hmac->key, hmac->key_length, hmac->md, NULL);
+//		throw runtime_error("failed to init hmac object");
 }
 
 OpenSSLHMAC::~OpenSSLHMAC()
