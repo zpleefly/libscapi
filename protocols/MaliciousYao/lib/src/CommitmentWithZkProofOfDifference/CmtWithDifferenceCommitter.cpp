@@ -51,7 +51,7 @@ void CmtWithDifferenceCommitter::receiveW()
 void CmtWithDifferenceCommitter::proveDifference(DifferenceCommitmentCommitterBundle & b1, DifferenceCommitmentCommitterBundle & b2, vector<byte> & decommitmentsX, vector<byte> & decommitmentsR, size_t index)
 {
 	int keySize = b1.getC()->getDecomX(0, w[0]).size();
-	int hashSize = b1.getC()->getDecomR(0, w[0]).size();
+    int hashSize = b1.getC()->getDecomR(0, w[0]).size();
 	assert(this->w.size() != 0);
 	//Get both decommitments of each pair.
 	for (int i = 0; i < s; i++)
@@ -175,17 +175,18 @@ void CmtWithDifferenceCommitter::proveDifferencesBetweenMasks(vector<shared_ptr<
 
 	//Send the commitments to the other party.
 	sendSerialize(msg, channel.get());
-	
+
 	//receive w.
 	receiveW();
 
 	//Send the decommitments of the committed differences.
-	vector<byte> decommitmentsX((bucket.size() - 1)*s * 2 * KEY_SIZE);
-	vector<byte> decommitmentsR((bucket.size() - 1)*s * 2 * CryptoPrimitives::getHash()->getHashedMsgSize());
+    int xSize = bucket[0]->getC()->getDecomX(0, w[0]).size();
+	vector<byte> decommitmentsX((bucket.size() - 1)*s * 2 * xSize);
+    vector<byte> decommitmentsR((bucket.size() - 1)*s * 2 * CryptoPrimitives::getHash()->getHashedMsgSize());
 	for (size_t j = 0; j < bucketSize - 1; j++)
 	{
 		proveDifference(*bucket[j], *bucket[j+1], decommitmentsX, decommitmentsR, j);
 	}
-	ProveDecommitments package(decommitmentsX, KEY_SIZE, decommitmentsR, CryptoPrimitives::getHash()->getHashedMsgSize());
-	sendSerialize(package, channel.get());
+	ProveDecommitments package(decommitmentsX, xSize, decommitmentsR, CryptoPrimitives::getHash()->getHashedMsgSize());
+    sendSerialize(package, channel.get());
 }
