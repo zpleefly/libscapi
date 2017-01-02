@@ -92,11 +92,7 @@ namespace semihonestot {
 
 
 
-#if OPENSSL_VERSION_NUMBER < 0x10100000L
 #define AES_KEY_CTX EVP_CIPHER_CTX
-#else
-#define AES_KEY_CTX *EVP_CIPHER_CTX
-#endif
 #define OTEXT_HASH_INIT(sha) SHA_Init(sha)
 #define OTEXT_HASH_UPDATE(sha, buf, bufsize) SHA_Update(sha, buf, bufsize)
 #define OTEXT_HASH_FINAL(sha, sha_buf) SHA_Final(sha_buf, sha)
@@ -112,7 +108,7 @@ namespace semihonestot {
 	EVP_CIPHER_CTX_init(ctx); \
 	EVP_EncryptInit_ex(ctx, EVP_aes_128_ecb(), NULL, buf, ZERO_IV); \
 	}
-#define OTEXT_AES_ENCRYPT(keyctx, outbuf, inbuf) EVP_EncryptUpdate(keyctx, outbuf, &otextaesencdummy, inbuf, AES_BYTES)
+#define OTEXT_AES_ENCRYPT(keyctx, outbuf, inbuf) EVP_EncryptUpdate(*keyctx, outbuf, &otextaesencdummy, inbuf, AES_BYTES)
 
 
 
