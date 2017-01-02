@@ -200,7 +200,11 @@ public:
 	void setMacKey(SecretKey & secretKey) override { setKey(secretKey); };
 	bool isKeySet() override { return _isKeySet; };
 	string getAlgorithmName() override;
+#if OPENSSL_VERSION_NUMBER < 0x10100000L
 	int getBlockSize() override { return EVP_MD_size(hmac->md); };
+#else
+int getBlockSize() override { return EVP_MD_size(*hmac->md); };
+#endif
 	
 	/**
 	* Computes the function using the secret key.
