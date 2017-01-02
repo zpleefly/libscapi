@@ -184,7 +184,11 @@ void PrgFromOpenSSLAES::setKey(SecretKey & secretKey) {
 
 	if (_isKeySet == false) {
 
+	#if OPENSSL_VERSION_NUMBER < 0x10100000L
 		aes = new EVP_CIPHER_CTX();
+    #else
+		aes = EVP_CIPHER_CTX_new();
+    #endif
 
 		//init the aes prp using openssl
 		EVP_CIPHER_CTX_init(aes);
