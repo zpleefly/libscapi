@@ -103,8 +103,11 @@ namespace maliciousot {
 	const unsigned char ZERO_IV[AES_BYTES] = { 0 };
 	static int otextaesencdummy;
 
-
+#if OPENSSL_VERSION_NUMBER < 0x10100000L
 	typedef EVP_CIPHER_CTX AES_KEY_CTX;
+#else
+	typedef EVP_CIPHER_CTX *AES_KEY_CTX;
+#endif
 #define MPC_AES_KEY_INIT(ctx) EVP_CIPHER_CTX_init(ctx)
 #define MPC_AES_KEY_EXPAND(ctx, buf) EVP_EncryptInit_ex(ctx, EVP_aes_128_ecb(), NULL, buf, ZERO_IV)
 #define MPC_AES_ENCRYPT(keyctx, outbuf, inbuf) EVP_EncryptUpdate(keyctx, outbuf, &otextaesencdummy, inbuf, AES_BYTES)
