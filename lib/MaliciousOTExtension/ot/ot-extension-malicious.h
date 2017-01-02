@@ -101,8 +101,13 @@ namespace maliciousot {
 		BYTE* pBufIdx = keybytes;
 		for (int i = 0; i < numkeys; i++)
 		{
-			MPC_AES_KEY_INIT(ctx + i);
-			MPC_AES_KEY_EXPAND(ctx + i, pBufIdx);
+			#if OPENSSL_VERSION_NUMBER < 0x10100000L
+				MPC_AES_KEY_INIT(ctx + i);
+				MPC_AES_KEY_EXPAND(ctx + i, pBufIdx);
+            #else
+				MPC_AES_KEY_INIT(*ctx + i);
+				MPC_AES_KEY_EXPAND(*ctx + i, pBufIdx);
+            #endif
 			pBufIdx += AES_KEY_BYTES;
 		}
 	}
