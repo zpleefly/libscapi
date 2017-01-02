@@ -18,7 +18,11 @@ namespace semihonestot {
 
 	void CBitVector::InitRand(BYTE* seed)
 	{
+    #if OPENSSL_VERSION_NUMBER < 0x10100000L
 		OTEXT_AES_KEY_INIT(&m_nKey, seed);
+    #else
+		OTEXT_AES_KEY_INIT(m_nKey, seed);
+    #endif
 		m_bKeyInit = true;
 	}
 
