@@ -293,7 +293,11 @@ namespace semihonestot {
 	private:
 		BYTE*		m_pBits;
 		int			m_nSize;
+#if OPENSSL_VERSION_NUMBER < 0x10100000L
 		AES_KEY_CTX 	m_nKey;
+#else
+		AES_KEY_CTX 	*m_nKey;
+#endif
 		BOOL 		m_bKeyInit;
 		int 		m_nBits; //The exact number of bits
 		int			m_nElementLength;
