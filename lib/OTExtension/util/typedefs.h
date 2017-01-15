@@ -108,7 +108,7 @@ namespace semihonestot {
 	EVP_CIPHER_CTX_init(ctx); \
 	EVP_EncryptInit_ex(ctx, EVP_aes_128_ecb(), NULL, buf, ZERO_IV); \
 	}
-#define OTEXT_AES_ENCRYPT(keyctx, outbuf, inbuf) EVP_EncryptUpdate(*keyctx, outbuf, &otextaesencdummy, inbuf, AES_BYTES)
+#define OTEXT_AES_ENCRYPT(keyctx, outbuf, inbuf) EVP_EncryptUpdate(keyctx, outbuf, &otextaesencdummy, inbuf, AES_BYTES)
 
 
 

@@ -51,7 +51,12 @@ namespace semihonestot {
 
 		for (int i = 0; i < size; i++, counter[0]++, cnt++)
 		{
-			OTEXT_AES_ENCRYPT(&m_nKey, m_pBits + i*AES_BYTES, buf);
+    			#if OPENSSL_VERSION_NUMBER < 0x10100000L
+				OTEXT_AES_ENCRYPT(&m_nKey, m_pBits + i*AES_BYTES, buf);
+			#else
+				OTEXT_AES_ENCRYPT(m_nKey, m_pBits + i*AES_BYTES, buf);
+			#endif
+
 		}
 		//cnt = (int) counter[0];
 	}
