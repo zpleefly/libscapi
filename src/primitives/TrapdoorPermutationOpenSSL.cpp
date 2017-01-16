@@ -73,6 +73,7 @@ shared_ptr<RSA> OpenSSLRSAPermutation::initRSAPublicPrivateCrt(biginteger & pubE
 	
 	//Convert all the parameters to OpenSSL's terminology and set them to the Openssl's rsa object.
 	auto rsa = shared_ptr<RSA>(RSA_new(), RSA_free);
+#if OPENSSL_VERSION_NUMBER < 0x10100000L
 	rsa->n = biginteger_to_opensslbignum(modulus);
 	rsa->e = biginteger_to_opensslbignum(pubExp);
 	rsa->d = biginteger_to_opensslbignum(privExp);
@@ -81,23 +82,33 @@ shared_ptr<RSA> OpenSSLRSAPermutation::initRSAPublicPrivateCrt(biginteger & pubE
 	rsa->dmp1 = biginteger_to_opensslbignum(dp);
 	rsa->dmq1 = biginteger_to_opensslbignum(dq);
 	rsa->iqmp = biginteger_to_opensslbignum(crt);
-
 	if ((rsa->n == NULL) || (rsa->e == NULL) || (rsa->d == NULL) || (rsa->p == NULL) ||
 		(rsa->q == NULL) || (rsa->dmp1 == NULL) || (rsa->dmq1 == NULL) || (rsa->iqmp == NULL)) {
 		return nullptr;
 	}
+#else
+	RSA_set0_key(rsa.get(), biginteger_to_opensslbignum(modulus), biginteger_to_opensslbignum(pubExp),
+			biginteger_to_opensslbignum(privExp));
+	RSA_set0_factors(rsa.get(), biginteger_to_opensslbignum(p), biginteger_to_opensslbignum(q));
+	RSA_set0_crt_params(rsa.get(), biginteger_to_opensslbignum(dp), biginteger_to_opensslbignum(dq), biginteger_to_opensslbignum(crt));
+#endif
 	return rsa;
 }
 
 shared_ptr<RSA> OpenSSLRSAPermutation::initRSAPublicPrivate(biginteger & pubExponent, biginteger & privExponent) {
 	//Convert all the parameters to OpenSSL's terminology and set them to the Openssl's rsa object.
 	auto rsa = shared_ptr<RSA>(RSA_new(), RSA_free);
+#if OPENSSL_VERSION_NUMBER < 0x10100000L
 	rsa->n = biginteger_to_opensslbignum(modulus);
 	rsa->e = biginteger_to_opensslbignum(pubExponent);
 	rsa->d = biginteger_to_opensslbignum(privExponent);
 	if ((rsa->n == NULL) || (rsa->e == NULL) || (rsa->d == NULL)) {
 		return nullptr;
 	}
+#else
+	RSA_set0_key(rsa.get(), biginteger_to_opensslbignum(modulus), biginteger_to_opensslbignum(pubExponent),
+			biginteger_to_opensslbignum(privExponent));
+#endif
 	return rsa;
 }
 
@@ -105,11 +116,15 @@ shared_ptr<RSA> OpenSSLRSAPermutation::initRSAPublic(biginteger & pubExponent) {
 	//Convert all the parameters to OpenSSL's terminology and set them to the Openssl's rsa object.
 	auto rsa = shared_ptr<RSA>(RSA_new(), RSA_free);
 
+#if OPENSSL_VERSION_NUMBER < 0x10100000L
 	rsa->n = biginteger_to_opensslbignum(modulus);
 	rsa->e = biginteger_to_opensslbignum(pubExponent);
 	if ((rsa->n == NULL) || (rsa->e == NULL)) {
 		return nullptr;
 	}
+#else
+	RSA_set0_key(rsa.get(), biginteger_to_opensslbignum(modulus), biginteger_to_opensslbignum(pubExponent), NULL);
+#endif
 	return rsa;
 }
 
@@ -121,9 +136,17 @@ KeyPair OpenSSLRSAPermutation::generateKey(int keySize) {
 	//Generate open SSL's RSA key.
 	RSA_generate_key_ex(pair, keySize, bne, NULL);
 	//Convert the key parameters into KeyPair.
+#if OPENSSL_VERSION_NUMBER < 0x10100000L
 	biginteger mod = opensslbignum_to_biginteger(pair->n);
 	biginteger pubExp = opensslbignum_to_biginteger(pair->e);
 	biginteger privExp = opensslbignum_to_biginteger(pair->d);
+#else
+	BIGNUM **modbn, **pubExpbn, **privExpbn;
+	RSA_get0_key(pair, (const BIGNUM**)modbn, (const BIGNUM**)pubExpbn, (const BIGNUM**)privExpbn);
+	biginteger mod = opensslbignum_to_biginteger(*modbn);
+	biginteger pubExp = opensslbignum_to_biginteger(*pubExpbn);
+	biginteger privExp = opensslbignum_to_biginteger(*privExpbn);
+#endif
 	KeyPair kp(new RSAPublicKey(mod, pubExp), new RSAPrivateKey(mod, privExp));
 	RSA_free(pair);
 	BN_free(bne);
