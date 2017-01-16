@@ -43,9 +43,15 @@ OpenSSLHash::OpenSSLHash(string hashName) {
 		throw runtime_error("failed to create hash");
 
 	// Create an OpenSSL EVP_MD_CTX struct and initialize it with the created hash.
+#if OPENSSL_VERSION_NUMBER < 0x10100000L
 	hash = shared_ptr<EVP_MD_CTX>(EVP_MD_CTX_create(), EVP_MD_CTX_destroy);
 	if (0 == (EVP_DigestInit(hash.get(), md)))
 		throw runtime_error("failed to create hash");
+#else
+	hash = shared_ptr<EVP_MD_CTX>(EVP_MD_CTX_new(), EVP_MD_CTX_free);
+	if (0 == (EVP_DigestInit_ex(hash.get(), md, NULL)))
+		throw runtime_error("failed to create hash");
+#endif
 
 	hashSize = EVP_MD_CTX_size(hash.get());
 }
