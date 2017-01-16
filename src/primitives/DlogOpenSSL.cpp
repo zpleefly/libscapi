@@ -50,6 +50,7 @@ void OpenSSLDlogZpSafePrime::createOpenSSLDlogZp(const biginteger & p, const big
 {
 	// Create OpenSSL Dlog group with p, , q, g.
 	// The validity of g will be checked after the creation of the group because the check need the pointer to the group
+#if OPENSSL_VERSION_NUMBER < 0x10100000L
 	dlog = shared_ptr<DH> (DH_new(), DH_free);
 	if (dlog == NULL)
 		throw runtime_error("failed to create OpenSSL Dlog group");
@@ -59,7 +60,10 @@ void OpenSSLDlogZpSafePrime::createOpenSSLDlogZp(const biginteger & p, const big
 	dlog->g = biginteger_to_opensslbignum(g);
 	if ((dlog->p == NULL) || (dlog->q == NULL) || (dlog->g == NULL))
 		throw runtime_error("failed to create OpenSSL Dlog group");
-
+#else
+	if (0 == DH_set0_pqg(dlog.get(), biginteger_to_opensslbignum(p), biginteger_to_opensslbignum(q), biginteger_to_opensslbignum(g)))
+		throw runtime_error("failed to create OpenSSL Dlog group");
+#endif
 	// Set up the BN_CTX.
 	ctx = shared_ptr<BN_CTX> (BN_CTX_new(), BN_CTX_free);
 	if (NULL == ctx) 
@@ -82,7 +86,7 @@ void OpenSSLDlogZpSafePrime::createRandomOpenSSLDlogZp(int numBits) {
 #else
 	RAND_poll(); // reseeds using hardware state (clock, interrupts, etc).
 #endif
-
+#if OPENSSL_VERSION_NUMBER < 0x10100000L
 	//Sample a random safe prime with the requested number of bits.
 	dlog->p = BN_new();
 	if (0 == (BN_generate_prime_ex(dlog->p, numBits, 1, NULL, NULL, NULL))) {
@@ -94,7 +98,7 @@ void OpenSSLDlogZpSafePrime::createRandomOpenSSLDlogZp(int numBits) {
 	if (0 == (BN_rshift1(dlog->q, dlog->p))) {
 		throw runtime_error("failed to create OpenSSL Dlog");
 	}
-
+	
 	//Sample a generator to the group. 
 	//Each element in the group, except the identity, is a generator. 
 	//The elements in the group are elements that have a quadratic residue modulus p.
@@ -103,11 +107,28 @@ void OpenSSLDlogZpSafePrime::createRandomOpenSSLDlogZp(int numBits) {
 	//	while g == 0 or g == 1:
 	//		Sample a number between 0 to p, set it to g
 	//		calculate g = g^2 nod p
+	//
 	dlog->g = BN_new();
 	while (BN_is_zero(dlog->g) || BN_is_one(dlog->g)) {
 		BN_rand_range(dlog->g, dlog->p);
 		BN_mod_sqr(dlog->g, dlog->g, dlog->p, ctx.get());
 	}
+#else
+	BIGNUM *p, *q, *g;
+	if (0 == (BN_generate_prime_ex(p, numBits, 1, NULL, NULL, NULL)))
+		throw runtime_error("failed to create OpenSSL Dlog");
+
+	if (0 == (BN_rshift1(q, p)))
+		throw runtime_error("failed to create OpenSSL Dlog");
+
+	while (BN_is_zero(g) || BN_is_one(g)) {
+		BN_rand_range(g, p);
+		BN_mod_sqr(g, g, p, ctx.get());
+	}
+	DH_set0_pqg(dlog.get(), p, q, g);
+	
+#endif
+
 }
 
 OpenSSLDlogZpSafePrime::OpenSSLDlogZpSafePrime(const shared_ptr<ZpGroupParams> & groupParams, const shared_ptr<PrgFromOpenSSLAES> & random)
@@ -132,8 +153,15 @@ OpenSSLDlogZpSafePrime::OpenSSLDlogZpSafePrime(const shared_ptr<ZpGroupParams> &
 	createOpenSSLDlogZp(p, q, g);
 
 	//If the generator is not valid, delete the allocated memory and throw exception.
+#if OPENSSL_VERSION_NUMBER < 0x10100000L
 	if (!validateElement(dlog->g))
 		throw invalid_argument("generator value is not valid");
+#else
+	const BIGNUM **_p, **_q, **_g;
+	DH_get0_pqg(dlog.get(), _p, _q, _g);
+	if(!validateElement((BIGNUM*)*_g))
+		throw invalid_argument("generator is not valid");
+#endif
 
 	//Create the  generator with the pointer that return from the native function.
 	OpenSSLZpSafePrimeElement* temp = new OpenSSLZpSafePrimeElement(g, p, false);
@@ -149,18 +177,28 @@ OpenSSLDlogZpSafePrime::OpenSSLDlogZpSafePrime(int numBits, const shared_ptr<Prg
 
 	// Create random Zp dlog group.
 	createRandomOpenSSLDlogZp(numBits);
+	biginteger pGenerator, p, q, xG;
 	// Get the generator value.
-	biginteger pGenerator = opensslbignum_to_biginteger(dlog->g);
-
+#if OPENSSL_VERSION_NUMBER < 0x10100000L
+	pGenerator = opensslbignum_to_biginteger(dlog->g);
+	p = opensslbignum_to_biginteger(dlog->p);
+	q = opensslbignum_to_biginteger(dlog->q);
+#else
+	const BIGNUM **_p, **_q, **_g;
+	DH_get0_pqg(dlog.get(), _p, _q, _g);
+	
+	pGenerator = opensslbignum_to_biginteger((BIGNUM*)*_g);
+	p = opensslbignum_to_biginteger((BIGNUM*)*_p);
+	q = opensslbignum_to_biginteger((BIGNUM*)*_q);
+	
+#endif
 	//Create the GroupElement - generator with the pointer that returned from the native function.
 	OpenSSLZpSafePrimeElement* temp = new OpenSSLZpSafePrimeElement(pGenerator);
 	generator = shared_ptr<OpenSSLZpSafePrimeElement>(temp);
 
 	//Get the generated parameters and create a ZpGroupParams object.
-	biginteger p = opensslbignum_to_biginteger(dlog->p);
-	biginteger q = opensslbignum_to_biginteger(dlog->q);
 	auto zShared = std::dynamic_pointer_cast<ZpElement>(generator);
-	biginteger xG = zShared->getElementValue();
+	xG = zShared->getElementValue();
 	groupParams = make_shared<ZpGroupParams>(q, xG, p);
 
 	// Now that we have p, we can calculate k which is the maximum length in bytes of a 
@@ -174,8 +212,16 @@ bool OpenSSLDlogZpSafePrime::validateElement(BIGNUM* el) {
 	//	1. 0 < el < p.
 	//	2. el ^ q = 1 mod p.
 	bool result = true;
-	BIGNUM* p = dlog->p;
-
+	BIGNUM *p, *q;
+#if OPENSSL_VERSION_NUMBER < 0x10100000L
+	p = dlog->p;
+	q = dlog->q;
+#else
+	const BIGNUM **_p, **_q, **_g;
+	DH_get0_pqg(dlog.get(), _p, _q, _g);
+	p = (BIGNUM*)*_p;
+	q = (BIGNUM*)*_q;
+#endif
 	//Check that the element is bigger than 0.
 	BIGNUM* zero = BN_new();
 	BN_zero(zero);
@@ -188,7 +234,6 @@ bool OpenSSLDlogZpSafePrime::validateElement(BIGNUM* el) {
 		result = false;
 	}
 
-	auto q = dlog->q;
 	auto exp = BN_new();
 
 	//Check that the element raised to q is 1 mod p.
@@ -242,7 +287,13 @@ bool OpenSSLDlogZpSafePrime::isMember(GroupElement* element) {
 }
 
 bool OpenSSLDlogZpSafePrime::isGenerator() {
+#if OPENSSL_VERSION_NUMBER < 0x10100000L
 	return validateElement(dlog->g);
+#else
+	const BIGNUM **_p, **_q, **_g;
+	DH_get0_pqg(dlog.get(), _p, _q, _g);
+	return validateElement((BIGNUM*)*_g);
+#endif
 }
 
 bool OpenSSLDlogZpSafePrime::validateGroup() {
@@ -251,10 +302,22 @@ bool OpenSSLDlogZpSafePrime::validateGroup() {
 	DH_check(dlog.get(), &result);
 
 	//In case the generator is 2, OpenSSL checks the prime is congruent to 11.
-	//while the IETF's primes are congruent to 23 when g = 2. Without the next check, the IETF parameters would fail validation.
-	if (BN_is_word(dlog->g, DH_GENERATOR_2))
+	//while the IETF's primes are congruent to 23 when g = 2. Without the next check, the IETF parameters would fail validation.	
+	BIGNUM *p, *q, *g;
+#if OPENSSL_VERSION_NUMBER < 0x10100000L
+	p = dlog->p;
+	q = dlog->q;
+	g = dlog->g;
+#else
+	const BIGNUM **_p, **_q, **_g;
+	DH_get0_pqg(dlog.get(), _p, _q, _g);
+	p = (BIGNUM*)*_p;
+	q = (BIGNUM*)*_q;
+	g = (BIGNUM*)*_g;
+#endif
+	if (BN_is_word(g, DH_GENERATOR_2))
 	{
-		long residue = BN_mod_word(dlog->p, 24);
+		long residue = BN_mod_word(p, 24);
 		if (residue == 11 || residue == 23) {
 			result &= ~DH_NOT_SUITABLE_GENERATOR;
 		}
@@ -264,7 +327,7 @@ bool OpenSSLDlogZpSafePrime::validateGroup() {
 	// in DH_check function.
 	// we check it directly.
 	if (result == 4) 
-		result = !validateElement(dlog->g);
+		result = !validateElement(g);
 
 	return result == 0;
 }
@@ -277,7 +340,16 @@ shared_ptr<GroupElement> OpenSSLDlogZpSafePrime::getInverse(GroupElement* groupE
 
 	BIGNUM* result = BN_new();
 	BIGNUM* elem = zp_element->getOpenSSLElement().get();
-	BN_mod_inverse(result, elem, dlog->p, ctx.get());
+	BIGNUM *p, *q;
+#if OPENSSL_VERSION_NUMBER < 0x10100000L
+	p = dlog->p;
+	q = dlog->q;
+#else
+	const BIGNUM **_p, **_q;
+	DH_get0_pqg(dlog.get(), _p, _q, NULL);
+	p = (BIGNUM*)*_p;
+#endif
+	BN_mod_inverse(result, elem, p, ctx.get());
 	auto temp = new OpenSSLZpSafePrimeElement(opensslbignum_to_biginteger(result));
 	auto inverseElement = shared_ptr<OpenSSLZpSafePrimeElement>(temp);
 
@@ -297,8 +369,19 @@ shared_ptr<GroupElement> OpenSSLDlogZpSafePrime::exponentiate(GroupElement* base
 	auto baseBN = zp_element->getOpenSSLElement();
 	BIGNUM* resultBN = BN_new(); 	//Prepare a result element.
 
+	BIGNUM *p, *q;
+#if OPENSSL_VERSION_NUMBER < 0x10100000L
+	p = dlog->p;
+	q = dlog->q;
+#else
+	const BIGNUM **_p, **_q, **_g;
+	DH_get0_pqg(dlog.get(), _p, _q, _g);
+	p = (BIGNUM*)*_p;
+	q = (BIGNUM*)*_q;
+#endif
+
 	//Raise the given element and put the result in resultBN.
-	BN_mod_exp(resultBN, baseBN.get(), expBN, dlog->p, ctx.get());
+	BN_mod_exp(resultBN, baseBN.get(), expBN, p, ctx.get());
 	biginteger bi_res = opensslbignum_to_biginteger(resultBN);
 
 	//Release the allocated memory.
@@ -322,7 +405,18 @@ shared_ptr<GroupElement> OpenSSLDlogZpSafePrime::multiplyGroupElements(GroupElem
 	BIGNUM* elem2 = zp2->getOpenSSLElement().get();
 
 	//Call the OpenSSL's multiply function
-	BN_mod_mul(result, elem1, elem2, dlog->p, ctx.get());
+	BIGNUM *p, *q;
+#if OPENSSL_VERSION_NUMBER < 0x10100000L
+	p = dlog->p;
+	q = dlog->q;
+#else
+	const BIGNUM **_p, **_q, **_g;
+	DH_get0_pqg(dlog.get(), _p, _q, _g);
+	p = (BIGNUM*)*_p;
+	q = (BIGNUM*)*_q;
+#endif
+
+	BN_mod_mul(result, elem1, elem2, p, ctx.get());
 
 	auto temp = new OpenSSLZpSafePrimeElement(opensslbignum_to_biginteger(result));
 	auto mulElement = shared_ptr<OpenSSLZpSafePrimeElement>(temp);
