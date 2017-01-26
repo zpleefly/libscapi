@@ -24,12 +24,13 @@ private:
     vector<byte> wiresValues;
     mutex mtx;
     string inputFileName;
+    vector<byte> output;
 
     void generateTriples();
 
     void inputSharing();
 
-    vector<byte> computeCircuit();
+    vector<byte>& computeCircuit();
 
     void readInputs(vector<byte> & inputs) const;
 
@@ -50,7 +51,7 @@ private:
     void recomputeAndGates(int firstAndGateToRecompute, vector<CBitVector> & myD, vector<CBitVector> & myE, int i,
                            vector<bool> & isWireReady, int numAndGatesComputed, int & andGatesComputedCounter, int first, int last);
 
-    vector<byte> revealOutput();
+    vector<byte>& revealOutput();
 
     void revealOutputFromParty(vector<byte> & output, int first, int last);
 
@@ -62,6 +63,9 @@ public:
      * Implement the function derived from the Protocol abstract class.
      */
     void run() override;
+
+    void runOffline();
+    vector<byte>& runOnline();
 
 
 };

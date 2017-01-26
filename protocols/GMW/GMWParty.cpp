@@ -38,6 +38,15 @@ void GMWParty::run(){
 
 }
 
+void GMWParty::runOffline(){
+    generateTriples();
+}
+
+vector<byte>& GMWParty::runOnline(){
+    inputSharing();
+    return computeCircuit();
+}
+
 void GMWParty::generateTriples(){
 
     /*
@@ -334,7 +343,7 @@ void GMWParty::readInputs(vector<byte> & inputs) const {
     myfile.close();
 }
 
-vector<byte> GMWParty::computeCircuit(){
+vector<byte>& GMWParty::computeCircuit(){
     Gate gate;
     wiresValues.resize(circuit->getNrOfInput() + circuit->getNrOfGates(), 0);
     vector<bool> isWireReady(circuit->getNrOfInput() + circuit->getNrOfGates(), false);
@@ -641,10 +650,10 @@ void GMWParty::recomputeAndGates(Gate &recomputeGate, int firstAndGateToRecomput
     numAndGatesComputed += recomputeAndGatesCounter;
 }*/
 
-vector<byte> GMWParty::revealOutput() {
+vector<byte>& GMWParty::revealOutput() {
     vector<int> myOutputIndices = circuit->getPartyOutputs(id);
     int myOutputSize = myOutputIndices.size();
-    vector<byte> output(myOutputSize);
+    output.resize(myOutputSize);
     for (int i=0; i<myOutputSize; i++){
         output[i] = wiresValues[myOutputIndices[i]];
     }
