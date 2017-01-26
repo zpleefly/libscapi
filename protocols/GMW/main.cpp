@@ -49,17 +49,22 @@ int main(int argc, char* argv[]) {
         end = chrono::high_resolution_clock::now();
         generateTotalTime = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
         allOfflineTimes += generateTotalTime;
-        cout<<"Offline time: "<<generateTotalTime <<" milliseconds"<<endl;
+        //cout<<"Offline time: "<<generateTotalTime <<" milliseconds"<<endl;
 
 
         //Online phase
         start = chrono::high_resolution_clock::now();
-        party.runOnline();
+        output = party.runOnline();
         end = chrono::high_resolution_clock::now();
         generateTotalTime = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
         allOnlineTimes += generateTotalTime;
-        cout<<"online time: "<<generateTotalTime <<" milliseconds"<<endl;
+        //cout<<"online time: "<<generateTotalTime <<" milliseconds"<<endl;
     }
+    cout << "circuit output:" << endl;
+    for (int i = 0; i < output.size(); i++) {
+        cout << (int) output[i] << " ";
+    }
+    cout << endl;
     cout<<"average offline time = "<<allOfflineTimes/10<<endl;
     cout<<"average online time = "<<allOnlineTimes/10<<endl;
     return 0;
