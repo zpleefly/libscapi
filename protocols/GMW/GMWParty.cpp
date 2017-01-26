@@ -147,7 +147,7 @@ void GMWParty::generateTriplesForParty(PrgFromOpenSSLAES & prg, int first, int l
 
     vector<byte> sigma(circuit->getNrOfAndGates());
     vector<byte> x0, x1, xSigma;
-    int position;
+    //int position;
     byte v, u;
 
     shared_ptr<OTBatchSOutput> sOutput;
@@ -192,7 +192,7 @@ void GMWParty::generateTriplesForParty(PrgFromOpenSSLAES & prg, int first, int l
         x1 = ((OTExtensionBristolRandomizedSOutput *) sOutput.get())->getR1Arr();
         xSigma = ((OTExtensionBristolROutput *) rOutput.get())->getXSigma();
 
-        position = i * circuit->getNrOfAndGates();
+        //position = i * circuit->getNrOfAndGates();
         for (int j = 0; j < circuit->getNrOfAndGates(); j++) {
             //convert the output of the random ot to 0/1.
             x0[j] %= 2;
@@ -200,10 +200,10 @@ void GMWParty::generateTriplesForParty(PrgFromOpenSSLAES & prg, int first, int l
             xSigma[j] %= 2;
 
             v = x0[j];                          // v
-            bArray[position + j] = v ^ x1[j];   // b
-            aArray[position + j] = sigma[j];    // a
+            bArray[j*parties.size() + i] = v ^ x1[j];   // b
+            aArray[j*parties.size() + i] = sigma[j];    // a
             u = xSigma[j];                      // u
-            cArray[position + j] = (aArray[position + j] * bArray[position + j]) ^ v ^ u; // c = (ab) ^ u ^ v.
+            cArray[j*parties.size() + i] = ((v ^ x1[j]) * sigma[j]) ^ v ^ u; // c = (ab) ^ u ^ v.
             /*cout<<"gate "<<j<<endl;
             cout << "b = " << (int) bArray[position + j] << endl;
             cout << "v = " << (int) v << endl;
@@ -363,12 +363,15 @@ vector<byte>& GMWParty::computeCircuit(){
 
     byte x, y, a, b;
 int index = 0;
-    //auto gatesIterator = circuit->getGates().begin();
+
+    byte* aArrayPosition = aArray.data();
+    byte* bArrayPosition = bArray.data();
+    auto gatesIterator = circuit->getGates().begin();
     for (int i=0; i<circuit->getNrOfGates(); i++){
         //cout<<i<<endl;
-        //gate = *gatesIterator;
-        //gatesIterator++;
-        gate = circuit->getGates()[i];
+        gate = *gatesIterator;
+        gatesIterator++;
+        //gate = circuit->getGates()[i];
 
         //In case the gate is not ready, meaning that at least one of its input wires wasn't computed yet,
         //We should run the ot in order to compute all gates till here.
@@ -443,14 +446,19 @@ int index = 0;
 //cout<<"party "<<parties[j]->getID()<<endl;
                 //Calculate d = x^a, e = y^b
                 x  = wiresValues[gate.inputIndex1];
-                a = aArray[j * circuit->getNrOfAndGates() + andGatesCounter];
+                a = *aArrayPosition;
+               // a = aArray[andGatesCounter*parties.size() + j];
+                //a = aArray[j * circuit->getNrOfAndGates() + andGatesCounter];
                 y = wiresValues[gate.inputIndex2];
-                b = bArray[j * circuit->getNrOfAndGates() + andGatesCounter];
+                b = *bArrayPosition;
+                //b = bArray[andGatesCounter*parties.size() + j];
+                //b = bArray[j * circuit->getNrOfAndGates() + andGatesCounter];
                 myD[j].SetBit(index, x ^ a);
                 //cout<<"myD[" << j<<"] added "<<(int)(x ^ a)<<endl;
                 myE[j].SetBit(index, y ^ b);
                 //cout<<"myE[" << j<<"] added "<<(int)(y ^ b)<<endl;
-
+                aArrayPosition++;
+                bArrayPosition++;
             }
             index++;
             andGatesCounter++;
@@ -559,7 +567,8 @@ void GMWParty::recomputeAndGates(int firstAndGateToRecompute, vector<CBitVector>
                 //e = e1^e2
                 e = myE[j].GetBit(recomputeAndGatesCounter) ^ otherE.GetBit(recomputeAndGatesCounter);
                 //z = db ^ ea ^c ^ de
-                index = j * circuit->getNrOfAndGates() + numAndGatesComputed + recomputeAndGatesCounter;
+                //index = j * circuit->getNrOfAndGates() + numAndGatesComputed + recomputeAndGatesCounter;
+                index = (numAndGatesComputed + recomputeAndGatesCounter) * parties.size() + j;
                 z = d * bArray[index];
                 z = z ^ (e * aArray[index]);
                 z = z ^ cArray[index];
