@@ -4,13 +4,11 @@
 #include "GMWParty.h"
 
 int main(int argc, char* argv[]) {
-    boost::asio::io_service io_service;
+
     shared_ptr<Circuit> circuit = make_shared<Circuit>();
     circuit->readCircuit(argv[2]);
 
     int id = atoi(argv[1]);
-    auto parties = MPCCommunication::setCommunication(io_service, id, circuit->getNrOfParties(), argv[3]);
-    cout << "----------end communication--------------" << endl;
 
     string tmp = "init times";
     byte tmpBytes[20];
@@ -22,8 +20,8 @@ int main(int argc, char* argv[]) {
     int generateTotalTime;
     vector<byte> output;
     //cout << "num of threads : " << numThreads << endl;
-    GMWParty party(id, circuit, parties, numThreads, argv[4]);
-
+    GMWParty party(id, circuit, argv[3], numThreads, argv[4]);
+    auto parties = party.getParties();
     for (int i=0; i<10; i++) {
 
         //cout << "parties size : " << parties.size() << endl;

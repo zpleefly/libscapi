@@ -17,6 +17,7 @@
 class GMWParty : public Protocol, public SemiHonest{
 
 private:
+    boost::asio::io_service io_service;
     int id, numThreads, numPartiesForEachThread;
     shared_ptr<Circuit> circuit;
     vector<shared_ptr<ProtocolPartyData>> parties;
@@ -57,7 +58,7 @@ private:
 
 public:
 
-    GMWParty(int id, const shared_ptr<Circuit> & circuit, const vector<shared_ptr<ProtocolPartyData>> & parties, int numThreads, string inputFileName);
+    GMWParty(int id, const shared_ptr<Circuit> & circuit, string partiesFileName, int numThreads, string inputFileName);
 
     /*
      * Implement the function derived from the Protocol abstract class.
@@ -66,6 +67,8 @@ public:
 
     void runOffline();
     vector<byte>& runOnline();
+
+    vector<shared_ptr<ProtocolPartyData>> & getParties(){ return parties; }
 
 
 };

@@ -4,8 +4,12 @@
 
 #include "GMWParty.h"
 
-GMWParty::GMWParty(int id, const shared_ptr<Circuit> & circuit, const vector<shared_ptr<ProtocolPartyData>> & parties, int numThreads, string inputFileName) :
-        id(id), circuit(circuit), parties(parties), inputFileName(inputFileName) {
+GMWParty::GMWParty(int id, const shared_ptr<Circuit> & circuit, string partiesFileName, int numThreads, string inputFileName) :
+        id(id), circuit(circuit), inputFileName(inputFileName) {
+
+    parties = MPCCommunication::setCommunication(io_service, id, circuit->getNrOfParties(), partiesFileName);
+    cout << "----------end communication--------------" << endl;
+
     if (parties.size() <= numThreads){
         this->numThreads = parties.size();
         numPartiesForEachThread = 1;
