@@ -93,9 +93,15 @@ namespace semihonestot {
 
 
 #define AES_KEY_CTX EVP_CIPHER_CTX
+#if OPENSSL_VERSION_NUMBER < 0x10100000L
 #define OTEXT_HASH_INIT(sha) SHA_Init(sha)
 #define OTEXT_HASH_UPDATE(sha, buf, bufsize) SHA_Update(sha, buf, bufsize)
 #define OTEXT_HASH_FINAL(sha, sha_buf) SHA_Final(sha_buf, sha)
+#else
+#define OTEXT_HASH_INIT(sha) SHA1_Init(sha)
+#define OTEXT_HASH_UPDATE(sha, buf, bufsize) SHA1_Update(sha, buf, bufsize)
+#define OTEXT_HASH_FINAL(sha, sha_buf) SHA1_Final(sha_buf, sha)
+#endif
 	
 	const BYTE ZERO_IV[AES_BYTES] = { 0 };
 #ifndef _WIN32
