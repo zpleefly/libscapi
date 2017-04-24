@@ -26,7 +26,9 @@ namespace semihonestot {
 		BYTE* pBufIdx = keybytes;
 		for (int i = 0; i < numkeys; i++)
 		{
-			OTEXT_AES_KEY_INIT(ctx + i, pBufIdx);
+			//OTEXT_AES_KEY_INIT(ctx + i, pBufIdx);
+			EVP_CIPHER_CTX_init(*(ctx + i));
+			EVP_EncryptInit_ex(*(ctx + i), EVP_aes_128_ecb(), NULL, pBufIdx, ZERO_IV);
 			pBufIdx += AES_KEY_BYTES;
 		}
 	}

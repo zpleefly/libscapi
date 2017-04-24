@@ -21,7 +21,9 @@ namespace semihonestot {
     #if OPENSSL_VERSION_NUMBER < 0x10100000L
 		OTEXT_AES_KEY_INIT(&m_nKey, seed);
     #else
-		OTEXT_AES_KEY_INIT(m_nKey, seed);
+		//OTEXT_AES_KEY_INIT(m_nKey, seed);
+		EVP_CIPHER_CTX_init(*m_nKey);
+	        EVP_EncryptInit_ex(*m_nKey, EVP_aes_128_ecb(), NULL, seed, ZERO_IV);
     #endif
 		m_bKeyInit = true;
 	}
@@ -54,7 +56,7 @@ namespace semihonestot {
     			#if OPENSSL_VERSION_NUMBER < 0x10100000L
 				OTEXT_AES_ENCRYPT(&m_nKey, m_pBits + i*AES_BYTES, buf);
 			#else
-				OTEXT_AES_ENCRYPT(m_nKey, m_pBits + i*AES_BYTES, buf);
+				EVP_EncryptUpdate(*m_nKey, m_pBits + i * AES_BYTES, &otextaesencdummy, buf, AES_BYTES);
 			#endif
 
 		}

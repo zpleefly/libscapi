@@ -184,10 +184,18 @@ namespace semihonestot {
 			(*counter) = tempctr;
 			for (int b = 0; b < numblocks; b++, (*counter)++)
 			{
+			#if OPENSSL_VERSION_NUMBER < 0x10100000L
 				OTEXT_AES_ENCRYPT(m_vKeySeedMtx + 2 * k, Tptr, ctr_buf);
+			#else
+				EVP_EncryptUpdate(*(m_vKeySeedMtx + 2 * k), Tptr, &otextaesencdummy, ctr_buf, AES_BYTES);
+			#endif
 				Tptr += OTEXT_BLOCK_SIZE_BYTES;
 
+			#if OPENSSL_VERSION_NUMBER < 0x10100000L
 				OTEXT_AES_ENCRYPT(m_vKeySeedMtx + (2 * k) + 1, sndbufptr, ctr_buf);
+			#else
+				EVP_EncryptUpdate(*(m_vKeySeedMtx + (2 * k) + 1), Tptr, &otextaesencdummy, ctr_buf, AES_BYTES);
+			#endif
 				sndbufptr += OTEXT_BLOCK_SIZE_BYTES;
 			}
 			SndBuf.XORBytesReverse(m_nChoices.GetArr() + ctrbyte, k*OTEXT_BLOCK_SIZE_BYTES * numblocks, OTEXT_BLOCK_SIZE_BYTES * numblocks);
@@ -461,7 +469,11 @@ namespace semihonestot {
 			*counter = tempctr;
 			for (int b = 0; b < numblocks; b++, (*counter)++, Tptr += OTEXT_BLOCK_SIZE_BYTES)
 			{
+			#if OPENSSL_VERSION_NUMBER < 0x10100000L
 				OTEXT_AES_ENCRYPT(m_vKeySeeds + k, Tptr, ctr_buf);
+			#else
+				EVP_EncryptUpdate(*(m_vKeySeeds + k), Tptr, &otextaesencdummy, ctr_buf, AES_BYTES);
+			#endif
 			}
 			if (m_nU.GetBit(k))
 			{
