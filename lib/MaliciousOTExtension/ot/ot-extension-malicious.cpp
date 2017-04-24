@@ -216,13 +216,21 @@ void Mal_OTExtensionReceiver::BuildMatrices(CBitVector& T, CBitVector& SndBuf, i
 
 	for(int k = 0; k < m_nBaseOTs; k++) 	{
 		for(int b = 0; b < rowbytelen/ AES_BYTES; b++, (*counter)++) {
+		#if OPENSSL_VERSION_NUMBER < 0x10100000L
 			MPC_AES_ENCRYPT(seedptr + 2*k, Tptr, ctr_buf);
+		#else
+			EVP_EncryptUpdate(*(seedptr + 2 * k), Tptr, &otextaesencdummy, ctr_buf, AES_BYTES);
+		#endif
 #ifdef DEBUG_MALICIOUS
 			cerr << "correct: Tka = " << k << ": " << (hex) << ((uint64_t*) Tptr)[0] << ((uint64_t*) Tptr)[1] << (hex) << endl;
 #endif
 			Tptr+=AES_BYTES;
 
+		#if OPENSSL_VERSION_NUMBER < 0x10100000L
 			MPC_AES_ENCRYPT(seedptr + (2*k) + 1, sndbufptr, ctr_buf);
+		#else
+			EVP_EncryptUpdate(*(seedptr + (2 *k) + 1), sndbufptr, &otextaesencdummy, ctr_buf, AES_BYTES);
+		#endif
 #ifdef DEBUG_MALICIOUS
 			cerr << "correct: Tkb = " << k << ": " << (hex) << ((uint64_t*) sndbufptr)[0] << ((uint64_t*) sndbufptr)[1] << (hex) << endl;
 #endif
@@ -853,7 +861,11 @@ void Mal_OTExtensionSender::BuildQMatrix(CBitVector& T, CBitVector& RcvBuf, int 
 
 	for (int k = 0; k < m_nBaseOTs; k++, rcvbufptr += rowbytelen) 	{
 		for(int b = 0; b < rowbytelen / AES_BYTES; b++, (*counter)++, Tptr += AES_BYTES) {
+		#if OPENSSL_VERSION_NUMBER < 0x10100000L
 			MPC_AES_ENCRYPT(seedptr + k, Tptr, ctr_buf);
+		#else
+			EVP_EncryptUpdate(*(seedptr + k), Tptr, &otextaesencdummy, ctr_buf, AES_BYTES);
+		#endif
 #ifdef DEBUG_MALICIOUS
 			cerr << "k = " << k << ": "<< (hex) << ((uint64_t*) Tptr)[0] << ((uint64_t*) Tptr)[1] << (hex) << endl;
 #endif
@@ -875,7 +887,11 @@ void Mal_OTExtensionSender::BuildQMatrix(CBitVector& T, CBitVector& RcvBuf, int 
 
 void Mal_OTExtensionSender::UpdateCheckBuf(BYTE* tocheckseed, BYTE* tocheckrcv, int otid, int rowbytelen, snd_check_t* check_vals) {
 	AES_KEY_CTX aesowfkey;
+#if OPENSSL_VERSION_NUMBER < 0x10100000L
 	MPC_AES_KEY_INIT(&aesowfkey);
+#else
+	EVP_CIPHER_CTX_init(aesowfkey);
+#endif
 	BYTE* hash_buf = (BYTE*) malloc(sizeof(BYTE) * SHA1_BYTES);
 	BYTE* tmpbuf = (BYTE*) malloc(sizeof(BYTE) * rowbytelen);
 	//BYTE* inbuf = (BYTE*) malloc(sizeof(BYTE) * OWF_BYTES);
@@ -956,8 +972,11 @@ void Mal_OTExtensionSender::UpdateCheckBuf(BYTE* tocheckseed, BYTE* tocheckrcv, 
 
 inline void Mal_OTExtensionSender::XORandOWF(BYTE* idaptr, BYTE* idbptr, int rowbytelen, BYTE* tmpbuf, BYTE* resbuf, BYTE* hash_buf) {
 	AES_KEY_CTX aesowfkey;
+#if OPENSSL_VERSION_NUMBER < 0x10100000L
 	MPC_AES_KEY_INIT(&aesowfkey);
-
+#else
+	EVP_CIPHER_CTX_init(aesowfkey);
+#endif
 	for(int j = 0; j < rowbytelen/sizeof(uint64_t); j++) {
 		((uint64_t*) tmpbuf)[j] = ((uint64_t*) tmpbuf)[j] ^ ((uint64_t*) idaptr)[j] ^ ((uint64_t*) idbptr)[j];
 	}

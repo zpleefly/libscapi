@@ -113,7 +113,17 @@ namespace maliciousot {
 		void delCBitVector() { if (m_nSize > 0) free(m_pBits); m_nSize = 0; m_pBits = NULL; }
 
 		/* Use this function to initialize the AES round key which can then be used to generate further random bits */
-		void InitRand(BYTE* seed) { m_nKey = new AES_KEY_CTX; MPC_AES_KEY_INIT(m_nKey); MPC_AES_KEY_EXPAND(m_nKey, seed); }
+		void InitRand(BYTE* seed)
+		{
+		#if OPENSSL_VERSION_NUMBER < 0x10100000L
+			m_nKey = new AES_KEY_CTX;
+			MPC_AES_KEY_INIT(m_nKey);
+			MPC_AES_KEY_EXPAND(m_nKey, seed);
+		#else
+			EVP_CIPHER_CTX_init(m_nKey);
+			EVP_EncryptInit_ex(m_nKey, EVP_aes_128_ecb(), NULL, seed, ZERO_IV);
+		#endif
+		}
 
 		/* Fill the bitvector with random values and pre-initialize the key to the seed-key*/
 		void FillRand(int bits, BYTE* seed, int& cnt);
@@ -285,12 +295,12 @@ namespace maliciousot {
 
 	private:
 		BYTE*		m_pBits;
-		int			m_nSize;
-		AES_KEY_CTX*m_nKey;
+		int		m_nSize;
+		AES_KEY_CTX     m_nKey;
 		int 		m_nBits; //The exact number of bits
-		int			m_nElementLength;
+		int		m_nElementLength;
 		int 		m_nNumElements;
-		int			m_nNumElementsDimB;
+		int		m_nNumElementsDimB;
 	};
 
 

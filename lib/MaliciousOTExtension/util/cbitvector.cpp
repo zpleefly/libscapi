@@ -36,7 +36,11 @@ namespace maliciousot {
 
 		for (int i = 0; i < size; i++, counter[0]++, cnt++)
 		{
+		#if OPENSSL_VERSION_NUMBER < 0x10100000L
 			MPC_AES_ENCRYPT(m_nKey, m_pBits + i*AES_BYTES, buf);
+		#else
+			EVP_EncryptUpdate(m_nKey, m_pBits + i * AES_BYTES, &otextaesencdummy, buf, AES_BYTES);
+		#endif
 		}
 		//cnt = (int) counter[0];
 	}

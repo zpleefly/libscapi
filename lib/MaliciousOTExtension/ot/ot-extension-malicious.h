@@ -105,8 +105,8 @@ namespace maliciousot {
 				MPC_AES_KEY_INIT(ctx + i);
 				MPC_AES_KEY_EXPAND(ctx + i, pBufIdx);
             #else
-				MPC_AES_KEY_INIT(*ctx + i);
-				MPC_AES_KEY_EXPAND(*ctx + i, pBufIdx);
+				EVP_CIPHER_CTX_init(*(ctx + i));
+				EVP_EncryptInit_ex(*(ctx+i), EVP_aes_128_ecb(), NULL, pBufIdx, ZERO_IV);
             #endif
 			pBufIdx += AES_KEY_BYTES;
 		}
