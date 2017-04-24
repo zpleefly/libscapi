@@ -135,20 +135,36 @@ namespace maliciousot {
 				BYTE ctr_buf[AES_BYTES] = { 0 };
 				int counter;// = (int) ctr_buf[0];*((int*)ctr_buf);
 				AES_KEY_CTX tkey;
+				#if OPENSSL_VERSION_NUMBER < 0x10100000L
 				MPC_AES_KEY_INIT(&tkey);
+				#else
+				EVP_CIPHER_CTX_init(tkey);
+				#endif
 				for (int i = 0, rem; i < processedOTs; i++, sbp += AES_KEY_BYTES)
 				{
+				#if OPENSSL_VERSION_NUMBER < 0x10100000L
 					MPC_AES_KEY_EXPAND(&tkey, sbp);
+				#else
+					EVP_EncryptInit_ex(tkey, EVP_aes_128_ecb(), NULL, sbp, ZERO_IV);
+				#endif
 					for (counter = 0; counter < bitlength / AES_BITS; counter++)
 					{
+					#if OPENSSL_VERSION_NUMBER < 0x10100000L
 						MPC_AES_ENCRYPT(&tkey, m_bBuf, ctr_buf);
+					#else
+						EVP_EncryptUpdate(tkey, m_bBuf, &otextaesencdummy, ctr_buf, AES_BYTES);
+					#endif
 						out.SetBits(m_bBuf, (offset + i) * bitlength + (counter*AES_BITS), AES_BITS);
 					}
 					//the final bits
 					//cerr << "bits: " << (counter*AES_BITS) << ", bitlength: " << m_nBitLength << endl;
 					if ((rem = bitlength - (counter*AES_BITS)) > 0)
 					{
+					#if OPENSSL_VERSION_NUMBER < 0x10100000L
 						MPC_AES_ENCRYPT(&tkey, m_bBuf, ctr_buf);
+					#else
+						EVP_EncryptUpdate(tkey, m_bBuf, &otextaesencdummy, ctr_buf, AES_BYTES);
+					#endif
 						out.SetBits(m_bBuf, (offset + i) * bitlength + (counter*AES_BITS), rem);
 					}
 				}
