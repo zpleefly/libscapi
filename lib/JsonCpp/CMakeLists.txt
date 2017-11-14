@@ -1,17 +1,20 @@
 # vim: et ts=4 sts=4 sw=4 tw=0
 
 CMAKE_MINIMUM_REQUIRED(VERSION 3.1)
+set(CMAKE_C_COMPILER /usr/bin/arm-linux-gnueabi-gcc)
+set(CMAKE_CXX_COMPILER /usr/bin/arm-linux-gnueabi-g++)
 PROJECT(jsoncpp)
 ENABLE_TESTING()
 
-OPTION(JSONCPP_WITH_TESTS "Compile and (for jsoncpp_check) run JsonCpp test executables" ON)
-OPTION(JSONCPP_WITH_POST_BUILD_UNITTEST "Automatically run unit-tests as a post build step" ON)
+OPTION(JSONCPP_WITH_TESTS "Compile and (for jsoncpp_check) run JsonCpp test executables" OFF)
+OPTION(JSONCPP_WITH_POST_BUILD_UNITTEST "Automatically run unit-tests as a post build step" OFF)
 OPTION(JSONCPP_WITH_WARNING_AS_ERROR "Force compilation to fail if a warning occurs" OFF)
-OPTION(JSONCPP_WITH_STRICT_ISO "Issue all the warnings demanded by strict ISO C and ISO C++" ON)
-OPTION(JSONCPP_WITH_PKGCONFIG_SUPPORT "Generate and install .pc files" ON)
+OPTION(JSONCPP_WITH_STRICT_ISO "Issue all the warnings demanded by strict ISO C and ISO C++" OFF)
+OPTION(JSONCPP_WITH_PKGCONFIG_SUPPORT "Generate and install .pc files" OFF)
 OPTION(JSONCPP_WITH_CMAKE_PACKAGE "Generate and install cmake package files" OFF)
 OPTION(BUILD_SHARED_LIBS "Build jsoncpp_lib as a shared library." OFF)
 OPTION(BUILD_STATIC_LIBS "Build jsoncpp_lib static library." ON)
+
 
 # Ensures that CMAKE_BUILD_TYPE is visible in cmake-gui on Unix
 IF(NOT WIN32)

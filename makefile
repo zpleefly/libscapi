@@ -1,6 +1,6 @@
 export builddir=$(abspath ./build)
 export prefix=$(abspath ./install)
-CXX=g++
+CXX=arm-linux-gnueabi-g++
 uname_S := $(shell sh -c 'uname -s 2>/dev/null || echo not')
 ARCH := $(shell getconf LONG_BIT)
 SHARED_LIB_EXT:=.so
@@ -115,7 +115,7 @@ compile-openssl:
 	echo "Compiling the openssl library"
 	@cp -r lib/openssl/ $(builddir)/openssl
 	export CFLAGS="-fPIC"	
-	cd $(builddir)/openssl/; ./config --prefix=$(builddir)/openssl/tmptrgt -no-shared
+	cd $(builddir)/openssl/; ./config --prefix=$(builddir)/openssl/tmptrgt -no-shared os/compiler:arm-linux-gnueabi-gcc
 	cd $(builddir)/openssl/; make 
 	cd $(builddir)/openssl/; make install
 	@cp $(builddir)/openssl/tmptrgt/lib/*.a $(CURDIR)/install/lib/
@@ -128,10 +128,11 @@ compile-boost:
 	@mkdir -p $(builddir)/
 	echo "Compiling the boost library"
 	@cp -r lib/boost_1_64_0/ $(builddir)/boost_1_64_0
-	cd $(builddir)/boost_1_64_0/; bash -c "BOOST_BUILD_PATH='./' ./bootstrap.sh --with-libraries=thread,system && ./b2"; 
-	@cp $(builddir)/boost_1_64_0/stage/lib/*.a $(CURDIR)/install/lib/
-	@cp -r $(builddir)/boost_1_64_0/boost/ $(CURDIR)/install/include/
-	@touch compile-boost
+	cd $(builddir)/boost_1_64_0/; bash -c "BOOST_BUILD_PATH='./' ./bootstrap.sh --with-libraries=thread,system" 
+	#cd $(builddir)/boost_1_64_0/; bash -c ./b2"; 
+	#@cp $(builddir)/boost_1_64_0/stage/lib/*.a $(CURDIR)/install/lib/
+	#@cp -r $(builddir)/boost_1_64_0/boost/ $(CURDIR)/install/include/
+	#@touch compile-boost
 
 compile-json:
 	@echo "Compiling JSON library..."
