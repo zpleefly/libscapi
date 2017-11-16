@@ -5,10 +5,13 @@
 #include <iostream>
 #include <memory>
 #include <vector>
-
+#define COMPILE_ARM
+#ifdef COMPILE_ARM
+#include "SSE2NEON.h"
+#else
 #include <emmintrin.h>
 #include <smmintrin.h>
-
+#endif
 #include <boost/lexical_cast.hpp>
 
 #include <cryptoTools/gsl/span>
@@ -56,9 +59,9 @@ namespace osuCrypto {
 	static std::string ToString(const T& t) { return boost::lexical_cast<std::string>(t); }
 
     typedef  __m128i block;
-    inline block toBlock(u8*data) { return _mm_set_epi64x(((u64*)data)[1], ((u64*)data)[0]);}
-    inline block toBlock(u64 x)        { return _mm_set_epi64x(0,x); }
-    inline block toBlock(u64 x, u64 y) { return _mm_set_epi64x(x,y); }
+    //inline block toBlock(u8*data) { return _mm_set_epi64x(((u64*)data)[1], ((u64*)data)[0]);}
+    //inline block toBlock(u64 x)        { return _mm_set_epi64x(0,x); }
+    //inline block toBlock(u64 x, u64 y) { return _mm_set_epi64x(x,y); }
 
     extern const block ZeroBlock;
     extern const block OneBlock;
@@ -87,18 +90,18 @@ namespace osuCrypto
 {
 	using ::operator<<;
 }
-
+/*
 inline bool eq(const osuCrypto::block& lhs, const osuCrypto::block& rhs)
 {
     osuCrypto::block neq = _mm_xor_si128(lhs, rhs);
     return _mm_test_all_zeros(neq, neq) != 0;
 }
-
 inline bool neq(const osuCrypto::block& lhs, const osuCrypto::block& rhs)
 {
     osuCrypto::block neq = _mm_xor_si128(lhs, rhs);
     return _mm_test_all_zeros(neq, neq) == 0;
 }
+*/
 
 #ifdef _MSC_VER
 inline bool operator<(const osuCrypto::block& lhs, const osuCrypto::block& rhs)

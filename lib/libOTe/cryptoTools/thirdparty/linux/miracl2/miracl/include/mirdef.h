@@ -12,4 +12,5 @@
 #define MR_FLASH 52
 #define MAXBASE ((mr_small)1<<(MIRACL-1))
 #define MR_BITSINCHAR 8
+#define MR_NO_INTRINSICS
 

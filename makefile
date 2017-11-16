@@ -146,6 +146,7 @@ compile-libote:compile-boost
 	@cp -r lib/libOTe $(builddir)/libOTe
 	@mkdir -p $(builddir)/libOTe/cryptoTools/thirdparty/linux/miracl/
 	@mv $(builddir)/libOTe/cryptoTools/thirdparty/linux/miracl2/* $(builddir)/libOTe/cryptoTools/thirdparty/linux/miracl/
+	@cd $(builddir)/libOTe/cryptoTools/thirdparty/linux/miracl/miracl/source/ && bash linux64
 	@cmake $(builddir)/libOTe/CMakeLists.txt
 	@$(MAKE) -C $(builddir)/libOTe/
 	@cp $(builddir)/libOTe/lib/*.a $(CURDIR)/install/lib/
