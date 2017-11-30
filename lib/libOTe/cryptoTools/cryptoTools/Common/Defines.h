@@ -59,9 +59,9 @@ namespace osuCrypto {
 	static std::string ToString(const T& t) { return boost::lexical_cast<std::string>(t); }
 
     typedef  __m128i block;
-    //inline block toBlock(u8*data) { return _mm_set_epi64x(((u64*)data)[1], ((u64*)data)[0]);}
-    //inline block toBlock(u64 x)        { return _mm_set_epi64x(0,x); }
-    //inline block toBlock(u64 x, u64 y) { return _mm_set_epi64x(x,y); }
+    inline block toBlock(u8*data) { return _mm_set_epi64x(((u64*)data)[1], ((u64*)data)[0]);}
+    inline block toBlock(u64 x)        { return _mm_set_epi64x(0,x); }
+    inline block toBlock(u64 x, u64 y) { return _mm_set_epi64x(x,y); }
 
     extern const block ZeroBlock;
     extern const block OneBlock;
