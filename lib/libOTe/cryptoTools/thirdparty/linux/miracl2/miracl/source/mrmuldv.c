@@ -109,6 +109,7 @@ mr_small muldvm(mr_small a,mr_small c,mr_small m,mr_small *rp)
 #include "miracl.h"
 
 
+#ifndef MR_NO_INTRINSICS
 mr_small muldiv(mr_small a, mr_small b, mr_small c, mr_small m, mr_small *rp)
 {
 	mr_small q;
@@ -144,7 +145,6 @@ mr_small muldvm(mr_small a, mr_small c, mr_small m, mr_small *rp)
 	);
 	return q;
 }
-
 mr_small muldvd(mr_small a, mr_small b, mr_small c, mr_small *rp)
 {
 	mr_small q;
@@ -182,6 +182,7 @@ void muldvd2(mr_small a, mr_small b, mr_small *c, mr_small *rp)
 		);
 
 }
+#endif //MR_NO_INSTRISICS
 #endif // _MSC_VER
 #ifndef MR_NOFULLWIDTH
 

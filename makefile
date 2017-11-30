@@ -1,6 +1,6 @@
 export builddir=$(abspath ./build)
 export prefix=$(abspath ./install)
-CXX=g++
+CXX=arm-linux-gnueabi-g++
 uname_S := $(shell sh -c 'uname -s 2>/dev/null || echo not')
 ARCH := $(shell getconf LONG_BIT)
 SHARED_LIB_EXT:=.so
@@ -36,11 +36,7 @@ SUMO = no
 
 all: libs libscapi tests
 	echo $(WITH_EMP)
-ifeq ($(GCC_STANDARD), c++11)
-    libs: compile-openssl compile-boost compile-json compile-ntl compile-blake compile-emp-tool compile-emp-ot compile-emp-m2pc compile-otextension-bristol
-else
-libs: compile-openssl compile-boost compile-json compile-libote compile-ntl compile-blake compile-emp-tool compile-emp-ot compile-emp-m2pc compile-otextension-bristol
-endif
+libs: compile-openssl compile-boost compile-json compile-libote compile-ntl
 libscapi: directories $(SLib)
 directories: $(OUT_DIR)
 
@@ -129,7 +125,7 @@ compile-openssl:
 	echo "Compiling the openssl library"
 	@cp -r lib/openssl/ $(builddir)/openssl
 	export CFLAGS="-fPIC"	
-	cd $(builddir)/openssl/; ./config --prefix=$(builddir)/openssl/tmptrgt -no-shared
+	cd $(builddir)/openssl/; ./config --prefix=$(builddir)/openssl/tmptrgt -no-shared os/compiler:arm-linux-gnueabi-gcc
 	cd $(builddir)/openssl/; make 
 	cd $(builddir)/openssl/; make install
 	@cp $(builddir)/openssl/tmptrgt/lib/*.a $(CURDIR)/install/lib/
@@ -142,9 +138,8 @@ compile-boost:
 	@mkdir -p $(builddir)/
 	echo "Compiling the boost library"
 	@cp -r lib/boost_1_64_0/ $(builddir)/boost_1_64_0
-	@cd $(builddir)/boost_1_64_0/; bash -c "BOOST_BUILD_PATH='./' ./bootstrap.sh --with-libraries=thread,system,log \
-	&& ./b2 -j4"; # compile boost faster with threads
-	@cp $(builddir)/boost_1_64_0/stage/lib/*.a $(CURDIR)/install/lib/
+	@cd $(builddir)/boost_1_64_0/; bash -c "./bjam install toolset=gcc-arm --prefix=. --with-system --with-thread"; 
+	@cp $(builddir)/boost_1_64_0/lib/*.a $(CURDIR)/install/lib/
 	@cp -r $(builddir)/boost_1_64_0/boost/ $(CURDIR)/install/include/
 	@touch compile-boost
 
@@ -163,6 +158,8 @@ compile-libote:compile-boost
 	@mkdir -p $(builddir)/libOTe/cryptoTools/thirdparty/linux/miracl/
 	@mv $(builddir)/libOTe/cryptoTools/thirdparty/linux/miracl2/* $(builddir)/libOTe/cryptoTools/thirdparty/linux/miracl/
 	@cmake $(builddir)/libOTe/CMakeLists.txt -DCMAKE_BUILD_TYPE=Release
+	@cd $(builddir)/libOTe/cryptoTools/thirdparty/linux/miracl/miracl/source/ && bash linux64
+	@cmake $(builddir)/libOTe/CMakeLists.txt
 	@$(MAKE) -C $(builddir)/libOTe/
 	@cp $(builddir)/libOTe/lib/*.a $(CURDIR)/install/lib/
 	@cp $(builddir)/libOTe/cryptoTools/thirdparty/linux/miracl/miracl/source/libmiracl.a $(CURDIR)/install/lib/
