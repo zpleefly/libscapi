@@ -90,7 +90,7 @@ namespace osuCrypto
 {
 	using ::operator<<;
 }
-/*
+
 inline bool eq(const osuCrypto::block& lhs, const osuCrypto::block& rhs)
 {
     osuCrypto::block neq = _mm_xor_si128(lhs, rhs);
@@ -101,7 +101,7 @@ inline bool neq(const osuCrypto::block& lhs, const osuCrypto::block& rhs)
     osuCrypto::block neq = _mm_xor_si128(lhs, rhs);
     return _mm_test_all_zeros(neq, neq) == 0;
 }
-*/
+
 
 #ifdef _MSC_VER
 inline bool operator<(const osuCrypto::block& lhs, const osuCrypto::block& rhs)
