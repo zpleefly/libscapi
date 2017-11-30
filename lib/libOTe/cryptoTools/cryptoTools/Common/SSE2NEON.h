@@ -1491,13 +1491,26 @@ FORCE_INLINE void _mm_clflush(void const*p)
 
 
 //Libscapi additions
-FORCE_INLINE __m128i _mm_slli_epi64(__m128i a, int count){
+FORCE_INLINE __m128i _mm_slli_epi64(__m128i a, int count) {
 	uint64x1_t hi = vget_high_u64(vreinterpretq_u64_m128i(a));
 	uint64x1_t lo = vget_low_u64(vreinterpretq_u64_m128i(a));
 	hi = hi << count; //shift by count bits the 64 right bits
 	c = lo << count; //shift by count bits the 64 left bits
 
 	return vreinterpretq_m128i_u64(vcombine_u64(lo, hi));
+}
+
+FORCE_INLINE int _mm_test_all_zeros (__m128i a, __m128i mask) {
+	uint64x1_t hi_a = vget_high_u64(vreinterpretq_u64_m128i(a));
+	uint64x1_t lo_a = vget_low_u64(vreinterpretq_u64_m128i(a));
+
+	uint64x1_t hi_mask = vget_high_u64(vreinterpretq_u64_m128i(mask));
+	uint64x1_t lo_mask = vget_low_u64(vreinterpretq_u64_m128i(mask));
+
+	uint64x1_t hi = hi_a & hi_mask;
+	uint64x1_t lo = lo_a & low_mask;
+
+	return (hi == 0) && (lo == 0);
 }
 
 #if defined(__GNUC__) || defined(__clang__)
