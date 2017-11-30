@@ -1494,8 +1494,9 @@ FORCE_INLINE void _mm_clflush(void const*p)
 FORCE_INLINE __m128i _mm_slli_epi64(__m128i a, int count) {
 	uint64x1_t hi = vget_high_u64(vreinterpretq_u64_m128i(a));
 	uint64x1_t lo = vget_low_u64(vreinterpretq_u64_m128i(a));
-	hi = hi << count; //shift by count bits the 64 right bits
-	lo = lo << count; //shift by count bits the 64 left bits
+
+    hi = vshl_n_s64(hi, count);
+    lo = vshl_n_s64(lo, count);
 
 	return vreinterpretq_m128i_u64(vcombine_u64(lo, hi));
 }
@@ -1519,7 +1520,7 @@ FORCE_INLINE __m128i _mm_set_epi64x (__int64 e1, __int64 e0){
 
 FORCE_INLINE __m128i _mm_add_epi64 (__m128i a, __m128i b){
 
-    return vreinterpretq_m128i_u64(vadd_u64(vreinterpretq_u64_m128(a), vreinterpretq_u64_m128(b)));
+    return vreinterpretq_m128i_u64(vaddq_u64(vreinterpretq_u64_m128(a), vreinterpretq_u64_m128(b)));
 }
 
 FORCE_INLINE __m128i _mm_set_epi8(char b15, char b14, char b13, char b12, char b11, char b10, char b9, char b8, char b7,
