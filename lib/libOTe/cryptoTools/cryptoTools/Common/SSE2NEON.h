@@ -1508,7 +1508,7 @@ FORCE_INLINE int _mm_test_all_zeros (__m128i a, __m128i mask) {
 	uint64x1_t lo_mask = vget_low_u64(vreinterpretq_u64_m128i(mask));
 
 	uint64x1_t hi = hi_a & hi_mask;
-	uint64x1_t lo = lo_a & low_mask;
+	uint64x1_t lo = lo_a & lo_mask;
 
 	return (hi == 0) && (lo == 0);
 }
