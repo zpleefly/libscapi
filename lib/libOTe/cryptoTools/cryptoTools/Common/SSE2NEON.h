@@ -1495,7 +1495,7 @@ FORCE_INLINE __m128i _mm_slli_epi64(__m128i a, int count) {
 	uint64x1_t hi = vget_high_u64(vreinterpretq_u64_m128i(a));
 	uint64x1_t lo = vget_low_u64(vreinterpretq_u64_m128i(a));
 	hi = hi << count; //shift by count bits the 64 right bits
-	c = lo << count; //shift by count bits the 64 left bits
+	lo = lo << count; //shift by count bits the 64 left bits
 
 	return vreinterpretq_m128i_u64(vcombine_u64(lo, hi));
 }
