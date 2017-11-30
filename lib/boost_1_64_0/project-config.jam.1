@@ -9,23 +9,16 @@ import feature ;
 # file.
 if ! gcc in [ feature.values <toolset> ]
 {
-    using gcc ; 
+	using gcc : arm : arm-linux-gnueabi-g++ ;
 }
 
 project : default-build <toolset>gcc ;
-
-# Python configuration
-import python ;
-if ! [ python.configured ]
-{
-    using python : 2.7 : /usr ;
-}
 
 # List of --with-<library> and --without-<library>
 # options. If left empty, all libraries will be built.
 # Options specified on the command line completely
 # override this variable.
-libraries =  ;
+libraries =  --with-system --with-thread ;
 
 # These settings are equivivalent to corresponding command-line
 # options.

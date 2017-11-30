@@ -12,7 +12,7 @@ if("${CMAKE_CURRENT_SOURCE_DIR}" STREQUAL "${CMAKE_SOURCE_DIR}")
 
 	
 	set(CMAKE_C_FLAGS "-ffunction-sections -Wall -mfloat-abi=softfp -mfpu=neon -Wfatal-errors -pthread -fPIC -Wno-ignored-attributes")
-	set(CMAKE_CXX_FLAGS  "${CMAKE_C_FLAGS}  -std=c++14")
+	set(CMAKE_CXX_FLAGS  "${CMAKE_C_FLAGS}  -std=c++14 -march=armv7-a -mtune=cortex-a9 -mfpu=neon")
 
 	
 	# Set a default build type for single-configuration

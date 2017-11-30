@@ -1,5 +1,8 @@
 cmake_minimum_required (VERSION 2.8)
 
+set(CMAKE_C_COMPILER /usr/bin/arm-linux-gnueabi-gcc)
+set(CMAKE_CXX_COMPILER /usr/bin/arm-linux-gnueabi-g++)
+
 project(libOTe)
 
 if("${CMAKE_CURRENT_SOURCE_DIR}" STREQUAL "${CMAKE_SOURCE_DIR}")
@@ -16,8 +19,8 @@ if("${CMAKE_CURRENT_SOURCE_DIR}" STREQUAL "${CMAKE_SOURCE_DIR}")
 	#           Flag and #defines              #
 	############################################
 	add_definitions(-DSOLUTION_DIR=\"${CMAKE_SOURCE_DIR}\")
-	set(CMAKE_C_FLAGS "-ffunction-sections -Wall  -maes -msse2 -msse4.1 -mpclmul -Wfatal-errors -pthread -Wno-strict-overflow  -fPIC -Wno-ignored-attributes")
-	set(CMAKE_CXX_FLAGS  "${CMAKE_C_FLAGS}  -std=c++14")
+	set(CMAKE_C_FLAGS "-ffunction-sections -Wall  -Wfatal-errors -pthread -Wno-strict-overflow  -fPIC -Wno-ignored-attributes")
+	set(CMAKE_CXX_FLAGS  "${CMAKE_C_FLAGS}  -std=c++14 -march=armv7-a -mtune=cortex-a9 -mfpu=neon")
 	
 	# Select flags.
 	SET(CMAKE_CXX_FLAGS_RELEASE "-O3 -DNDEBUG") 
