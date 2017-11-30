@@ -1501,15 +1501,12 @@ FORCE_INLINE __m128i _mm_slli_epi64(__m128i a, int count) {
 	return vreinterpretq_m128i_u64(vcombine_u64(lo, hi));
 }
 
-FORCE_INLINE int _mm_test_all_zeros (__m128i a, __m128i mask) {
-	uint64x1_t hi_a = vget_high_u64(vreinterpretq_u64_m128i(a));
-	uint64x1_t lo_a = vget_low_u64(vreinterpretq_u64_m128i(a));
+FORCE_INLINE int _mm_test_all_zeros(__m128i a, __m128i mask) {
 
-	uint64x1_t hi_mask = vget_high_u64(vreinterpretq_u64_m128i(mask));
-	uint64x1_t lo_mask = vget_low_u64(vreinterpretq_u64_m128i(mask));
+    uint64x2_t result = vandq_u64(vreinterpretq_u64_m128i(a), vreinterpretq_u64_m128i(mask));
 
-	uint64x1_t hi = hi_a & hi_mask;
-	uint64x1_t lo = lo_a & lo_mask;
+    uint64x1_t hi = vget_high_u64(result);
+    uint64x1_t lo = vget_low_u64(result);
 
 	return (hi == 0) && (lo == 0);
 }
@@ -1518,7 +1515,11 @@ FORCE_INLINE __m128i _mm_set_epi64x (__int64 e1, __int64 e0){
     return vreinterpretq_m128i_u64(vcombine_u64(e0, e1));
 }
 
-FORCE_INLINE __m128i _mm_add_epi64 (__m128i a, __m128i b){
+FORCE_INLINE __m128i _mm_set1_epi64x(__int64 i){
+    return vreinterpretq_m128i_u64(vcombine_u64(i, i));
+}
+
+FORCE_INLINE __m128i _mm_add_epi64(__m128i a, __m128i b){
 
     return vreinterpretq_m128i_u64(vaddq_u64(vreinterpretq_u64_m128i(a), vreinterpretq_u64_m128i(b)));
 }
