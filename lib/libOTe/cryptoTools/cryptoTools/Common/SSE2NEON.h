@@ -1518,13 +1518,15 @@ FORCE_INLINE __m128i _mm_set_epi64x (__int64 e1, __int64 e0){
 }
 
 FORCE_INLINE __m128i _mm_add_epi64 (__m128i a, __m128i b){
-    uint64x1_t hi_a = vget_high_u64(vreinterpretq_u64_m128i(a));
-    uint64x1_t lo_a = vget_low_u64(vreinterpretq_u64_m128i(a));
 
-    uint64x1_t hi_b = vget_high_u64(vreinterpretq_u64_m128i(b));
-    uint64x1_t lo_b = vget_low_u64(vreinterpretq_u64_m128i(b));
+    return vreinterpretq_m128i_u64(vadd_u64(vreinterpretq_u64_m128(a), vreinterpretq_u64_m128(b)));
+}
 
-    return vreinterpretq_m128i_u64(vcombine_u64(vadd_u64(lo_a, lo_b), vadd_u64(hi_a, hi_b)));
+FORCE_INLINE __m128i _mm_set_epi8(char b15, char b14, char b13, char b12, char b11, char b10, char b9, char b8, char b7,
+                                  char b6, char b5, char b4, char b3, char b2, char b1, char b0){
+
+    int8_t __attribute__((aligned(16))) data[16] = { b0, b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b12, b13, b14, b15 };
+    return vreinterpretq_m128i_s8(vld1q_s8(data));
 }
 
 #if defined(__GNUC__) || defined(__clang__)
