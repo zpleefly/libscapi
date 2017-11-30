@@ -1520,7 +1520,7 @@ FORCE_INLINE __m128i _mm_set_epi64x (__int64 e1, __int64 e0){
 
 FORCE_INLINE __m128i _mm_add_epi64 (__m128i a, __m128i b){
 
-    return vreinterpretq_m128i_u64(vaddq_u64(vreinterpretq_u64_m128(a), vreinterpretq_u64_m128(b)));
+    return vreinterpretq_m128i_u64(vaddq_u64(vreinterpretq_u64_m128i(a), vreinterpretq_u64_m128i(b)));
 }
 
 FORCE_INLINE __m128i _mm_set_epi8(char b15, char b14, char b13, char b12, char b11, char b10, char b9, char b8, char b7,
