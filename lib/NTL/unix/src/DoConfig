@@ -6,9 +6,9 @@
 
 %MakeFlag = (
 
-'WIZARD'  => 'on',
+'WIZARD'  => 'off',
 'SHARED'  => 'off',
-'NATIVE'  => 'on'
+'NATIVE'  => 'off'
 
 );
 
@@ -73,7 +73,7 @@
 'NTL_GF2X_NOINLINE'     => 'off',
 'NTL_GF2X_ALTCODE'      => 'off',
 'NTL_GF2X_ALTCODE1'     => 'off',
-'NTL_PCLMUL'            => 'on',
+'NTL_PCLMUL'            => 'off',
 'NTL_NO_INIT_TRANS'     => 'off',
 'NTL_CLEAN_INT'         => 'off',
 'NTL_CLEAN_PTR'         => 'off',

@@ -1,6 +1,6 @@
 export builddir=$(abspath ./build)
 export prefix=$(abspath ./install)
-CXX=arm-linux-gnueabi-g++
+CXX=g++
 uname_S := $(shell sh -c 'uname -s 2>/dev/null || echo not')
 ARCH := $(shell getconf LONG_BIT)
 SHARED_LIB_EXT:=.so
