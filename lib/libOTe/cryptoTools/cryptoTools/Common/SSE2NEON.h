@@ -144,6 +144,7 @@
 typedef float32x4_t __m128;
 typedef int32x4_t __m128i;
 typedef uint64x1_t __int64;
+typedef uint32x1_t __int32;
 
 // ******************************************
 // type-safe casting between types
@@ -1496,8 +1497,8 @@ FORCE_INLINE __m128i _mm_slli_epi64(__m128i a, int count) {
 	uint64x1_t hi = vget_high_u64(vreinterpretq_u64_m128i(a));
 	uint64x1_t lo = vget_low_u64(vreinterpretq_u64_m128i(a));
 
-    hi = vshl_n_s64(hi, count);
-    lo = vshl_n_s64(lo, count);
+    hi = vshl_n_u64(hi, count);
+    lo = vshl_n_u64(lo, count);
 
 	return vreinterpretq_m128i_u64(vcombine_u64(lo, hi));
 }
@@ -1534,6 +1535,7 @@ FORCE_INLINE __m128i _mm_set_epi8(char b15, char b14, char b13, char b12, char b
 
 FORCE_INLINE __m128i _mm_clmulepi64_si128 (__m128i v1, __m128i v2, const int imm8){
     __int64 first, second;
+
     if (imm8 == 0){
         first = vgetq_lane_u64(vreinterpretq_u64_m128i(v1), 0);
         second = vgetq_lane_u64(vreinterpretq_u64_m128i(v2), 0);
@@ -1547,7 +1549,32 @@ FORCE_INLINE __m128i _mm_clmulepi64_si128 (__m128i v1, __m128i v2, const int imm
         first = vgetq_lane_u64(vreinterpretq_u64_m128i(v1), 1);
         second = vgetq_lane_u64(vreinterpretq_u64_m128i(v2), 1);
     }
-    return vreinterpretq_m128i_u64(vmull_p64(first, second));
+
+    __int64 ac, ad, bc, bd;
+    __int64 res1, res2;
+    res1 = vmull_u32(first, second);
+
+    //swap first parameter
+    __int64 temp = vdup_lane_f32(first, 1);
+    __int64 temp1 = vset_lane_u32(vget_lane_u32(first, 0), temp, 1);
+    res2 = vmull_u32(temp1, second);
+
+    ac = vget_low_u64(res1);
+    bd = vget_high_u64(res1);
+    bc = vget_low_u64(res2);
+    ad = vget_high_u64(res2);
+
+    __int64 low, high;
+
+    //low = ((ad + bc) << 32) + ac
+    temp = vadd_u64(ad, bc);
+    low = vshl_n_u64(temp, 32);
+    low = vadd_u64(low, ac);
+
+    high = vshr_n_u64(temp, 32);
+    high = vadd_u64(high, bd);
+
+    return vreinterpretq_m128i_u64(vcombine_u64(low, high));
 }
 
 #if defined(__GNUC__) || defined(__clang__)
