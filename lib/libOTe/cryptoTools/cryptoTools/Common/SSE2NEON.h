@@ -1534,17 +1534,17 @@ FORCE_INLINE __m128i _mm_set_epi8(char b15, char b14, char b13, char b12, char b
 FORCE_INLINE __m128i _mm_clmulepi64_si128 (__m128i v1, __m128i v2, const int imm8){
     __int64 first, second;
     if (imm8 == 0){
-        first = vgetq_lane_u64(a, 0);
-        second = vgetq_lane_u64(b, 0);
+        first = vgetq_lane_u64(v1, 0);
+        second = vgetq_lane_u64(v2, 0);
     } else if (imm8 == 1) {
-        first = vgetq_lane_u64(a, 1);
-        second = vgetq_lane_u64(b, 0);
+        first = vgetq_lane_u64(v1, 1);
+        second = vgetq_lane_u64(v2, 0);
     } else if (imm8 == 2) {
-        first = vgetq_lane_u64(a, 0);
-        second = vgetq_lane_u64(b, 1);
+        first = vgetq_lane_u64(v1, 0);
+        second = vgetq_lane_u64(v2, 1);
     } else if (imm8 == 3) {
-        first = vgetq_lane_u64(a, 1);
-        second = vgetq_lane_u64(b, 1);
+        first = vgetq_lane_u64(v1, 1);
+        second = vgetq_lane_u64(v2, 1);
     }
     return vreinterpretq_m128i_u64(vmull_p64(first, second));
 }
