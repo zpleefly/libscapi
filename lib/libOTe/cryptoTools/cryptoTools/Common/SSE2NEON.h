@@ -121,6 +121,7 @@
 
 #include <stdint.h>
 #include "arm_neon.h"
+#define __ARM_FEATURE_CRYPTO
 
 
 /*******************************************************/
