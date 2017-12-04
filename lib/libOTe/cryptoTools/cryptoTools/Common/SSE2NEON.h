@@ -144,7 +144,6 @@
 typedef float32x4_t __m128;
 typedef int32x4_t __m128i;
 typedef uint64x1_t __int64;
-typedef uint32x1_t __int32;
 
 // ******************************************
 // type-safe casting between types
