@@ -1533,30 +1533,29 @@ FORCE_INLINE __m128i _mm_set_epi8(char b15, char b14, char b13, char b12, char b
 }
 
 FORCE_INLINE __m128i _mm_clmulepi64_si128 (__m128i v1, __m128i v2, const int imm8){
-    __int64 first, second;
+    int32_tx2_t first, second;
 
     if (imm8 == 0){
-        first = vgetq_lane_u64(vreinterpretq_u64_m128i(v1), 0);
-        second = vgetq_lane_u64(vreinterpretq_u64_m128i(v2), 0);
+        first = vget_low_u32(v1);
+        second = vget_low_u32(v2);
     } else if (imm8 == 1) {
-        first = vgetq_lane_u64(vreinterpretq_u64_m128i(v1), 1);
-        second = vgetq_lane_u64(vreinterpretq_u64_m128i(v2), 0);
+        first = vget_high_u32(v1);
+        second = vget_low_u32(v2);
     } else if (imm8 == 2) {
-        first = vgetq_lane_u64(vreinterpretq_u64_m128i(v1), 0);
-        second = vgetq_lane_u64(vreinterpretq_u64_m128i(v2), 1);
+        first = vget_low_u32(v1);
+        second = vget_high_u32(v2);
     } else if (imm8 == 3) {
-        first = vgetq_lane_u64(vreinterpretq_u64_m128i(v1), 1);
-        second = vgetq_lane_u64(vreinterpretq_u64_m128i(v2), 1);
+        first = vget_high_u32(v1);
+        second = vget_high_u32(v2);
     }
 
     __int64 ac, ad, bc, bd;
-    __int64 res1, res2;
-    res1 = vmull_u32(first, second);
+    auto res1 = vmull_u32(first, second);
 
     //swap first parameter
-    __int64 temp = vdup_lane_f32(first, 1);
-    __int64 temp1 = vset_lane_u32(vget_lane_u32(first, 0), temp, 1);
-    res2 = vmull_u32(temp1, second);
+    auto temp = vdup_lane_f32(first, 1);
+    auto temp1 = vset_lane_u32(vget_lane_u32(first, 0), temp, 1);
+    auto res2 = vmull_u32(temp1, second);
 
     ac = vget_low_u64(res1);
     bd = vget_high_u64(res1);
