@@ -1531,6 +1531,24 @@ FORCE_INLINE __m128i _mm_set_epi8(char b15, char b14, char b13, char b12, char b
     return vreinterpretq_m128i_s8(vld1q_s8(data));
 }
 
+FORCE_INLINE __m128i _mm_clmulepi64_si128 (__m128i v1, __m128i v2, const int imm8){
+    __int64 first, second;
+    if (imm8 == 0){
+        first = vgetq_lane_u64(a, 0);
+        second = vgetq_lane_u64(b, 0);
+    } else if (imm8 == 1) {
+        first = vgetq_lane_u64(a, 1);
+        second = vgetq_lane_u64(b, 0);
+    } else if (imm8 == 2) {
+        first = vgetq_lane_u64(a, 0);
+        second = vgetq_lane_u64(b, 1);
+    } else if (imm8 == 3) {
+        first = vgetq_lane_u64(a, 1);
+        second = vgetq_lane_u64(b, 1);
+    }
+    return vreinterpretq_m128i_u64(vmull_p64(first, second));
+}
+
 #if defined(__GNUC__) || defined(__clang__)
 #	pragma pop_macro("ALIGN_STRUCT")
 #	pragma pop_macro("FORCE_INLINE")
