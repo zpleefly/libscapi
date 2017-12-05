@@ -7,6 +7,7 @@
 - sudo apt-get install git
 - sudo apt-get install -y build-essential
 - sudo apt-get install libssl-ocaml-dev libssl-dev libgmp3-dev cmake
+- sudo apt-get install texinfo
 
 #### Clone and build libscapi
 - git clone https://github.com/cryptobiu/libscapi.git

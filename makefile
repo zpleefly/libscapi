@@ -36,7 +36,7 @@ SUMO = no
 
 all: libs libscapi tests
 	echo $(WITH_EMP)
-libs: compile-openssl compile-boost compile-json compile-libote compile-ntl
+libs: compile-openssl compile-boost compile-json compile-libote compile-ntl compile-gmp
 libscapi: directories $(SLib)
 directories: $(OUT_DIR)
 
@@ -109,13 +109,21 @@ ifeq ($(SUMO),yes)
 	@touch compile-emp-m2pc
 endif
 
+compile-gmp:
+	@echo "Compiling the GMP library"
+	@mkdir -p $(builddir)/gmp-6.1.2/
+	@cp -r lib/gmp-6.1.2/. $(builddir)/gmp-6.1.2
+	@cd $(builddir)/gmp-6.1.2/ && ./configure --prefix=$(prefix)/include
+	@cd $(builddir)/gmp-6.1.2/ && make
+	@cd $(builddir)/gmp-6.1.2/ && make install
+	@touch compile-gmp
 
 compile-blake:
 	@echo "Compiling the BLAKE2 library"
 	@mkdir -p $(builddir)/BLAKE2/
 	@cp -r lib/BLAKE2/sse/. $(builddir)/BLAKE2
 	@$(MAKE) -C $(builddir)/BLAKE2
-	@$(MAKE) -C $(builddir)/BLAKE2 BUILDDIR=$(builddir)  install
+	@$(MAKE) -C $(builddir)/BLAKE2 --prefix=$(builddir) install
 	@touch compile-blake
 
 compile-openssl:
@@ -228,6 +236,10 @@ clean-openssl:
 	@rm -rf $(builddir)/openssl
 	@rm -f compile-openssl
 
+clean-gmp:
+	@rm -rf $(builddir)/gmp-6.1.2/
+	@rm -rf compile-gmp
+
 clean-json:
 	@echo "Cleaning JSON library"
 	@rm -rf $(builddir)/JsonCpp/
@@ -238,5 +250,5 @@ clean-libote:
 	@rm -rf $(builddir)/libOTe/
 	@rm -f compile-libote
 
-clean: clean-json clean-libote clean-openssl clean-boost clean-emp clean-otextension-bristol clean-ntl clean-install clean-tests
+clean: clean-json clean-libote clean-openssl clean-gmp clean-boost clean-emp clean-otextension-bristol clean-ntl clean-install clean-tests
 
