@@ -113,9 +113,12 @@ compile-gmp:
 	@echo "Compiling the GMP library"
 	@mkdir -p $(builddir)/gmp-6.1.2/
 	@cp -r lib/gmp-6.1.2/. $(builddir)/gmp-6.1.2
-	@cd $(builddir)/gmp-6.1.2/ && ./configure --prefix=$(prefix)/include
+	@cd $(builddir)/gmp-6.1.2/ && ./configure --prefix=$(prefix)/
 	@cd $(builddir)/gmp-6.1.2/ && make
 	@cd $(builddir)/gmp-6.1.2/ && make install
+	@mkdir -p $(prefix)/include/gmp-6.1.2
+	@cp $(prefix)/include/gmp.h $(prefix)/include/gmp-6.1.2
+	@rm $(prefix)/include/gmp.h
 	@touch compile-gmp
 
 compile-blake:
@@ -182,7 +185,7 @@ compile-ntl:
 	mkdir -p $(builddir)/NTL
 	cp -r lib/NTL/unix/. $(builddir)/NTL
 	chmod 777 $(builddir)/NTL/src/configure
-	cd $(builddir)/NTL/src/ && ./configure CXX=$(CXX) WIZARD=off
+	cd $(builddir)/NTL/src/ && ./configure CXX=$(CXX) WIZARD=off GMP_PREFIX=$(prefix)/include/gmp-6.1.2
 	$(MAKE) -C $(builddir)/NTL/src/
 	$(MAKE) -C $(builddir)/NTL/src/ PREFIX=$(prefix) install
 	touch compile-ntl
@@ -238,6 +241,7 @@ clean-openssl:
 
 clean-gmp:
 	@rm -rf $(builddir)/gmp-6.1.2/
+	@rm -f $(CURDIR)/install/lib/gmp*
 	@rm -rf compile-gmp
 
 clean-json:
