@@ -121,6 +121,7 @@
 
 #include <stdint.h>
 #include "arm_neon.h"
+#define __ARM_FEATURE_CRYPTO
 
 
 /*******************************************************/
@@ -1495,8 +1496,8 @@ FORCE_INLINE __m128i _mm_slli_epi64(__m128i a, int count) {
 	uint64x1_t hi = vget_high_u64(vreinterpretq_u64_m128i(a));
 	uint64x1_t lo = vget_low_u64(vreinterpretq_u64_m128i(a));
 
-    hi = vshl_n_s64(hi, count);
-    lo = vshl_n_s64(lo, count);
+    hi = vshl_n_u64(hi, count);
+    lo = vshl_n_u64(lo, count);
 
 	return vreinterpretq_m128i_u64(vcombine_u64(lo, hi));
 }
@@ -1529,6 +1530,49 @@ FORCE_INLINE __m128i _mm_set_epi8(char b15, char b14, char b13, char b12, char b
 
     int8_t __attribute__((aligned(16))) data[16] = { b0, b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b12, b13, b14, b15 };
     return vreinterpretq_m128i_s8(vld1q_s8(data));
+}
+
+FORCE_INLINE __m128i _mm_clmulepi64_si128 (__m128i v1, __m128i v2, const int imm8){
+    int32_tx2_t first, second;
+
+    if (imm8 == 0){
+        first = vget_low_u32(v1);
+        second = vget_low_u32(v2);
+    } else if (imm8 == 1) {
+        first = vget_high_u32(v1);
+        second = vget_low_u32(v2);
+    } else if (imm8 == 2) {
+        first = vget_low_u32(v1);
+        second = vget_high_u32(v2);
+    } else if (imm8 == 3) {
+        first = vget_high_u32(v1);
+        second = vget_high_u32(v2);
+    }
+
+    __int64 ac, ad, bc, bd;
+    auto res1 = vmull_u32(first, second);
+
+    //swap first parameter
+    auto temp = vdup_lane_f32(first, 1);
+    auto temp1 = vset_lane_u32(vget_lane_u32(first, 0), temp, 1);
+    auto res2 = vmull_u32(temp1, second);
+
+    ac = vget_low_u64(res1);
+    bd = vget_high_u64(res1);
+    bc = vget_low_u64(res2);
+    ad = vget_high_u64(res2);
+
+    __int64 low, high;
+
+    //low = ((ad + bc) << 32) + ac
+    temp = vadd_u64(ad, bc);
+    low = vshl_n_u64(temp, 32);
+    low = vadd_u64(low, ac);
+
+    high = vshr_n_u64(temp, 32);
+    high = vadd_u64(high, bd);
+
+    return vreinterpretq_m128i_u64(vcombine_u64(low, high));
 }
 
 #if defined(__GNUC__) || defined(__clang__)
