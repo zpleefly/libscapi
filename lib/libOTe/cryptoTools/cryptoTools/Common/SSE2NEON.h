@@ -1565,11 +1565,12 @@ FORCE_INLINE __m128i _mm_clmulepi64_si128 (__m128i v1, __m128i v2, const int imm
     __int64 low, high;
 
     //low = ((ad + bc) << 32) + ac
-    temp = vadd_u64(ad, bc);
-    low = vshl_n_u64(temp, 32);
+    ad = vadd_u64(ad, bc);
+    low = vshl_n_u64(ad, 32);
     low = vadd_u64(low, ac);
 
-    high = vshr_n_u64(temp, 32);
+    //high = ((ad + bc) >> 32) + bd
+    high = vshr_n_u64(ad, 32);
     high = vadd_u64(high, bd);
 
     return vreinterpretq_m128i_u64(vcombine_u64(low, high));
