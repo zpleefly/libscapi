@@ -1553,7 +1553,7 @@ FORCE_INLINE __m128i _mm_clmulepi64_si128 (__m128i v1, __m128i v2, const int imm
     auto res1 = vmull_u32(first, second);
 
     //swap first parameter
-    auto temp = vdup_lane_f32(first, 1);
+    auto temp = vdup_lane_u32(first, 1);
     auto temp1 = vset_lane_u32(vget_lane_u32(first, 0), temp, 1);
     auto res2 = vmull_u32(temp1, second);
 
