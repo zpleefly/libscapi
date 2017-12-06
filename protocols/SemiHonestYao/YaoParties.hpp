@@ -31,7 +31,7 @@
 #include <boost/thread/thread.hpp>
 #include "../../include/comm/Comm.hpp"
 #define AES_KEY BC_AES_KEY // AES_KEY is defined both in GarbledBooleanCircuit and in OTSemiHonestExtension
-//#define NO_AESNI
+#define NO_AESNI
 #define KEY_SIZE 16
 
 #ifdef NO_AESNI
