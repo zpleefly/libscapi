@@ -1,8 +1,6 @@
 # vim: et ts=4 sts=4 sw=4 tw=0
 
 CMAKE_MINIMUM_REQUIRED(VERSION 3.1)
-set(CMAKE_C_COMPILER /usr/bin/arm-linux-gnueabi-gcc)
-set(CMAKE_CXX_COMPILER /usr/bin/arm-linux-gnueabi-g++)
 PROJECT(jsoncpp)
 ENABLE_TESTING()
 

@@ -1,6 +1,6 @@
 export builddir=$(abspath ./build)
 export prefix=$(abspath ./install)
-CXX=arm-linux-gnueabi-g++
+CXX=g++
 uname_S := $(shell sh -c 'uname -s 2>/dev/null || echo not')
 ARCH := $(shell getconf LONG_BIT)
 SHARED_LIB_EXT:=.so
@@ -36,7 +36,7 @@ SUMO = no
 
 all: libs libscapi tests
 	echo $(WITH_EMP)
-libs: compile-openssl compile-boost compile-json compile-libote compile-ntl
+libs: compile-openssl compile-boost compile-json compile-libote compile-ntl compile-gmp
 libscapi: directories $(SLib)
 directories: $(OUT_DIR)
 
@@ -109,13 +109,24 @@ ifeq ($(SUMO),yes)
 	@touch compile-emp-m2pc
 endif
 
+compile-gmp:
+	@echo "Compiling the GMP library"
+	@mkdir -p $(builddir)/gmp-6.1.2/
+	@cp -r lib/gmp-6.1.2/. $(builddir)/gmp-6.1.2
+	@cd $(builddir)/gmp-6.1.2/ && ./configure --prefix=$(prefix)/
+	@cd $(builddir)/gmp-6.1.2/ && make
+	@cd $(builddir)/gmp-6.1.2/ && make install
+	@mkdir -p $(prefix)/include/gmp-6.1.2
+	@cp $(prefix)/include/gmp.h $(prefix)/include/gmp-6.1.2
+	@rm $(prefix)/include/gmp.h
+	@touch compile-gmp
 
 compile-blake:
 	@echo "Compiling the BLAKE2 library"
 	@mkdir -p $(builddir)/BLAKE2/
 	@cp -r lib/BLAKE2/sse/. $(builddir)/BLAKE2
 	@$(MAKE) -C $(builddir)/BLAKE2
-	@$(MAKE) -C $(builddir)/BLAKE2 BUILDDIR=$(builddir)  install
+	@$(MAKE) -C $(builddir)/BLAKE2 --prefix=$(builddir) install
 	@touch compile-blake
 
 compile-openssl:
@@ -174,7 +185,7 @@ compile-ntl:
 	mkdir -p $(builddir)/NTL
 	cp -r lib/NTL/unix/. $(builddir)/NTL
 	chmod 777 $(builddir)/NTL/src/configure
-	cd $(builddir)/NTL/src/ && ./configure CXX=$(CXX) WIZARD=off
+	cd $(builddir)/NTL/src/ && ./configure CXX=$(CXX) WIZARD=off GMP_PREFIX=$(prefix)/include/gmp-6.1.2
 	$(MAKE) -C $(builddir)/NTL/src/
 	$(MAKE) -C $(builddir)/NTL/src/ PREFIX=$(prefix) install
 	touch compile-ntl
@@ -228,6 +239,11 @@ clean-openssl:
 	@rm -rf $(builddir)/openssl
 	@rm -f compile-openssl
 
+clean-gmp:
+	@rm -rf $(builddir)/gmp-6.1.2/
+	@rm -f $(CURDIR)/install/lib/gmp*
+	@rm -rf compile-gmp
+
 clean-json:
 	@echo "Cleaning JSON library"
 	@rm -rf $(builddir)/JsonCpp/
@@ -238,5 +254,5 @@ clean-libote:
 	@rm -rf $(builddir)/libOTe/
 	@rm -f compile-libote
 
-clean: clean-json clean-libote clean-openssl clean-boost clean-emp clean-otextension-bristol clean-ntl clean-install clean-tests
+clean: clean-json clean-libote clean-openssl clean-gmp clean-boost clean-emp clean-otextension-bristol clean-ntl clean-install clean-tests
 
