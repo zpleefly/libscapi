@@ -2,9 +2,6 @@
 #include <cryptoTools/Common/Defines.h>
 #include <cryptoTools/Common/MatrixView.h>
 #include <cryptoTools/Common/SSE2NEON.h>
-#ifndef _MSC_VER
-#include <x86intrin.h>
-#endif 
 
 #include <cryptoTools/Common/BitVector.h>
 #include <cryptoTools/Common/Log.h>
