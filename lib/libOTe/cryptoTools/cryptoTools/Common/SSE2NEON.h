@@ -1533,7 +1533,7 @@ FORCE_INLINE __m128i _mm_set_epi8(char b15, char b14, char b13, char b12, char b
 }
 
 FORCE_INLINE __m128i _mm_clmulepi64_si128 (__m128i v1, __m128i v2, const int imm8){
-    uint32_tx2_t first, second;
+    uint32x2_t first, second;
 
     if (imm8 == 0){
         first = vget_low_u32(v1);
