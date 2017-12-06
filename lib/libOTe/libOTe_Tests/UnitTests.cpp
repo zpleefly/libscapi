@@ -2,11 +2,8 @@
 #include <functional>
 
 
-#include "libOTe_Tests/AknOt_Tests.h"
 #include "libOTe_Tests/BaseOT_Tests.h"
 #include "libOTe_Tests/OT_Tests.h"
-#include "libOTe_Tests/NcoOT_Tests.h"
-#include "libOTe_Tests/AknOt_Tests.h"
 
 
 using namespace osuCrypto;
@@ -46,13 +43,6 @@ namespace tests_libOTe
         run("KosOtExt_100Receive_Test_Impl           ", KosOtExt_100Receive_Test_Impl);
         run("KosDotExt_100Receive_Test_Impl          ", KosDotExt_100Receive_Test_Impl);
         run("IknpOtExt_100Receive_Test_Impl          ", IknpOtExt_100Receive_Test_Impl);
-        run("AknOt_sendRecv1000_Test                 ", AknOt_sendRecv1000_Test);
-        run("KkrtNcoOt_Test                          ", KkrtNcoOt_Test_Impl);
-        run("OosNcoOt_Test_Impl                      ", OosNcoOt_Test_Impl);
-        run("Rr17NcoOt_Test_Impl                     ", Rr17NcoOt_Test_Impl);
-        run("LinearCode_Test_Impl                    ", LinearCode_Test_Impl);
-        run("LinearCode_subBlock_Test_Impl           ", LinearCode_subBlock_Test_Impl);
-        run("LinearCode_repetition_Test_Impl         ", LinearCode_repetition_Test_Impl);
         run("NaorPinkasOt_Test                       ", NaorPinkasOt_Test_Impl);
     }
 
