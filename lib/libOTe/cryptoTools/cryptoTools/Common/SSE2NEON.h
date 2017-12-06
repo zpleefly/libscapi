@@ -1536,17 +1536,17 @@ FORCE_INLINE __m128i _mm_clmulepi64_si128 (__m128i v1, __m128i v2, const int imm
     uint32x2_t first, second;
 
     if (imm8 == 0){
-        first = vget_low_u32(v1);
-        second = vget_low_u32(v2);
+        first = vget_low_u32(vreinterpretq_u32_m128i(v1));
+        second = vget_low_u32(vreinterpretq_u32_m128i(v2));
     } else if (imm8 == 1) {
-        first = vget_high_u32(v1);
-        second = vget_low_u32(v2);
+        first = vget_high_u32(vreinterpretq_u32_m128i(v1));
+        second = vget_low_u32(vreinterpretq_u32_m128i(v2));
     } else if (imm8 == 2) {
-        first = vget_low_u32(v1);
-        second = vget_high_u32(v2);
+        first = vget_low_u32(vreinterpretq_u32_m128i(v1));
+        second = vget_high_u32(vreinterpretq_u32_m128i(v2));
     } else if (imm8 == 3) {
-        first = vget_high_u32(v1);
-        second = vget_high_u32(v2);
+        first = vget_high_u32(vreinterpretq_u32_m128i(v1));
+        second = vget_high_u32(vreinterpretq_u32_m128i(v2));
     }
 
     __int64 ac, ad, bc, bd;
