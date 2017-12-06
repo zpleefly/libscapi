@@ -1,7 +1,7 @@
 #include "Tools.h"
 #include <cryptoTools/Common/Defines.h>
-#include <wmmintrin.h>
 #include <cryptoTools/Common/MatrixView.h>
+#include <cryptoTools/Common/SSE2NEON.h>
 #ifndef _MSC_VER
 #include <x86intrin.h>
 #endif 
