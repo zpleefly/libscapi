@@ -8,6 +8,7 @@
 #include <cryptoTools/Network/Session.h>
 #include <cryptoTools/Network/IOService.h>
 #include <cryptoTools/Common/Log.h>
+#include <cryptoTools/Common/Matrix.h>
 
 #include "libOTe/TwoChooseOne/IknpOtExtReceiver.h"
 #include "libOTe/TwoChooseOne/IknpOtExtSender.h"
