@@ -242,7 +242,7 @@ namespace osuCrypto
             u64 stop0 = std::min<u64>(messages.size(), doneIdx + 128);
             u64 stop1 = std::min<u64>(messageTemp.bounds()[0], doneIdx + 128);
 
-            expendedChoiceBlk[0] = mask & _mm_srai_epi16(choiceBlocks[blockIdx], 0);
+            expendedChoiceBlk[0] = mask & choiceBlocks[blockIdx];
             expendedChoiceBlk[1] = mask & _mm_srai_epi16(choiceBlocks[blockIdx], 1);
             expendedChoiceBlk[2] = mask & _mm_srai_epi16(choiceBlocks[blockIdx], 2);
             expendedChoiceBlk[3] = mask & _mm_srai_epi16(choiceBlocks[blockIdx], 3);
