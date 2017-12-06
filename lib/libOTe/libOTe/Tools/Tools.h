@@ -3,7 +3,8 @@
 
 #include <cryptoTools/Common/Defines.h>
 #include <cryptoTools/Common/MatrixView.h>
-#include <wmmintrin.h>
+#include <cryptoTools/Common/SSE2NEON.h>
+
 namespace osuCrypto {
 
 
