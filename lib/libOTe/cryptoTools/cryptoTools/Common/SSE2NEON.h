@@ -1496,8 +1496,262 @@ FORCE_INLINE __m128i _mm_slli_epi64(__m128i a, int count) {
 	uint64x1_t hi = vget_high_u64(vreinterpretq_u64_m128i(a));
 	uint64x1_t lo = vget_low_u64(vreinterpretq_u64_m128i(a));
 
-    hi = vshl_n_u64(hi, count);
-    lo = vshl_n_u64(lo, count);
+    if (count == 0) {
+		hi = vshl_n_u64(hi, 0);
+		lo = vshl_n_u64(lo, 0);
+	}
+	if (count == 1) {
+		hi = vshl_n_u64(hi, 1);
+		lo = vshl_n_u64(lo, 1);
+	}
+	if (count == 2) {
+		hi = vshl_n_u64(hi, 2);
+		lo = vshl_n_u64(lo, 2);
+	}
+	if (count == 3) {
+		hi = vshl_n_u64(hi, 3);
+		lo = vshl_n_u64(lo, 3);
+	}
+	if (count == 4) {
+		hi = vshl_n_u64(hi, 4);
+		lo = vshl_n_u64(lo, 4);
+	}
+	if (count == 5) {
+		hi = vshl_n_u64(hi, 5);
+		lo = vshl_n_u64(lo, 5);
+	}
+	if (count == 6) {
+		hi = vshl_n_u64(hi, 6);
+		lo = vshl_n_u64(lo, 6);
+	}
+	if (count == 7) {
+		hi = vshl_n_u64(hi, 7);
+		lo = vshl_n_u64(lo, 7);
+	}
+	if (count == 8) {
+		hi = vshl_n_u64(hi, 8);
+		lo = vshl_n_u64(lo, 8);
+	}
+	if (count == 9) {
+		hi = vshl_n_u64(hi, 9);
+		lo = vshl_n_u64(lo, 9);
+	}
+	if (count == 10) {
+		hi = vshl_n_u64(hi, 10);
+		lo = vshl_n_u64(lo, 10);
+	}
+	if (count == 11) {
+		hi = vshl_n_u64(hi, 11);
+		lo = vshl_n_u64(lo, 11);
+	}
+	if (count == 12) {
+		hi = vshl_n_u64(hi, 12);
+		lo = vshl_n_u64(lo, 12);
+	}
+	if (count == 13) {
+		hi = vshl_n_u64(hi, 13);
+		lo = vshl_n_u64(lo, 13);
+	}
+	if (count == 14) {
+		hi = vshl_n_u64(hi, 14);
+		lo = vshl_n_u64(lo, 14);
+	}
+	if (count == 15) {
+		hi = vshl_n_u64(hi, 15);
+		lo = vshl_n_u64(lo, 15);
+	}
+	if (count == 16) {
+		hi = vshl_n_u64(hi, 16);
+		lo = vshl_n_u64(lo, 16);
+	}
+	if (count == 17) {
+		hi = vshl_n_u64(hi, 17);
+		lo = vshl_n_u64(lo, 17);
+	}
+	if (count == 18) {
+		hi = vshl_n_u64(hi, 18);
+		lo = vshl_n_u64(lo, 18);
+	}
+	if (count == 19) {
+		hi = vshl_n_u64(hi, 19);
+		lo = vshl_n_u64(lo, 19);
+	}
+	if (count == 20) {
+		hi = vshl_n_u64(hi, 20);
+		lo = vshl_n_u64(lo, 20);
+	}
+	if (count == 21) {
+		hi = vshl_n_u64(hi, 21);
+		lo = vshl_n_u64(lo, 21);
+	}
+	if (count == 22) {
+		hi = vshl_n_u64(hi, 22);
+		lo = vshl_n_u64(lo, 22);
+	}
+	if (count == 23) {
+		hi = vshl_n_u64(hi, 23);
+		lo = vshl_n_u64(lo, 23);
+	}
+	if (count == 24) {
+		hi = vshl_n_u64(hi, 24);
+		lo = vshl_n_u64(lo, 24);
+	}
+	if (count == 25) {
+		hi = vshl_n_u64(hi, 25);
+		lo = vshl_n_u64(lo, 25);
+	}
+	if (count == 26) {
+		hi = vshl_n_u64(hi, 26);
+		lo = vshl_n_u64(lo, 26);
+	}
+	if (count == 27) {
+		hi = vshl_n_u64(hi, 27);
+		lo = vshl_n_u64(lo, 27);
+	}
+	if (count == 28) {
+		hi = vshl_n_u64(hi, 28);
+		lo = vshl_n_u64(lo, 28);
+	}
+	if (count == 29) {
+		hi = vshl_n_u64(hi, 29);
+		lo = vshl_n_u64(lo, 29);
+	}
+	if (count == 30) {
+		hi = vshl_n_u64(hi, 30);
+		lo = vshl_n_u64(lo, 30);
+	}
+	if (count == 31) {
+		hi = vshl_n_u64(hi, 31);
+		lo = vshl_n_u64(lo, 31);
+	}
+	if (count == 32) {
+		hi = vshl_n_u64(hi, 32);
+		lo = vshl_n_u64(lo, 32);
+	}
+	if (count == 33) {
+		hi = vshl_n_u64(hi, 33);
+		lo = vshl_n_u64(lo, 33);
+	}
+	if (count == 34) {
+		hi = vshl_n_u64(hi, 34);
+		lo = vshl_n_u64(lo, 34);
+	}
+	if (count == 35) {
+		hi = vshl_n_u64(hi, 35);
+		lo = vshl_n_u64(lo, 35);
+	}
+	if (count == 36) {
+		hi = vshl_n_u64(hi, 36);
+		lo = vshl_n_u64(lo, 36);
+	}
+	if (count == 37) {
+		hi = vshl_n_u64(hi, 37);
+		lo = vshl_n_u64(lo, 37);
+	}
+	if (count == 38) {
+		hi = vshl_n_u64(hi, 38);
+		lo = vshl_n_u64(lo, 38);
+	}
+	if (count == 39) {
+		hi = vshl_n_u64(hi, 39);
+		lo = vshl_n_u64(lo, 39);
+	}
+	if (count == 40) {
+		hi = vshl_n_u64(hi, 40);
+		lo = vshl_n_u64(lo, 40);
+	}
+	if (count == 41) {
+		hi = vshl_n_u64(hi, 41);
+		lo = vshl_n_u64(lo, 41);
+	}
+	if (count == 42) {
+		hi = vshl_n_u64(hi, 42);
+		lo = vshl_n_u64(lo, 42);
+	}
+	if (count == 43) {
+		hi = vshl_n_u64(hi, 43);
+		lo = vshl_n_u64(lo, 43);
+	}
+	if (count == 44) {
+		hi = vshl_n_u64(hi, 44);
+		lo = vshl_n_u64(lo, 44);
+	}
+	if (count == 45) {
+		hi = vshl_n_u64(hi, 45);
+		lo = vshl_n_u64(lo, 45);
+	}
+	if (count == 46) {
+		hi = vshl_n_u64(hi, 46);
+		lo = vshl_n_u64(lo, 46);
+	}
+	if (count == 47) {
+		hi = vshl_n_u64(hi, 47);
+		lo = vshl_n_u64(lo, 47);
+	}
+	if (count == 48) {
+		hi = vshl_n_u64(hi, 48);
+		lo = vshl_n_u64(lo, 48);
+	}
+	if (count == 49) {
+		hi = vshl_n_u64(hi, 49);
+		lo = vshl_n_u64(lo, 49);
+	}
+	if (count == 50) {
+		hi = vshl_n_u64(hi, 50);
+		lo = vshl_n_u64(lo, 50);
+	}
+	if (count == 51) {
+		hi = vshl_n_u64(hi, 51);
+		lo = vshl_n_u64(lo, 51);
+	}
+	if (count == 52) {
+		hi = vshl_n_u64(hi, 52);
+		lo = vshl_n_u64(lo, 52);
+	}
+	if (count == 53) {
+		hi = vshl_n_u64(hi, 53);
+		lo = vshl_n_u64(lo, 53);
+	}
+	if (count == 54) {
+		hi = vshl_n_u64(hi, 54);
+		lo = vshl_n_u64(lo, 54);
+	}
+	if (count == 55) {
+		hi = vshl_n_u64(hi, 55);
+		lo = vshl_n_u64(lo, 55);
+	}
+	if (count == 56) {
+		hi = vshl_n_u64(hi, 56);
+		lo = vshl_n_u64(lo, 56);
+	}
+	if (count == 57) {
+		hi = vshl_n_u64(hi, 57);
+		lo = vshl_n_u64(lo, 57);
+	}
+	if (count == 58) {
+		hi = vshl_n_u64(hi, 58);
+		lo = vshl_n_u64(lo, 58);
+	}
+	if (count == 59) {
+		hi = vshl_n_u64(hi, 59);
+		lo = vshl_n_u64(lo, 59);
+	}
+	if (count == 60) {
+		hi = vshl_n_u64(hi, 60);
+		lo = vshl_n_u64(lo, 60);
+	}
+	if (count == 61) {
+		hi = vshl_n_u64(hi, 61);
+		lo = vshl_n_u64(lo, 61);
+	}
+	if (count == 62) {
+		hi = vshl_n_u64(hi, 62);
+		lo = vshl_n_u64(lo, 62);
+	}
+	if (count == 63) {
+		hi = vshl_n_u64(hi, 63);
+		lo = vshl_n_u64(lo, 63);
+	}
 
 	return vreinterpretq_m128i_u64(vcombine_u64(lo, hi));
 }
@@ -1534,7 +1788,56 @@ FORCE_INLINE __m128i _mm_set_epi8(char b15, char b14, char b13, char b12, char b
 
 FORCE_INLINE __m128i _mm_srai_epi16 (__m128i a, int count){
     auto res = vreinterpretq_u16_m128i(a);
-    return vreinterpretq_m128i_u16(vshrq_n_u16(res, count));
+
+	if (count == 1){
+		res = vshrq_n_u16(res, 1);
+	}
+	if (count == 2){
+		res = vshrq_n_u16(res, 2);
+	}
+	if (count == 3){
+		res = vshrq_n_u16(res, 3);
+	}
+	if (count == 4){
+		res = vshrq_n_u16(res, 4);
+	}
+	if (count == 5){
+		res = vshrq_n_u16(res, 5);
+	}
+	if (count == 6){
+		res = vshrq_n_u16(res, 6);
+	}
+	if (count == 7){
+		res = vshrq_n_u16(res, 7);
+	}
+	if (count == 8){
+		res = vshrq_n_u16(res, 8);
+	}
+	if (count == 9){
+		res = vshrq_n_u16(res, 9);
+	}
+	if (count == 10) {
+		res = vshrq_n_u16(res, 10);
+	}
+	if (count == 11){
+		res = vshrq_n_u16(res, 11);
+	}
+	if (count == 12){
+		res = vshrq_n_u16(res, 12);
+	}
+	if (count == 13){
+		res = vshrq_n_u16(res, 13);
+	}
+	if (count == 14){
+		res = vshrq_n_u16(res, 14);
+	}
+	if (count == 15){
+		res = vshrq_n_u16(res, 15);
+	}
+	if (count == 16){
+		res = vshrq_n_u16(res, 16);
+
+	return vreinterpretq_m128i_u16(res);
 }
 
 FORCE_INLINE __m128i _mm_clmulepi64_si128 (__m128i v1, __m128i v2, const int imm8){
