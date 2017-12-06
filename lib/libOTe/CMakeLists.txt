@@ -68,8 +68,3 @@ add_subdirectory(cryptoTools)
 add_subdirectory(libOTe)
 add_subdirectory(libOTe_Tests)
 
-#############################################
-#              Build Frontend               #
-#############################################
-add_subdirectory(frontend)
-
