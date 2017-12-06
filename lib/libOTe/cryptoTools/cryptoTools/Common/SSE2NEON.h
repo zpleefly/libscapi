@@ -1834,8 +1834,9 @@ FORCE_INLINE __m128i _mm_srai_epi16 (__m128i a, int count){
 	if (count == 15){
 		res = vshrq_n_u16(res, 15);
 	}
-	if (count == 16){
+	if (count == 16) {
 		res = vshrq_n_u16(res, 16);
+	}
 
 	return vreinterpretq_m128i_u16(res);
 }
