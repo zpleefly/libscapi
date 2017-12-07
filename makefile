@@ -23,9 +23,15 @@ export libdir=$(prefix)/lib
 SLib           = libscapi.a
 CPP_FILES     := $(wildcard src/*/*.cpp)
 C_FILES     := $(wildcard src/*/*.c)
-OBJ_FILES     := $(patsubst src/%.cpp,obj/%.o,$(CPP_FILES))
-OBJ_FILES     += $(patsubst src/%.c,obj/%.o,$(C_FILES))
-OUT_DIR        = obj obj/mid_layer obj/circuits obj/comm obj/infra obj/interactive_mid_protocols obj/primitives obj/circuits_c obj/cryptoInfra
+OBJ_FILES     := obj/mid_layer/*.o
+OBJ_FILES     += obj/comm/*.o
+OBJ_FILES     += obj/infra/*.o
+OBJ_FILES     += obj/interactive_mid_protocols/*.o
+OBJ_FILES     += obj/primitives/*.o
+OBJ_FILES     += obj/cryptoInfra/*.o
+#OBJ_FILES     := $(patsubst src/%.cpp,obj/%.o,$(CPP_FILES))
+#OBJ_FILES     += $(patsubst src/%.c,obj/%.o,$(C_FILES))
+OUT_DIR        = obj obj/mid_layer obj/comm obj/infra obj/interactive_mid_protocols obj/primitives obj/cryptoInfra
 INC            = -Iinstall/include -Iinstall/include/OTExtensionBristol -Iinstall/include/libOTe -Iinstall/include/libOTe/cryptoTools -Iinstall/include/gmp-6.1.2/include/
 GCC_STANDARD = c++14
 CPP_OPTIONS   := -std=$(GCC_STANDARD) $(INC) -Wall -Wno-narrowing -Wno-uninitialized -Wno-unused-but-set-variable -Wno-unused-function -Wno-unused-variable -Wno-unused-result -Wno-sign-compare -Wno-parentheses -march=armv7-a -mtune=cortex-a9 -mfpu=neon -mfloat-abi=softfp -O3
@@ -48,10 +54,6 @@ $(SLib): $(OBJ_FILES)
 	ar ru $@ $^ 
 	ranlib $@
 
-obj/circuits/%.o: src/circuits/%.cpp
-	$(CXX) -c $(CPP_OPTIONS) -o $@ $< 	 
-obj/circuits_c/%.o: src/circuits_c/%.c
-	$(C) -fPIC -mavx -maes -mpclmul -DRDTSC -DTEST=AES128  -O3 -c -o $@ $< 
 obj/comm/%.o: src/comm/%.cpp
 	$(CXX) -c $(CPP_OPTIONS) -o $@ $< 	 
 obj/infra/%.o: src/infra/%.cpp
