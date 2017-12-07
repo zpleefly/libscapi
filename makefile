@@ -1,6 +1,7 @@
 export builddir=$(abspath ./build)
 export prefix=$(abspath ./install)
-CXX=g++
+C=arm-linux-gnueabi-gcc
+CXX=arm-linux-gnueabi-g++
 uname_S := $(shell sh -c 'uname -s 2>/dev/null || echo not')
 ARCH := $(shell getconf LONG_BIT)
 SHARED_LIB_EXT:=.so
@@ -48,21 +49,21 @@ $(SLib): $(OBJ_FILES)
 	ranlib $@
 
 obj/circuits/%.o: src/circuits/%.cpp
-	g++ -c $(CPP_OPTIONS) -o $@ $< 	 
+	$(CXX) -c $(CPP_OPTIONS) -o $@ $< 	 
 obj/circuits_c/%.o: src/circuits_c/%.c
-	gcc -fPIC -mavx -maes -mpclmul -DRDTSC -DTEST=AES128  -O3 -c -o $@ $< 
+	$(C) -fPIC -mavx -maes -mpclmul -DRDTSC -DTEST=AES128  -O3 -c -o $@ $< 
 obj/comm/%.o: src/comm/%.cpp
-	g++ -c $(CPP_OPTIONS) -o $@ $< 	 
+	$(CXX) -c $(CPP_OPTIONS) -o $@ $< 	 
 obj/infra/%.o: src/infra/%.cpp
-	g++ -c $(CPP_OPTIONS) -o $@ $< 	 
+	$(CXX) -c $(CPP_OPTIONS) -o $@ $< 	 
 obj/interactive_mid_protocols/%.o: src/interactive_mid_protocols/%.cpp
-	g++ -c $(CPP_OPTIONS) -o $@ $< 	 
+	$(CXX) -c $(CPP_OPTIONS) -o $@ $< 	 
 obj/primitives/%.o: src/primitives/%.cpp
-	g++ -c $(CPP_OPTIONS) -o $@ $< 	 
+	$(CXX) -c $(CPP_OPTIONS) -o $@ $< 	 
 obj/mid_layer/%.o: src/mid_layer/%.cpp
-	g++ -c $(CPP_OPTIONS) -o $@ $<
+	$(CXX) -c $(CPP_OPTIONS) -o $@ $<
 obj/cryptoInfra/%.o: src/cryptoInfra/%.cpp
-	g++ -c $(CPP_OPTIONS) -o $@ $<
+	$(CXX) -c $(CPP_OPTIONS) -o $@ $<
 
 tests: compile-tests
 	cd ./test; ./tests.exe
