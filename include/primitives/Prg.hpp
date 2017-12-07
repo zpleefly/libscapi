@@ -34,8 +34,7 @@
 #include <openssl/rc4.h>
 #include <openssl/rand.h>
 #include <openssl/evp.h>
-#include <emmintrin.h>
-
+#include "../infra/SSE2NEON.h"
 
 typedef unsigned char byte;
 typedef __m128i block;
