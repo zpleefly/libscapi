@@ -75,7 +75,7 @@ Measurement::~Measurement()
         for (int iterationIdx = 0; iterationIdx < m_numberOfIterations; iterationIdx++)
         {
             Value taskTimes;
-            task["iteration_" + to_string(iterationIdx)] = m_times[taskNameIdx][iterationIdx];
+            task["iteration_" + to_string(iterationIdx)] = Value((Int)m_times[taskNameIdx][iterationIdx]);
         }
         party.append(task);
     }
