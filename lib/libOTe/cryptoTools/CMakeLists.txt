@@ -54,6 +54,6 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
 add_subdirectory(cryptoTools)
 add_subdirectory(tests_cryptoTools)
-add_subdirectory(frontend_cryptoTools)
+# add_subdirectory(frontend_cryptoTools)
 
 install(FILES cryptotools-config.cmake DESTINATION cmake/)
