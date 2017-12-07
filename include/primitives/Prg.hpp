@@ -29,11 +29,12 @@
 #ifndef SCAPI_PRG_H
 #define SCAPI_PRG_H
 
-#include "../cryptoInfra/Key.hpp"
-#include "Prf.hpp"
 #include <openssl/rc4.h>
 #include <openssl/rand.h>
 #include <openssl/evp.h>
+#include <stdlib.h>
+#include "Prf.hpp"
+#include "../cryptoInfra/Key.hpp"
 #include "../infra/SSE2NEON.h"
 
 typedef unsigned char byte;

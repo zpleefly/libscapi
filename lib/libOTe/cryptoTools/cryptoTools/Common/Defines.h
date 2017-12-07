@@ -5,13 +5,7 @@
 #include <iostream>
 #include <memory>
 #include <vector>
-#define COMPILE_ARM
-#ifdef COMPILE_ARM
 #include "SSE2NEON.h"
-#else
-#include <emmintrin.h>
-#include <smmintrin.h>
-#endif
 #include <boost/lexical_cast.hpp>
 
 #include <cryptoTools/gsl/span>

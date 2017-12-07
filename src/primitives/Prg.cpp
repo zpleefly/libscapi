@@ -108,8 +108,10 @@ PrgFromOpenSSLAES::PrgFromOpenSSLAES(int cachedSize, bool isStrict) : cachedSize
 
 	//allocate memory for the plaintext which is an array of indices and for the ciphertext which is the output
 	//of the encryption
-	cipherChunk = (block *)_mm_malloc(sizeof(block) * cachedSize, 16);
-	indexPlaintext = (block *)_mm_malloc(sizeof(block) * cachedSize, 16);
+	//cipherChunk = (block *)_aligned_alloc(16, sizeof(block) * cachedSize);
+	posix_memalign((void**) cipherChunk, 16, sizeof(block) * cachedSize);
+	//indexPlaintext = (block *)_aligned_alloc(16, sizeof(block) * cachedSize);
+	posix_memalign((void**) indexPlaintext, 16, sizeof(block) * cachedSize);
 
 	//assin zero to the array of indices which are set as the plaintext. Note that we only use the list sagnificant long part of each 128 bit.
 //	memset(indexPlaintext, 0, sizeof(block) * cachedSize);
@@ -156,8 +158,8 @@ PrgFromOpenSSLAES & PrgFromOpenSSLAES::operator=(PrgFromOpenSSLAES && other)
 
 PrgFromOpenSSLAES::~PrgFromOpenSSLAES() {
 	//free allocated aligned memory
-	_mm_free(cipherChunk);
-	_mm_free(indexPlaintext);
+	free(cipherChunk);
+	free(indexPlaintext);
 
 	//free aes
 	if(aes != nullptr) {

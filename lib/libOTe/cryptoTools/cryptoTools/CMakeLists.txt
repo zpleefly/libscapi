@@ -5,8 +5,8 @@ get_directory_property(hasParent PARENT_DIRECTORY)
 
 find_program(NASM nasm)
 
-set(CMAKE_C_FLAGS "-ffunction-sections -Wall -mfloat-abi=softfp -mfpu=neon -Wfatal-errors -pthread -fPIC -Wno-ignored-attributes")
-set(CMAKE_CXX_FLAGS "-std=c++14 -ffunction-sections -Wall -mfloat-abi=softfp -march=armv7-a -mtune=cortex-a9 -mfpu=neon -Wfatal-errors -pthread -fPIC -Wno-ignored-attributes")
+set(CMAKE_C_FLAGS "-ffunction-sections -Wall -march=armv7-a -mfloat-abi=softfp -mfpu=neon -Wfatal-errors -pthread -fPIC -Wno-ignored-attributes -Wno-pragmas")
+set(CMAKE_CXX_FLAGS "-std=c++14 -ffunction-sections -Wall -mfloat-abi=softfp -march=armv7-a -mtune=cortex-a9 -mfpu=neon -Wfatal-errors -pthread -fPIC -Wno-narrowing -Wno-pragmas")
 
 if(NOT NASM OR NOT ("$ENV{cryptoTools_NO_NASM}" STREQUAL ""))
   message(WARNING "\nnasm is not in the PATH or cryptoTools_NO_NASM is defined!!!! This means the fast SHA1 function will not be used.")
@@ -127,7 +127,7 @@ set(Boost_USE_STATIC_RUNTIME     ON)
 #include_directories(${Boost_INCLUDE_DIR}) 
 
 target_include_directories(cryptoTools PUBLIC ${Boost_INCLUDE_DIR}) 
-target_link_libraries(cryptoTools libboost_system.a libboost_thread.a libssl.a libcrypto.a dl z)
+target_link_libraries(cryptoTools libboost_system.a libboost_thread.a libssl.a libcrypto.a dl z )
 
 
 IF(INSTALL_BOOST)

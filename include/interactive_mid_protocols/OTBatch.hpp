@@ -28,11 +28,7 @@
 #pragma once
 #include "../infra/Common.hpp"
 #include "OT.hpp"
-#include <emmintrin.h>
-#ifndef _WIN32
-#include <OTExtensionBristol/OT/BitMatrix.h>
-#include <OTExtensionBristol/OT/BitVector.h>
-#endif
+#include "../infra/SSE2NEON.h"
 /**
  * This is a marker class for OT sender output, where there is a derived class for each OT protocol that has an output.
  * Most OT senders output nothing. However in the batch scenario there may be cases where the protocol wishes to output x0 and x1 instead of inputting it.
@@ -390,23 +386,6 @@ public:
 	OTBatchRInputTypes getType() override {	return OTBatchRInputTypes::OTExtensionRandomizedRInput;}
 };
 
-#ifndef _WIN32
-/**
- * Concrete implementation of OT receiver of bristol output.
- * In the bristol scenario, the receiver outputs xSigma as a bitvector.
- * This output class also can be viewed as the output of batch OT when xSigma is a concatenation of all xSigma byte array of all OTs.
- */
-class OTExtensionBristolROutput: public OTOnByteArrayROutput {
-
-public:
-	OTExtensionBristolROutput(const BitMatrix& receiverOutputMatrix) {
-
-		copy_byte_array_to_byte_vector((byte*)receiverOutputMatrix.squares.data(), receiverOutputMatrix.squares.size()*128*16, xSigma, 0);
-	}
-
-
-};
-#endif
 
 /**
  * General class for Batch OT Receiver.
