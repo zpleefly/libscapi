@@ -23,12 +23,7 @@ export libdir=$(prefix)/lib
 SLib           = libscapi.a
 CPP_FILES     := $(wildcard src/*/*.cpp)
 C_FILES     := $(wildcard src/*/*.c)
-OBJ_FILES     := obj/mid_layer/*.o
-OBJ_FILES     += obj/comm/*.o
-OBJ_FILES     += obj/infra/*.o
-OBJ_FILES     += obj/interactive_mid_protocols/*.o
-OBJ_FILES     += obj/primitives/*.o
-OBJ_FILES     += obj/cryptoInfra/*.o
+-OBJ_FILES     := $(patsubst src/%.cpp,obj/%.o,$(CPP_FILES))
 #OBJ_FILES     := $(patsubst src/%.cpp,obj/%.o,$(CPP_FILES))
 #OBJ_FILES     += $(patsubst src/%.c,obj/%.o,$(C_FILES))
 OUT_DIR        = obj obj/mid_layer obj/comm obj/infra obj/interactive_mid_protocols obj/primitives obj/cryptoInfra
@@ -54,6 +49,9 @@ $(SLib): $(OBJ_FILES)
 	ar ru $@ $^ 
 	ranlib $@
 
+
+obj/circuits/%.o: src/circuits/%.cpp
+	$(CXX) -c $(CPP_OPTIONS) -o $@ $<
 obj/comm/%.o: src/comm/%.cpp
 	$(CXX) -c $(CPP_OPTIONS) -o $@ $< 	 
 obj/infra/%.o: src/infra/%.cpp
