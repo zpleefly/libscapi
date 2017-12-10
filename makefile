@@ -36,7 +36,7 @@ LD_FLAGS =
 SUMO = no
 
 
-all: libs libscapi tests
+all: libs libscapi
 	echo $(WITH_EMP)
 libs: compile-openssl compile-boost compile-json compile-libote compile-ntl compile-gmp
 libscapi: directories $(SLib)
@@ -65,14 +65,6 @@ obj/mid_layer/%.o: src/mid_layer/%.cpp
 obj/cryptoInfra/%.o: src/cryptoInfra/%.cpp
 	$(CXX) -c $(CPP_OPTIONS) -o $@ $<
 
-tests: compile-tests
-	cd ./test; ./tests.exe
-	
-.PHONY: compile-tests
-compile-tests:
-	@cd ./test; \
-	g++ -std=c++14 -maes -mavx -I/usr/include/openssl  -I../install/include -o tests.exe tests.cpp interactiveMidProtocolsTests.cpp ../libscapi.a -lpthread -L../install/lib ../install/lib/libboost_system.a ../install/lib/libboost_thread.a -l:libssl.a -lntl -lgmp -l:libcrypto.a -ldl -lz;
-	@cd ..
 	
 prepare-emp:
 ifeq ($(SUMO),yes)
