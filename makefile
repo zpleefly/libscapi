@@ -35,7 +35,6 @@ SUMO = no
 
 
 all: libs libscapi
-	echo $(WITH_EMP)
 libs: compile-openssl compile-boost compile-json compile-libote compile-ntl compile-gmp
 libscapi: directories $(SLib)
 directories: $(OUT_DIR)
