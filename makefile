@@ -117,9 +117,14 @@ compile-gmp:
 	@cd $(builddir)/gmp-6.1.2/ && ./configure --prefix=$(prefix)/
 	@cd $(builddir)/gmp-6.1.2/ && make
 	@cd $(builddir)/gmp-6.1.2/ && make install
-	@mkdir -p $(prefix)/include/gmp-6.1.2
-	@cp $(prefix)/include/gmp.h $(prefix)/include/gmp-6.1.2
+	@mkdir -p $(prefix)/include/gmp-6.1.2/include
+	@mkdir -p $(prefix)/include/gmp-6.1.2/lib
+	@cp $(prefix)/include/gmp.h $(prefix)/include/gmp-6.1.2/include
+	@cp install/lib/libgmp.* install/include/gmp-6.1.2/lib
 	@rm $(prefix)/include/gmp.h
+	@rm $(prefix)/lib/libgmp.*so*
+	@rm $(prefix)/lib/libgmp.la
+
 	@touch compile-gmp
 
 compile-blake:
@@ -181,7 +186,7 @@ compile-libote:compile-boost
 	@cp -r $(builddir)/libOTe/cryptoTools/cryptoTools/gsl $(CURDIR)/install/include/libOTe/cryptoTools/cryptoTools
 	@touch compile-libote
 
-compile-ntl:
+compile-ntl:compile-gmp
 	echo "Compiling the NTL library..."
 	mkdir -p $(builddir)/NTL
 	cp -r lib/NTL/unix/. $(builddir)/NTL
