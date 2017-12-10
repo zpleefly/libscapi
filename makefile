@@ -114,7 +114,7 @@ compile-gmp:
 	@echo "Compiling the GMP library"
 	@mkdir -p $(builddir)/gmp-6.1.2/
 	@cp -r lib/gmp-6.1.2/. $(builddir)/gmp-6.1.2
-	@cd $(builddir)/gmp-6.1.2/ && ./configure --prefix=$(prefix)/
+	@cd $(builddir)/gmp-6.1.2/ && ./configure --prefix=$(prefix)/ --host=arm-linux-gnueabi
 	@cd $(builddir)/gmp-6.1.2/ && make
 	@cd $(builddir)/gmp-6.1.2/ && make install
 	@mkdir -p $(prefix)/include/gmp-6.1.2/include
