@@ -27,7 +27,7 @@ OBJ_FILES     := $(patsubst src/%.cpp,obj/%.o,$(CPP_FILES))
 OUT_DIR        = obj obj/mid_layer obj/comm obj/infra obj/interactive_mid_protocols obj/primitives obj/cryptoInfra obj/circuits
 INC            = -Iinstall/include -Iinstall/include/OTExtensionBristol -Iinstall/include/libOTe -Iinstall/include/libOTe/cryptoTools -Iinstall/include/gmp-6.1.2/include/
 GCC_STANDARD = c++14
-CPP_OPTIONS   := -std=$(GCC_STANDARD) $(INC) -Wall -Wno-narrowing -Wno-uninitialized -Wno-unused-but-set-variable -Wno-unused-function -Wno-unused-variable -Wno-unused-result -Wno-sign-compare -Wno-parentheses -march=armv7-a -mtune=cortex-a9 -mfpu=neon -mfloat-abi=softfp -O3
+CPP_OPTIONS   := -std=$(GCC_STANDARD) $(INC) -Wall -Wno-narrowing -Wno-uninitialized -Wno-unused-but-set-variable -Wno-unused-function -Wno-unused-variable -Wno-unused-result -Wno-sign-compare -Wno-parentheses -march=armv8-a -mtune=cortex-a53 -mfpu=neon -mfloat-abi=softfp -O3
 $(COMPILE.cpp) = g++ -c $(CPP_OPTIONS) -o $@ $<
 LIBRARIES_DIR  = -Linstall/lib
 LD_FLAGS = 
@@ -103,7 +103,7 @@ compile-gmp:
 	@echo "Compiling the GMP library"
 	@mkdir -p $(builddir)/gmp-6.1.2/
 	@cp -r lib/gmp-6.1.2/. $(builddir)/gmp-6.1.2
-	@cd $(builddir)/gmp-6.1.2/ && ./configure --prefix=$(prefix)/ --host=arm-linux-gnueabi
+	@cd $(builddir)/gmp-6.1.2/ && ./configure --prefix=$(prefix)/ --host=arm-linux-gnueabi CC=arm-linux-gnueabi-gcc CFLAGS="-march=armv8-a" --disable-option-checking
 	@cd $(builddir)/gmp-6.1.2/ && make
 	@cd $(builddir)/gmp-6.1.2/ && make install
 	@mkdir -p $(prefix)/include/gmp-6.1.2/include
