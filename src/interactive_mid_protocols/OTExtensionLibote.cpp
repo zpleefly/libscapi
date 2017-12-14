@@ -4,7 +4,7 @@
 
 #include "../../include/interactive_mid_protocols/OTExtensionLibote.hpp"
 
-OTExtensionLiboteSender::OTExtensionLiboteSender(string address, int port, bool isSemiHonest, bool isCorrelated, CommParty* channel): channel(channel), isSemiHonest(isSemiHonest){
+OTExtensionLiboteSender::OTExtensionLiboteSender(string address, int port, bool isSemiHonest, bool isCorrelated, CommPartyBF* channel): channel(channel), isSemiHonest(isSemiHonest){
 
     //connect ot channel
     ep = new osuCrypto::Endpoint(ios_ot, address, port, osuCrypto::EpMode::Server, "ep");
@@ -235,7 +235,7 @@ shared_ptr<OTBatchSOutput> OTExtensionLiboteSender::transfer(OTBatchSInput * inp
 	}
 }
 
-OTExtensionLiboteReceiver::OTExtensionLiboteReceiver(string address, int port, bool isSemiHonest, bool isCorrelated, CommParty* channel): channel(channel) {
+OTExtensionLiboteReceiver::OTExtensionLiboteReceiver(string address, int port, bool isSemiHonest, bool isCorrelated, CommPartyBF* channel): channel(channel) {
 
     //connect ot channel
     ep = new osuCrypto::Endpoint(ios_ot, address, port, osuCrypto::EpMode::Client, "ep");
