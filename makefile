@@ -138,13 +138,18 @@ compile-openssl:
 	@cp -r $(builddir)/openssl/tmptrgt/include/openssl/ $(CURDIR)/install/include/
 	@touch compile-openssl
 
+# If you want to change the build toolset : \
+run bootstrap.sh \
+change in project-config to the requested toolset \
+then run make compile-boost
+
 compile-boost:
 	@mkdir -p $(CURDIR)/install/lib
 	@mkdir -p $(CURDIR)/install/include
 	@mkdir -p $(builddir)/
 	echo "Compiling the boost library"
 	@cp -r lib/boost_1_64_0/ $(builddir)/boost_1_64_0
-	@cd $(builddir)/boost_1_64_0/; bash -c "./bjam install toolset=gcc-arm --prefix=. --with-system --with-thread"; 
+	@cd $(builddir)/boost_1_64_0/; bash -c "./bjam install toolset=gcc-arm --prefix=. --with-system --with-thread";
 	@cp $(builddir)/boost_1_64_0/lib/*.a $(CURDIR)/install/lib/
 	@cp -r $(builddir)/boost_1_64_0/boost/ $(CURDIR)/install/include/
 	@touch compile-boost
