@@ -197,7 +197,6 @@ public:
 class PartyTwo : public Protocol, public SemiHonest, public TwoParty{
 private:
 	int id;
-	boost::asio::io_service io_service;
 	OTBatchReceiver * otReceiver;			//The OT object that used in the protocol.	
 #ifdef NO_AESNI
 	GarbledBooleanCircuitNoIntrinsics * circuit;	//The garbled circuit used in the protocol.
@@ -258,7 +257,6 @@ public:
 	~PartyTwo() {
 		delete circuit;
 		delete otReceiver;
-		io_service.stop();
         delete timer;
 	}
 
