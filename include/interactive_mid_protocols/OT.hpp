@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../comm/Comm.hpp"
+#include "../comm/CommBF.hpp"
 #include "../primitives/Dlog.hpp"
 
 /**
@@ -223,7 +223,7 @@ public:
 	* @throws CheatAttemptException if the sender suspects that the receiver is trying to cheat.
 	* @throws InvalidDlogGroupException if the given DlogGRoup is not valid.
 	*/
-	virtual void transfer(CommParty* channel, OTSInput* input) = 0;
+	virtual void transfer(CommPartyBF* channel, OTSInput* input) = 0;
 };
 
 /**
@@ -257,7 +257,7 @@ public:
 	* @return OTROutput, the output of the protocol.
 	* @throws CheatAttemptException if there was a cheat attempt during the execution of the protocol.
 	*/
-	virtual shared_ptr<OTROutput> transfer(CommParty* channel, OTRInput* input) = 0;
+	virtual shared_ptr<OTROutput> transfer(CommPartyBF* channel, OTRInput* input) = 0;
 };
 
 

@@ -28,7 +28,7 @@ private:
     osuCrypto::IOService ios_ot;             //used in LibOTe communication
     PrgFromOpenSSLAES prg;
     OtExtSender* sender;
-    CommParty* channel;              //this is a shared pointer for the general case where there is one communication between the
+    CommPartyBF* channel;              //this is a shared pointer for the general case where there is one communication between the
 								                //sender and the receiver after the libOTe ot extension is done in providing random x0 and x1 for the sender.
     //ot channel
     osuCrypto::Endpoint* ep;
@@ -37,7 +37,7 @@ private:
     bool isSemiHonest;
 public:
 
-    OTExtensionLiboteSender(string address, int port, bool isSemiHonest, bool isCorrelated, CommParty* channel);
+    OTExtensionLiboteSender(string address, int port, bool isSemiHonest, bool isCorrelated, CommPartyBF* channel);
     ~OTExtensionLiboteSender();
 
     shared_ptr<OTBatchSOutput> transfer(OTBatchSInput * input);
@@ -51,7 +51,7 @@ private:
     //ot channel
     osuCrypto::Endpoint* ep;
     osuCrypto::Channel otChannel;
-    CommParty* channel;              //this is a shared pointer for the general case where there is one communication between the
+    CommPartyBF* channel;              //this is a shared pointer for the general case where there is one communication between the
 								                //sender and the receiver after the libOTe ot extension is done in providing random x0 and x1 for the sender.
 
     PrgFromOpenSSLAES prg;
@@ -59,7 +59,7 @@ private:
     OtExtReceiver* receiver;
 public:
 
-    OTExtensionLiboteReceiver(string address, int port, bool isSemiHonest, bool isCorrelated, CommParty* channel);
+    OTExtensionLiboteReceiver(string address, int port, bool isSemiHonest, bool isCorrelated, CommPartyBF* channel);
     ~OTExtensionLiboteReceiver();
 
     shared_ptr<OTBatchROutput> transfer(OTBatchRInput * input);
