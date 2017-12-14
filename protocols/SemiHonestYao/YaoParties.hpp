@@ -70,8 +70,8 @@ struct YaoConfig {
 	string circuit_file;
 	string input_file_1;
 	string input_file_2;
-	IpAddress sender_ip;
-	IpAddress receiver_ip;
+	string sender_ip;
+	string receiver_ip;
 	int sender_port;
 	int receiver_port;
 	YaoConfig(int n_iterations, bool print, string c_file, string input_file_1,
@@ -81,8 +81,8 @@ struct YaoConfig {
 		circuit_file = c_file;
 		this->input_file_1 = input_file_1;
 		this->input_file_2 = input_file_2;
-		sender_ip = IpAddress::from_string(sender_ip_str);
-		receiver_ip = IpAddress::from_string(rec_ip_str);
+		sender_ip = sender_ip_str;
+		receiver_ip = rec_ip_str;
 		this->circuit_type = circuit_type;
 		this->sender_port = sender_port;
 		this->receiver_port = receiver_port;
@@ -115,7 +115,6 @@ struct YaoConfig {
 class PartyOne : public Protocol, public SemiHonest, public TwoParty{
 private:
 	int id;
-	boost::asio::io_service io_service;
 	OTBatchSender * otSender;			//The OT object that used in the protocol.
 	Measurement* timer;
 	int currentIteration;
@@ -172,8 +171,6 @@ public:
 		delete circuit;
 		delete otSender;
 
-		io_service.stop();
-
         delete timer;
 	}
 
@@ -207,7 +204,7 @@ private:
 #else
 	GarbledBooleanCircuit* circuit;	//The garbled circuit used in the protocol.
 #endif
-	shared_ptr<CommParty> channel;				//The channel between both parties.
+	shared_ptr<CommPartyBF> channel;				//The channel between both parties.
 	byte* p1Inputs;
 	int p1InputsSize;
 	bool print_output;					// Indicates if to print the output at the end of the execution or not
