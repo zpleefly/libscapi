@@ -76,7 +76,7 @@ PartyOne::PartyOne(int argc, char* argv[]) : Protocol("SemiHonestYao", argc, arg
 	SocketPartyData other(IpAddress::from_string(receiver_ip), receiver_port);
 	cout<<"my ip: "<<me.getIpAddress() <<"port:"<<me.getPort()<<endl;
 	cout<<"other ip: "<<other.getIpAddress() <<"port:"<<other.getPort()<<endl;
-	channel = make_shared<CommPartyTCPSynced>(io_service, me, other);
+	channel = make_shared<CommPartyTCPSyncedBoostFree>(sender_ip, sender_port, receiver_ip, receiver_port);
 
 	// create the garbled circuit
 #ifdef NO_AESNI
@@ -207,10 +207,10 @@ PartyTwo::PartyTwo(int argc, char* argv[]) : Protocol("SemiHonestYao", argc, arg
 	receiver_port = stoi(cf.Value("", "party_1_port"));
 	receiver_ip = cf.Value("", "party_1_ip");
 
-	SocketPartyData me(IpAddress::from_string(receiver_ip), receiver_port);
-
-	SocketPartyData other(IpAddress::from_string(sender_ip), sender_port++);
-	channel = make_shared<CommPartyTCPSynced>(io_service, me, other);
+//	SocketPartyData me(IpAddress::from_string(receiver_ip), receiver_port);
+//
+//	SocketPartyData other(IpAddress::from_string(sender_ip), sender_port++);
+	channel = make_shared<CommPartyTCPSyncedBoostFree>(receiver_ip, receiver_port, sender_ip, sender_port);
 
 	// create the garbled circuit
 #ifdef NO_AESNI

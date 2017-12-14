@@ -28,8 +28,7 @@
 
 #pragma once 
 
-#include <boost/thread/thread.hpp>
-#include "../../include/comm/Comm.hpp"
+#include "../../include/comm/CommBF.hpp"
 #define AES_KEY BC_AES_KEY // AES_KEY is defined both in GarbledBooleanCircuit and in OTSemiHonestExtension
 #define NO_AESNI
 #define KEY_SIZE 16
@@ -130,7 +129,7 @@ private:
     tuple<block*, block*, vector<byte> > values;//this tuple includes the input and output keys (block*) and the translation table (vector)
     //to be used after filled by garbling the circuit
 #endif
-	shared_ptr<CommParty> channel;				//The channel between both parties.
+	shared_ptr<CommPartyBF> channel;				//The channel between both parties.
 
 
 
