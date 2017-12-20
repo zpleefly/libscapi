@@ -99,7 +99,7 @@ public:
 	* @param sProver underlying sigma prover to use.
 	* @param receiver Must be an instance of PerfectlyHidingCT
 	*/
-	ZKFromSigmaProver(const shared_ptr<CommParty> & channel, const shared_ptr<SigmaProverComputation> & sProver,
+	ZKFromSigmaProver(const shared_ptr<CommPartyBF> & channel, const shared_ptr<SigmaProverComputation> & sProver,
 		const shared_ptr<CmtReceiver> & receiver);
 
 	/**
@@ -108,7 +108,7 @@ public:
 	* @param channel used to communicate between prover and verifier.
 	* @param sProver underlying sigma prover to use.
 	*/
-	ZKFromSigmaProver(const shared_ptr<CommParty> & channel, const shared_ptr<SigmaProverComputation> & sProver, const shared_ptr<PrgFromOpenSSLAES> & prg = get_seeded_prg()) {
+	ZKFromSigmaProver(const shared_ptr<CommPartyBF> & channel, const shared_ptr<SigmaProverComputation> & sProver, const shared_ptr<PrgFromOpenSSLAES> & prg = get_seeded_prg()) {
 		this->sProver = sProver;
 		this->receiver = make_shared<CmtPedersenReceiver>(channel, prg);
 		this->channel = channel;
@@ -135,7 +135,7 @@ public:
 	void prove(const shared_ptr<ZKProverInput> & input) override;
 
 private:
-	shared_ptr<CommParty> channel;
+	shared_ptr<CommPartyBF> channel;
 	// underlying prover that computes the proof of the sigma protocol:
 	shared_ptr<SigmaProverComputation> sProver;
 	shared_ptr<CmtReceiver> receiver; //Underlying Commitment receiver to use.
@@ -166,7 +166,7 @@ private:
 	*/
 	vector<byte> receiveDecommit(long id) {
 		auto val = receiver->receiveDecommitment(id);
-		if (!val) 
+		if (!val)
 			throw CheatAttemptException("Decommit phase returned invalid");
 		return receiver->generateBytesFromCommitValue(val.get());
 	}
@@ -199,22 +199,22 @@ private:
 
 /**
 * Concrete implementation of Zero Knowledge verifier.<p>
-* This is a transformation that takes any Sigma protocol and any perfectly hiding 
+* This is a transformation that takes any Sigma protocol and any perfectly hiding
 * commitment scheme and yields a zero-knowledge proof.<p>
 * For more information see Protocol 6.5.1, page 161 of Hazay-Lindell.<p>
-* The pseudo code of this protocol can be found in Protocol 2.1 of pseudo 
+* The pseudo code of this protocol can be found in Protocol 2.1 of pseudo
 * codes document at {@link http://cryptobiu.github.io/scapi/SDK_Pseudocode.pdf}.<p>
 */
 class ZKFromSigmaVerifier : ZKVerifier {
 public:
 	/**
-	* Constructor that accepts the underlying channel, sigma protocol's verifier 
+	* Constructor that accepts the underlying channel, sigma protocol's verifier
 	* and committer to use.
 	* @param channel used to communicate between prover and verifier.
 	* @param sVerifier underlying sigma verifier to use.
 	* @param committer Must be an instance of PerfectlyHidingCT
 	*/
-	ZKFromSigmaVerifier(const shared_ptr<CommParty> & channel, const shared_ptr<SigmaVerifierComputation> & sVerifier,
+	ZKFromSigmaVerifier(const shared_ptr<CommPartyBF> & channel, const shared_ptr<SigmaVerifierComputation> & sVerifier,
 		const shared_ptr<CmtCommitter> & committer, const shared_ptr<PrgFromOpenSSLAES> & random = get_seeded_prg());
 
 	/**
@@ -223,7 +223,7 @@ public:
 	* @param channel used to communicate between prover and verifier.
 	* @param sVerifier underlying sigma verifier to use.
 	*/
-	ZKFromSigmaVerifier(const shared_ptr<CommParty> & channel, const shared_ptr<SigmaVerifierComputation> & sVerifier,
+	ZKFromSigmaVerifier(const shared_ptr<CommPartyBF> & channel, const shared_ptr<SigmaVerifierComputation> & sVerifier,
 		const shared_ptr<PrgFromOpenSSLAES> & random = get_seeded_prg()) {
 		this->sVerifier = sVerifier;
 		this->committer = make_shared<CmtPedersenCommitter>(channel, random);
@@ -250,7 +250,7 @@ public:
 	bool verify(ZKCommonInput* input, const shared_ptr<SigmaProtocolMsg> & emptyA, const shared_ptr<SigmaProtocolMsg> & emptyZ) override;
 
 private:
-	shared_ptr<CommParty> channel;
+	shared_ptr<CommPartyBF> channel;
 	// underlying verifier that computes the proof of the sigma protocol.
 	shared_ptr<SigmaVerifierComputation> sVerifier;
 	shared_ptr<CmtCommitter> committer;	// underlying Commitment committer to use.
@@ -286,7 +286,7 @@ private:
 	* @param a first message from prover.
 	*/
 	bool proccessVerify(SigmaCommonInput* input, SigmaProtocolMsg* a, SigmaProtocolMsg* z) {
-		// wait for a message z from P, 
+		// wait for a message z from P,
 		// if transcript (a, e, z) is accepting in sigma on input x, output ACC
 		// else outupt REJ
 		receiveMsgFromProver(z);
@@ -314,7 +314,7 @@ public:
 	* @param channel used for communication
 	* @param sProver underlying sigma prover to use.
 	*/
-	ZKPOKFromSigmaCmtPedersenProver(const shared_ptr<CommParty> & channel, const shared_ptr<SigmaProverComputation> & sProver,
+	ZKPOKFromSigmaCmtPedersenProver(const shared_ptr<CommPartyBF> & channel, const shared_ptr<SigmaProverComputation> & sProver,
         const shared_ptr<DlogGroup> & dg, const shared_ptr<PrgFromOpenSSLAES> & prg = get_seeded_prg()) {
 		this->sProver = sProver;
 		if (prg == nullptr) cout << "null 1" << endl;
@@ -343,7 +343,7 @@ public:
 	void prove(const shared_ptr<ZKProverInput> & input) override;
 
 private:
-	shared_ptr<CommParty> channel;
+	shared_ptr<CommPartyBF> channel;
 	// underlying prover that computes the proof of the sigma protocol.
 	shared_ptr<SigmaProverComputation> sProver;
 	shared_ptr<CmtPedersenTrapdoorReceiver> receiver; // underlying Commitment receiver to use.
@@ -410,13 +410,13 @@ private:
 */
 class ZKPOKFromSigmaCmtPedersenVerifier : public virtual ZKPOKVerifier {
 private:
-	shared_ptr<CommParty> channel;
+	shared_ptr<CommPartyBF> channel;
 	// underlying verifier that computes the proof of the sigma protocol.
 	shared_ptr<SigmaVerifierComputation> sVerifier;
 	shared_ptr<CmtPedersenTrapdoorCommitter> committer; // underlying Commitment committer to use.
 	shared_ptr<PrgFromOpenSSLAES> random;
 	shared_ptr<CmtRCommitPhaseOutput> trap;
-	
+
 	/**
 	* Runs COMMIT.commit as the committer with input e.
 	*/
@@ -440,11 +440,11 @@ public:
 	* @param sVerifier underlying sigma verifier to use.
 	* @param random
 	*/
-	ZKPOKFromSigmaCmtPedersenVerifier(const shared_ptr<CommParty> channel,
+	ZKPOKFromSigmaCmtPedersenVerifier(const shared_ptr<CommPartyBF> channel,
 		const shared_ptr<SigmaVerifierComputation> & sVerifier,
 		const shared_ptr<CmtRCommitPhaseOutput> & emptyTrap, const shared_ptr<DlogGroup> & dg, const shared_ptr<PrgFromOpenSSLAES> & random = get_seeded_prg()) {
 		this->channel = channel;
-		this->sVerifier = sVerifier; 
+		this->sVerifier = sVerifier;
 		this->committer = make_shared<CmtPedersenTrapdoorCommitter>(channel, dg, random);
 		this->random = random;
 		this->trap = emptyTrap;
@@ -603,7 +603,7 @@ public:
 class ZKPOKFiatShamirFromSigmaProver : public ZKPOKProver {
 
 private:
-	shared_ptr<CommParty> channel;
+	shared_ptr<CommPartyBF> channel;
 	shared_ptr<SigmaProverComputation> sProver; //Underlying prover that computes the proof of the sigma protocol.
 	shared_ptr<RandomOracle> ro;				//Underlying random oracle to use.
 
@@ -631,7 +631,7 @@ public:
 	* @param sProver underlying sigma protocol's prover.
 	* @param ro random oracle
 	*/
-	ZKPOKFiatShamirFromSigmaProver(const shared_ptr<CommParty> & channel, const shared_ptr<SigmaProverComputation> & sProver, 
+	ZKPOKFiatShamirFromSigmaProver(const shared_ptr<CommPartyBF> & channel, const shared_ptr<SigmaProverComputation> & sProver,
 		const shared_ptr<RandomOracle> & ro = make_shared<HKDFBasedRO>())	: channel(channel), sProver(sProver), ro(ro) {}
 
 
@@ -681,7 +681,7 @@ public:
 class ZKPOKFiatShamirFromSigmaVerifier : public ZKPOKVerifier {
 
 private:
-	shared_ptr<CommParty> channel;
+	shared_ptr<CommPartyBF> channel;
 	shared_ptr<SigmaVerifierComputation> sVerifier; //Underlying verifier that computes the proof of the sigma protocol.
 	shared_ptr<RandomOracle> ro;					//Underlying random oracle to use.
 
@@ -720,7 +720,7 @@ public:
 	* @param sVerifier underlying sigma protocol's verifier.
 	* @param ro random oracle
 	*/
-	ZKPOKFiatShamirFromSigmaVerifier(const shared_ptr<CommParty> & channel, const shared_ptr<SigmaVerifierComputation> & sVerifier,
+	ZKPOKFiatShamirFromSigmaVerifier(const shared_ptr<CommPartyBF> & channel, const shared_ptr<SigmaVerifierComputation> & sVerifier,
 		const shared_ptr<RandomOracle> & ro = make_shared<HKDFBasedRO>()) : channel(channel), sVerifier(sVerifier), ro(ro) {}
 
 	/**

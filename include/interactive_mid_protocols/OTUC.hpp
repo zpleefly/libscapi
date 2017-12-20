@@ -51,7 +51,7 @@ public:
      *	SEND (u0,c0) and (u1,c1) to R
      *	OUTPUT nothing
      */
-    void transfer(CommParty* channel, OTSInput* input) override;
+    void transfer(CommPartyBF* channel, OTSInput* input) override;
 
 };
 
@@ -100,7 +100,7 @@ public:
      *		      REPORT ERROR
      *		OUTPUT  xSigma = cSigma * (uSigma)^(-r)
      */
-    shared_ptr<OTROutput> transfer(CommParty* channel, OTRInput* input) override;
+    shared_ptr<OTROutput> transfer(CommPartyBF* channel, OTRInput* input) override;
 };
 
 /**
@@ -149,7 +149,7 @@ public:
      *	SEND (u0,c0) and (u1,c1) to R
      *	OUTPUT nothing
      */
-    void transfer(CommParty* channel, OTSInput* input) override;
+    void transfer(CommPartyBF* channel, OTSInput* input) override;
 };
 
 /**
@@ -207,6 +207,6 @@ public:
      *		   REPORT ERROR
      *	OUTPUT  xSigma = cSigma XOR KDF(|cSigma|,(uSigma)^r)
      */
-    shared_ptr<OTROutput> transfer(CommParty* channel, OTRInput* input) override;
+    shared_ptr<OTROutput> transfer(CommPartyBF* channel, OTRInput* input) override;
 };
 

@@ -34,7 +34,7 @@ void OTFullSimDDHReceiverMsg::initFromString(const string & row) {
 * @throws ClassNotFoundException
 * @throws IOException if failed to receive a message.
 */
-OTFullSimDDHReceiverMsg OTFullSimSenderPreprocessUtil::waitForFullSimMessageFromReceiver(CommParty* channel) {
+OTFullSimDDHReceiverMsg OTFullSimSenderPreprocessUtil::waitForFullSimMessageFromReceiver(CommPartyBF* channel) {
 	vector<byte> raw_msg;
 	channel->readWithSizeIntoVector(raw_msg);
 
@@ -60,7 +60,7 @@ OTFullSimDDHReceiverMsg OTFullSimSenderPreprocessUtil::waitForFullSimMessageFrom
 * @throws IOException if there was a problem during the communication in the preprocess phase.
 * @throws CommitValueException can occur in case of ElGamal commitment scheme.
 */
-shared_ptr<OTFullSimPreprocessPhaseValues> OTFullSimSenderPreprocessUtil::preProcess(CommParty* channel, DlogGroup* dlog, ZKPOKVerifier* zkVerifier) {
+shared_ptr<OTFullSimPreprocessPhaseValues> OTFullSimSenderPreprocessUtil::preProcess(CommPartyBF* channel, DlogGroup* dlog, ZKPOKVerifier* zkVerifier) {
 	//Wait for message from R
 	OTFullSimDDHReceiverMsg message = waitForFullSimMessageFromReceiver(channel);
 
@@ -104,7 +104,7 @@ shared_ptr<OTFullSimPreprocessPhaseValues> OTFullSimSenderPreprocessUtil::prePro
 * @throws IOException if there was a problem during the communication in the preprocess phase.
 * @throws CommitValueException can occur in case of ElGamal commitment scheme.
 */
-shared_ptr<OTFullSimPreprocessPhaseValues> OTFullSimReceiverPreprocessUtil::preProcess(DlogGroup* dlog, ZKPOKProver* zkProver, CommParty* channel, PrgFromOpenSSLAES* random) {
+shared_ptr<OTFullSimPreprocessPhaseValues> OTFullSimReceiverPreprocessUtil::preProcess(DlogGroup* dlog, ZKPOKProver* zkProver, CommPartyBF* channel, PrgFromOpenSSLAES* random) {
 	biginteger qMinusOne = dlog->getOrder() - 1;
 
 	//Sample random values 
@@ -144,7 +144,7 @@ shared_ptr<OTFullSimPreprocessPhaseValues> OTFullSimReceiverPreprocessUtil::preP
 * @throws ClassNotFoundException
 * @throws IOException if failed to receive a message.
 */
-OTRGroupElementPairMsg OTFullSimSenderTransferUtilAbs::waitForMessageFromReceiver(CommParty* channel) {
+OTRGroupElementPairMsg OTFullSimSenderTransferUtilAbs::waitForMessageFromReceiver(CommPartyBF* channel) {
 	vector<byte> raw_msg;
 	channel->readWithSizeIntoVector(raw_msg);
 
@@ -183,7 +183,7 @@ OTRGroupElementPairMsg OTFullSimSenderTransferUtilAbs::waitForMessageFromReceive
 * @throws IOException if the send or receive functions failed
 * @throws ClassNotFoundException if there was a problem during the serialization mechanism
 */
-void OTFullSimSenderTransferUtilAbs::transfer(CommParty* channel, OTSInput* input, OTFullSimPreprocessPhaseValues* preprocessValues) {
+void OTFullSimSenderTransferUtilAbs::transfer(CommPartyBF* channel, OTSInput* input, OTFullSimPreprocessPhaseValues* preprocessValues) {
 	//Wait for message from R
 	OTRGroupElementPairMsg message = waitForMessageFromReceiver(channel);
 
@@ -374,7 +374,7 @@ OTFullSimReceiverTransferUtilAbs::OTFullSimReceiverTransferUtilAbs(const shared_
 * @throws IOException if the send or receive functions failed
 * @throws ClassNotFoundException if there was a problem during the serialization mechanism
 */
-shared_ptr<OTROutput> OTFullSimReceiverTransferUtilAbs::transfer(CommParty* channel, OTRInput* input, OTFullSimPreprocessPhaseValues* preprocessValues) {
+shared_ptr<OTROutput> OTFullSimReceiverTransferUtilAbs::transfer(CommPartyBF* channel, OTRInput* input, OTFullSimPreprocessPhaseValues* preprocessValues) {
 	//check if the input is valid.
 	//If input is not instance of OTRBasicInput, throw Exception.
 	auto in = dynamic_cast<OTRBasicInput*>(input);
@@ -439,7 +439,7 @@ void OTFullSimOnGroupElementReceiverTransferUtil::checkReceivedTuple(GroupElemen
 * @return OTROutput contains xSigma
 * @throws CheatAttemptException
 */
-shared_ptr<OTROutput> OTFullSimOnGroupElementReceiverTransferUtil::getMsgAndComputeXSigma(CommParty* channel, byte sigma, biginteger & r) {
+shared_ptr<OTROutput> OTFullSimOnGroupElementReceiverTransferUtil::getMsgAndComputeXSigma(CommPartyBF* channel, byte sigma, biginteger & r) {
 	vector<byte> raw_msg;
 	channel->readWithSizeIntoVector(raw_msg);
 
@@ -516,7 +516,7 @@ void OTFullSimOnByteArrayReceiverTransferUtil::checkReceivedTuple(GroupElement* 
 * @return OTROutput contains xSigma
 * @throws CheatAttemptException
 */
-shared_ptr<OTROutput> OTFullSimOnByteArrayReceiverTransferUtil::getMsgAndComputeXSigma(CommParty* channel, byte sigma, biginteger & r) {
+shared_ptr<OTROutput> OTFullSimOnByteArrayReceiverTransferUtil::getMsgAndComputeXSigma(CommPartyBF* channel, byte sigma, biginteger & r) {
 	vector<byte> raw_msg;
 	channel->readWithSizeIntoVector(raw_msg);
 
@@ -570,7 +570,7 @@ shared_ptr<OTROutput> OTFullSimOnByteArrayReceiverTransferUtil::getMsgAndCompute
 * @param dlog must be DDH secure.
 * @param random
 */
-OTFullSimDDHOnGroupElementSender::OTFullSimDDHOnGroupElementSender(const shared_ptr<CommParty> & channel, const shared_ptr<PrgFromOpenSSLAES> & random,
+OTFullSimDDHOnGroupElementSender::OTFullSimDDHOnGroupElementSender(const shared_ptr<CommPartyBF> & channel, const shared_ptr<PrgFromOpenSSLAES> & random,
 	const shared_ptr<DlogGroup> & dlog) {
 
 	//The underlying dlog group must be DDH secure.
@@ -612,7 +612,7 @@ OTFullSimDDHOnGroupElementSender::OTFullSimDDHOnGroupElementSender(const shared_
 *	SEND (u0,c0) and (u1,c1) to R<p>
 *	OUTPUT nothing<p>
 */
-void OTFullSimDDHOnGroupElementSender::transfer(CommParty* channel, OTSInput* input) {
+void OTFullSimDDHOnGroupElementSender::transfer(CommPartyBF* channel, OTSInput* input) {
 	//Creates the utility class that executes the transfer phase.
 	OTFullSimOnGroupElementSenderTransferUtil transferUtil(dlog, random);
 	transferUtil.transfer(channel, input, preprocessOutput.get());
@@ -632,7 +632,7 @@ void OTFullSimDDHOnGroupElementSender::transfer(CommParty* channel, OTSInput* in
 * @throws IOException if there was a problem during the communication in the preprocess phase.
 * @throws CommitValueException can occur in case of ElGamal commitment scheme.
 */
-OTFullSimDDHOnByteArraySender::OTFullSimDDHOnByteArraySender(const shared_ptr<CommParty> & channel, const shared_ptr<PrgFromOpenSSLAES> & random,
+OTFullSimDDHOnByteArraySender::OTFullSimDDHOnByteArraySender(const shared_ptr<CommPartyBF> & channel, const shared_ptr<PrgFromOpenSSLAES> & random,
 	const shared_ptr<DlogGroup> & dlog, const shared_ptr<KeyDerivationFunction> & kdf) {
 
 	//The underlying dlog group must be DDH secure.
@@ -676,7 +676,7 @@ OTFullSimDDHOnByteArraySender::OTFullSimDDHOnByteArraySender(const shared_ptr<Co
 *	SEND (u0,c0) and (u1,c1) to R<p>
 *	OUTPUT nothing<p>
 */
-void OTFullSimDDHOnByteArraySender::transfer(CommParty* channel, OTSInput* input) {
+void OTFullSimDDHOnByteArraySender::transfer(CommPartyBF* channel, OTSInput* input) {
 	//Creates the utility class that executes the transfer phase.
 	OTFullSimOnByteArraySenderTransferUtil transferUtil(dlog, kdf, random);
 	transferUtil.transfer(channel, input, preprocessOutput.get());
@@ -694,7 +694,7 @@ void OTFullSimDDHOnByteArraySender::transfer(CommParty* channel, OTSInput* input
 * @throws IOException if there was a problem during the communication in the preprocess phase.
 * @throws CommitValueException can occur in case of ElGamal commitment scheme.
 */
-OTFullSimDDHOnGroupElementReceiver::OTFullSimDDHOnGroupElementReceiver(const shared_ptr<CommParty> & channel, const shared_ptr<PrgFromOpenSSLAES> & random,
+OTFullSimDDHOnGroupElementReceiver::OTFullSimDDHOnGroupElementReceiver(const shared_ptr<CommPartyBF> & channel, const shared_ptr<PrgFromOpenSSLAES> & random,
 	const shared_ptr<DlogGroup> & dlog) {
 
 	//The underlying dlog group must be DDH secure.
@@ -737,7 +737,7 @@ OTFullSimDDHOnGroupElementReceiver::OTFullSimDDHOnGroupElementReceiver(const sha
 *		      REPORT ERROR<p>
 *		OUTPUT  xSigma = cSigma * (uSigma)^(-r)<p>
 */
-shared_ptr<OTROutput> OTFullSimDDHOnGroupElementReceiver::transfer(CommParty* channel, OTRInput* input) {
+shared_ptr<OTROutput> OTFullSimDDHOnGroupElementReceiver::transfer(CommPartyBF* channel, OTRInput* input) {
 	//Creates the utility class that executes the transfer phase.
 	OTFullSimOnGroupElementReceiverTransferUtil transferUtil(dlog, random);
 	return transferUtil.transfer(channel, input, preprocessOutput.get());
@@ -755,7 +755,7 @@ shared_ptr<OTROutput> OTFullSimDDHOnGroupElementReceiver::transfer(CommParty* ch
 * @throws IOException if there was a problem during the communication in the preprocess phase.
 * @throws CommitValueException can occur in case of ElGamal commitment scheme.
 */
-OTFullSimDDHOnByteArrayReceiver::OTFullSimDDHOnByteArrayReceiver(const shared_ptr<CommParty> & channel, const shared_ptr<PrgFromOpenSSLAES> & random,
+OTFullSimDDHOnByteArrayReceiver::OTFullSimDDHOnByteArrayReceiver(const shared_ptr<CommPartyBF> & channel, const shared_ptr<PrgFromOpenSSLAES> & random,
 	const shared_ptr<DlogGroup> & dlog, const shared_ptr<KeyDerivationFunction> & kdf) {
 
 	//The underlying dlog group must be DDH secure.
@@ -800,7 +800,7 @@ OTFullSimDDHOnByteArrayReceiver::OTFullSimDDHOnByteArrayReceiver(const shared_pt
 *		   REPORT ERROR<p>
 *	OUTPUT  xSigma = cSigma XOR KDF(|cSigma|,(uSigma)^r)<p>
 */
-shared_ptr<OTROutput> OTFullSimDDHOnByteArrayReceiver::transfer(CommParty* channel, OTRInput* input) {
+shared_ptr<OTROutput> OTFullSimDDHOnByteArrayReceiver::transfer(CommPartyBF* channel, OTRInput* input) {
 	//Creates the utility class that executes the transfer phase.
 	OTFullSimOnByteArrayReceiverTransferUtil transferUtil(dlog, kdf, random);
 	return transferUtil.transfer(channel, input, preprocessOutput.get());

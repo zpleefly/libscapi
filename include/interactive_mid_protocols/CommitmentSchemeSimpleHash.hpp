@@ -28,7 +28,7 @@
 
 #pragma once
 #include "CommitmentScheme.hpp"
-#include "../comm/Comm.hpp"
+#include "../comm/CommBF.hpp"
 #include "../../include/primitives/HashOpenSSL.hpp"
 #include "../../include/primitives/Prg.hpp"
 
@@ -189,7 +189,7 @@ public:
 	* @param n security parameter
 	*
 	*/
-	CmtSimpleHashCommitter(const shared_ptr<CommParty> & channel, const shared_ptr<PrgFromOpenSSLAES> & random = get_seeded_prg(), const shared_ptr<CryptographicHash> & hash = make_shared<OpenSSLSHA256>(), int n = 32);
+	CmtSimpleHashCommitter(const shared_ptr<CommPartyBF> & channel, const shared_ptr<PrgFromOpenSSLAES> & random = get_seeded_prg(), const shared_ptr<CryptographicHash> & hash = make_shared<OpenSSLSHA256>(), int n = 32);
 
 	/**
 	* Runs the following lines of the commitment scheme:
@@ -260,18 +260,18 @@ class CmtSimpleHashReceiver : public CmtReceiver, public SecureCommit, public Cm
 
 private:
 
-	shared_ptr<CommParty> channel;
+	shared_ptr<CommPartyBF> channel;
 	shared_ptr<CryptographicHash> hash;
 	int n; //security parameter.
 
-	void doConstruct(const shared_ptr<CommParty> & channel, const shared_ptr<CryptographicHash> & hash, int n = 32);
+	void doConstruct(const shared_ptr<CommPartyBF> & channel, const shared_ptr<CryptographicHash> & hash, int n = 32);
 
 public:
 	/**
 	* Constructor that receives a connected channel (to the receiver) and chosses default
 	* values for the hash function, SecureRandom object and a security parameter n.
 	*/
-	CmtSimpleHashReceiver(const shared_ptr<CommParty> & channel) {
+	CmtSimpleHashReceiver(const shared_ptr<CommPartyBF> & channel) {
 		doConstruct(channel, make_shared<OpenSSLSHA256>());
 	}
 
@@ -285,7 +285,7 @@ public:
 	* @param n security parameter
 	*
 	*/
-	CmtSimpleHashReceiver(const shared_ptr<CommParty> & channel, const shared_ptr<CryptographicHash> & hash, int n = 32) {
+	CmtSimpleHashReceiver(const shared_ptr<CommPartyBF> & channel, const shared_ptr<CryptographicHash> & hash, int n = 32) {
 		doConstruct(channel, hash, n);
 	}
 

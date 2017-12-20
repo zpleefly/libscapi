@@ -5,11 +5,11 @@
 #ifndef LIBSCAPI_MERSSENE_H
 #define LIBSCAPI_MERSSENE_H
 
-#include "NTL/ZZ_p.h"
-#include "NTL/ZZ.h"
-#include <x86intrin.h>
-#include "gmp.h"
-#include <../../include/primitives/Prg.hpp>
+#include <NTL/ZZ_p.h>
+#include <NTL/ZZ.h>
+#include <gmp.h>
+#include "Prg.hpp"
+#include "../infra/SSE2NEON.h"
 
 using namespace std;
 using namespace NTL;
@@ -167,150 +167,6 @@ public:
 };
 
 inline ::ostream& operator<<(::ostream& s, const ZpMersenneIntElement& a){ return s << a.elem; };
-
-
-
-class ZpMersenneLongElement {
-
-//private:
-public: //TODO return to private after tesing
-
-    static const unsigned long p = 2305843009213693951;
-    unsigned long elem;
-
-public:
-
-    ZpMersenneLongElement(){elem = 0;};
-    ZpMersenneLongElement(unsigned long elem)
-    {
-        this->elem = elem;
-        if(this->elem>=p){
-
-            this->elem = (this->elem & p) + (this->elem>>61);
-
-            if(this->elem >= p)
-                this->elem-= p;
-
-        }
-    }
-
-    inline ZpMersenneLongElement& operator=(const ZpMersenneLongElement& other)
-
-    {elem = other.elem; return *this;};
-    inline bool operator!=(const ZpMersenneLongElement& other)
-
-    { return !(other.elem == elem); };
-
-    ZpMersenneLongElement operator+(const ZpMersenneLongElement& f2)
-    {
-        ZpMersenneLongElement answer;
-
-        answer.elem = (elem + f2.elem);
-
-        if(answer.elem>=p)
-            answer.elem-=p;
-
-        return answer;
-    }
-
-    ZpMersenneLongElement operator-(const ZpMersenneLongElement& f2)
-    {
-        ZpMersenneLongElement answer;
-
-        long temp =  (long)elem - (long)f2.elem;
-
-        if(temp<0){
-            answer.elem = temp + p;
-        }
-        else{
-            answer.elem = temp;
-        }
-
-        return answer;
-    }
-
-    ZpMersenneLongElement operator/(const ZpMersenneLongElement& f2)
-    {
-        ZpMersenneLongElement answer;
-        mpz_t d;
-        mpz_t result;
-        mpz_t mpz_elem;
-        mpz_t mpz_me;
-        mpz_init_set_str (d, "2305843009213693951", 10);
-        mpz_init(mpz_elem);
-        mpz_init(mpz_me);
-
-        mpz_set_ui(mpz_elem, f2.elem);
-        mpz_set_ui(mpz_me, elem);
-
-        mpz_init(result);
-
-        mpz_invert ( result, mpz_elem, d );
-
-        mpz_mul (result, result, mpz_me);
-        mpz_mod (result, result, d);
-
-
-        answer.elem = mpz_get_ui(result);
-
-        return answer;
-    }
-
-    ZpMersenneLongElement operator*(const ZpMersenneLongElement& f2)
-    {
-        ZpMersenneLongElement answer;
-
-        unsigned long long high;
-        unsigned long low = _mulx_u64(elem, f2.elem, &high);
-
-
-        unsigned long low61 = (low & p);
-        unsigned long low61to64 = (low>>61);
-        unsigned long highShift3 = (high<<3);
-
-        unsigned long res = low61 + low61to64 + highShift3;
-
-        if(res >= p)
-            res-= p;
-
-        answer.elem = res;
-
-        return answer;
-    }
-
-    ZpMersenneLongElement& operator+=(const ZpMersenneLongElement& f2)
-    {
-        elem = (elem + f2.elem);
-
-        if(elem>=p)
-            elem-=p;
-
-        return *this;
-    }
-
-    ZpMersenneLongElement& operator*=(const ZpMersenneLongElement& f2)
-    {
-        unsigned long long high;
-        unsigned long low = _mulx_u64(elem, f2.elem, &high);
-
-
-        unsigned long low61 = (low & p);
-        unsigned long low61to64 = (low>>61);
-        unsigned long highShift3 = (high<<3);
-
-        unsigned long res = low61 + low61to64 + highShift3;
-
-        if(res >= p)
-            res-= p;
-
-        elem = res;
-
-        return *this;
-    }
-
-};
-
-inline ::ostream& operator<<(::ostream& s, const ZpMersenneLongElement& a){ return s << a.elem; };
 
 
 template <class FieldType>

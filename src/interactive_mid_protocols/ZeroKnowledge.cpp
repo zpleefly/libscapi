@@ -33,7 +33,7 @@
 /*   ZKFromSigmaProver                          */
 /************************************************/
 
-ZKFromSigmaProver::ZKFromSigmaProver(const shared_ptr<CommParty> & channel,
+ZKFromSigmaProver::ZKFromSigmaProver(const shared_ptr<CommPartyBF> & channel,
 	const shared_ptr<SigmaProverComputation> & sProver, const shared_ptr<CmtReceiver> & receiver) {
 	// receiver must be an instance of PerfectlyHidingCT
 	auto perfectHidingReceiver = dynamic_pointer_cast<PerfectlyHidingCmt>(receiver);
@@ -73,7 +73,7 @@ void ZKFromSigmaProver::prove(const shared_ptr<ZKProverInput> & input) {
 /*   ZKFromSigmaVerifier                        */
 /************************************************/
 
-ZKFromSigmaVerifier::ZKFromSigmaVerifier(const shared_ptr<CommParty> & channel,
+ZKFromSigmaVerifier::ZKFromSigmaVerifier(const shared_ptr<CommPartyBF> & channel,
     const shared_ptr<SigmaVerifierComputation> & sVerifier, const shared_ptr<CmtCommitter> & committer,
 	const shared_ptr<PrgFromOpenSSLAES> & random) {
 	// committer must be an instance of PerfectlyHidingCT

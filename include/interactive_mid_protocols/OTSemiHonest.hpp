@@ -56,7 +56,7 @@ public:
 	*		SEND (u,v0,v1) to R
 	*		OUTPUT nothing"
 	*/
-	virtual void transfer(CommParty* channel, OTSInput* input) override;
+	virtual void transfer(CommPartyBF* channel, OTSInput* input) override;
 
 protected:
 	shared_ptr<DlogGroup> dlog;
@@ -92,7 +92,7 @@ private:
 	* @param channel
 	* @return the received message.
 	*/
-	shared_ptr<OTRGroupElementPairMsg> waitForMessageFromReceiver(CommParty* channel);
+	shared_ptr<OTRGroupElementPairMsg> waitForMessageFromReceiver(CommPartyBF* channel);
 
 	/**
 	* Runs the following line from the protocol:
@@ -127,7 +127,7 @@ private:
 	* @param message to send to the receiver
 	* @throws IOException if failed to send the message.
 	*/
-	void sendTupleToReceiver(CommParty* channel, OTSMsg* message);
+	void sendTupleToReceiver(CommPartyBF* channel, OTSMsg* message);
 	
 };
 
@@ -298,7 +298,7 @@ public:
 	*		OUTPUT  xSigma = vSigma XOR KDF(|cSigma|,kSigma)	- in byte array scenario
 	*			 OR xSigma = vSigma * (kSigma)^(-1)" 			- in GroupElement scenario
 	*/
-	shared_ptr<OTROutput> transfer(CommParty* channel, OTRInput* input) override;
+	shared_ptr<OTROutput> transfer(CommPartyBF* channel, OTRInput* input) override;
 
 protected:
 	shared_ptr<DlogGroup> dlog;
@@ -322,7 +322,7 @@ protected:
 	* @param message received from the sender
 	* @return OTROutput contains XSigma
 	*/
-	virtual shared_ptr<OTROutput> getMsgAndComputeXSigma(CommParty* channel, bool sigma, biginteger & alpha) = 0;
+	virtual shared_ptr<OTROutput> getMsgAndComputeXSigma(CommPartyBF* channel, bool sigma, biginteger & alpha) = 0;
 
 private:
 	shared_ptr<PrgFromOpenSSLAES> random;
@@ -346,7 +346,7 @@ private:
 	* @param tuple contains (h0,h1)
 	* @throws IOException if failed to send the message.
 	*/
-	void sendTupleToSender(CommParty* channel, OTRGroupElementPairMsg* tuple);
+	void sendTupleToSender(CommPartyBF* channel, OTRGroupElementPairMsg* tuple);
 };
 
 
@@ -381,7 +381,7 @@ protected:
 	* @param message received from the sender. must be OTSOnGroupElementSemiHonestMessage
 	* @return OTROutput contains xSigma
 	*/
-	shared_ptr<OTROutput> getMsgAndComputeXSigma(CommParty* channel, bool sigma, biginteger & alpha) override;
+	shared_ptr<OTROutput> getMsgAndComputeXSigma(CommPartyBF* channel, bool sigma, biginteger & alpha) override;
 };
 
 /**
@@ -416,7 +416,7 @@ protected:
 	* @param message received from the sender. must be OTSOnByteArraySemiHonestMessage.
 	* @return OTROutput contains xSigma
 	*/
-	shared_ptr<OTROutput> getMsgAndComputeXSigma(CommParty* channel, bool sigma, biginteger & alpha) override; 
+	shared_ptr<OTROutput> getMsgAndComputeXSigma(CommPartyBF* channel, bool sigma, biginteger & alpha) override; 
 
 private:
 	shared_ptr<KeyDerivationFunction> kdf; //Used in the calculation.

@@ -57,7 +57,7 @@ protected:
 	* @throws SecurityLevelException if the given dlog is not DDH secure
 	* @throws InvalidDlogGroupException if the given DlogGroup is not valid.
 	*/
-	OTOneSidedSimDDHSenderAbs(const shared_ptr<CommParty> & channel, const shared_ptr<PrgFromOpenSSLAES> & random, const shared_ptr<DlogGroup> & dlog);
+	OTOneSidedSimDDHSenderAbs(const shared_ptr<CommPartyBF> & channel, const shared_ptr<PrgFromOpenSSLAES> & random, const shared_ptr<DlogGroup> & dlog);
 
 	/**
 	* Runs the following lines from the protocol:
@@ -82,7 +82,7 @@ private:
 	* @param channel
 	* @return the received message.
 	*/
-	OTRGroupElementQuadMsg waitForMessageFromReceiver(CommParty* channel);
+	OTRGroupElementQuadMsg waitForMessageFromReceiver(CommPartyBF* channel);
 
 	/**
 	* Runs the following line from the protocol:
@@ -114,7 +114,7 @@ private:
 	* @param channel
 	* @param message to send to the receiver
 	*/
-	void sendTupleToReceiver(CommParty* channel, OTSMsg* message);
+	void sendTupleToReceiver(CommPartyBF* channel, OTSMsg* message);
 
 public:
 
@@ -140,7 +140,7 @@ public:
 	*	SEND (w0, c0) and (w1, c1) to R
 	*	OUTPUT nothing"
 	*/
-	void transfer(CommParty* channel, OTSInput* input) override;
+	void transfer(CommPartyBF* channel, OTSInput* input) override;
 };
 
 /**
@@ -177,7 +177,7 @@ public:
 	* @throws InvalidDlogGroupException if the given dlog is invalid.
 	* @throws CheatAttemptException
 	*/
-	OTOneSidedSimDDHOnGroupElementSender(const shared_ptr<CommParty> & channel, const shared_ptr<PrgFromOpenSSLAES> & random = make_shared<PrgFromOpenSSLAES>(), 
+	OTOneSidedSimDDHOnGroupElementSender(const shared_ptr<CommPartyBF> & channel, const shared_ptr<PrgFromOpenSSLAES> & random = make_shared<PrgFromOpenSSLAES>(), 
 		const shared_ptr<DlogGroup> & dlog = make_shared<OpenSSLDlogECF2m>("K-233")) : OTOneSidedSimDDHSenderAbs(channel, random, dlog) {}
 };
 
@@ -218,7 +218,7 @@ public:
 	* @throws InvalidDlogGroupException if the given dlog is invalid.
 	* @throws CheatAttemptException
 	*/
-	OTOneSidedSimDDHOnByteArraySender(const shared_ptr<CommParty> & channel, const shared_ptr<PrgFromOpenSSLAES> & random = make_shared<PrgFromOpenSSLAES>(),
+	OTOneSidedSimDDHOnByteArraySender(const shared_ptr<CommPartyBF> & channel, const shared_ptr<PrgFromOpenSSLAES> & random = make_shared<PrgFromOpenSSLAES>(),
 		const shared_ptr<DlogGroup> & dlog = make_shared<OpenSSLDlogECF2m>("K-233"),
 		const shared_ptr<KeyDerivationFunction> & kdf = make_shared<HKDF>(make_shared<OpenSSLHMAC>("SHA-256"))) 
 		: OTOneSidedSimDDHSenderAbs(channel, random, dlog), kdf(kdf) {}
@@ -277,7 +277,7 @@ protected:
 	* @throws SecurityLevelException if the given dlog is not DDH secure
 	* @throws InvalidDlogGroupException if the given DlogGroup is not valid.
 	*/
-	OTOneSidedSimDDHReceiverAbs(const shared_ptr<CommParty> & channel, const shared_ptr<PrgFromOpenSSLAES> & random, const shared_ptr<DlogGroup> & dlog);
+	OTOneSidedSimDDHReceiverAbs(const shared_ptr<CommPartyBF> & channel, const shared_ptr<PrgFromOpenSSLAES> & random, const shared_ptr<DlogGroup> & dlog);
 
 	/**
 	* Runs the following lines from the protocol:
@@ -302,7 +302,7 @@ protected:
 	* @return OTROutput contains xSigma
 	* @throws CheatAttemptException
 	*/
-	virtual shared_ptr<OTROutput> getMsgAndComputeXSigma(CommParty* channel, byte sigma, biginteger & beta) = 0;
+	virtual shared_ptr<OTROutput> getMsgAndComputeXSigma(CommPartyBF* channel, byte sigma, biginteger & beta) = 0;
 
 private:
 	shared_ptr<PrgFromOpenSSLAES> random;
@@ -328,7 +328,7 @@ private:
 	* @param channel
 	* @param a the tuple to send to the sender.
 	*/
-	void sendTupleToSender(CommParty* channel, OTRGroupElementQuadMsg a);
+	void sendTupleToSender(CommPartyBF* channel, OTRGroupElementQuadMsg a);
 
 public:
 	
@@ -357,7 +357,7 @@ public:
 	*		OUTPUT  xSigma = cSigma * (kSigma)^(-1)"
 	* @return OTROutput, the output of the protocol.
 	*/
-	shared_ptr<OTROutput> transfer(CommParty* channel, OTRInput* input) override;
+	shared_ptr<OTROutput> transfer(CommPartyBF* channel, OTRInput* input) override;
 };
 
 /**
@@ -398,7 +398,7 @@ protected:
 	* @return OTROutput contains xSigma
 	* @throws CheatAttemptException
 	*/
-	shared_ptr<OTROutput> getMsgAndComputeXSigma(CommParty* channel, byte sigma, biginteger & beta) override;
+	shared_ptr<OTROutput> getMsgAndComputeXSigma(CommPartyBF* channel, byte sigma, biginteger & beta) override;
 
 public:
 
@@ -409,7 +409,7 @@ public:
 	* @throws SecurityLevelException if the given DlogGroup is not DDH secure.
 	* @throws InvalidDlogGroupException if the given dlog is invalid.
 	*/
-	OTOneSidedSimDDHOnGroupElementReceiver(const shared_ptr<CommParty> & channel, const shared_ptr<PrgFromOpenSSLAES> & random = make_shared<PrgFromOpenSSLAES>(),
+	OTOneSidedSimDDHOnGroupElementReceiver(const shared_ptr<CommPartyBF> & channel, const shared_ptr<PrgFromOpenSSLAES> & random = make_shared<PrgFromOpenSSLAES>(),
 		const shared_ptr<DlogGroup> & dlog = make_shared<OpenSSLDlogECF2m>("K-233")) : OTOneSidedSimDDHReceiverAbs(channel, random, dlog) {}
 
 };
@@ -456,7 +456,7 @@ protected:
 	* @return OTROutput contains xSigma
 	* @throws CheatAttemptException
 	*/
-	shared_ptr<OTROutput> getMsgAndComputeXSigma(CommParty* channel, byte sigma, biginteger & beta) override;
+	shared_ptr<OTROutput> getMsgAndComputeXSigma(CommPartyBF* channel, byte sigma, biginteger & beta) override;
 
 public:
 
@@ -468,7 +468,7 @@ public:
 	* @throws SecurityLevelException if the given DlogGroup is not DDH secure.
 	* @throws InvalidDlogGroupException if the given dlog is invalid.
 	*/
-	OTOneSidedSimDDHOnByteArrayReceiver(const shared_ptr<CommParty> & channel, const shared_ptr<PrgFromOpenSSLAES> & random = make_shared<PrgFromOpenSSLAES>(),
+	OTOneSidedSimDDHOnByteArrayReceiver(const shared_ptr<CommPartyBF> & channel, const shared_ptr<PrgFromOpenSSLAES> & random = make_shared<PrgFromOpenSSLAES>(),
 		const shared_ptr<DlogGroup> & dlog = make_shared<OpenSSLDlogECF2m>("K-233"),
 		const shared_ptr<KeyDerivationFunction> & kdf = make_shared<HKDF>(make_shared<OpenSSLHMAC>("SHA-256")))
 		: OTOneSidedSimDDHReceiverAbs(channel, random, dlog), kdf(kdf) {}

@@ -29,7 +29,7 @@
 #pragma once
 #include "../infra/Common.hpp"
 #include "../cryptoInfra/SecurityLevel.hpp"
-#include "../comm/Comm.hpp"
+#include "../comm/CommBF.hpp"
 #include <openssl/rand.h>
 #include "../primitives/Dlog.hpp"
 
@@ -237,7 +237,7 @@ public:
 	/**
 	* Constructor that sets the given channel and sigmaProverComputation.
 	*/
-	SigmaProtocolProver(const shared_ptr<CommParty> & channel,
+	SigmaProtocolProver(const shared_ptr<CommPartyBF> & channel,
 		const shared_ptr<SigmaProverComputation> & proverComputation) {
 		this->channel = channel;
 		this->proverComputation = proverComputation;
@@ -272,7 +272,7 @@ public:
 	void processSecondMsg();
 
 private:
-	shared_ptr<CommParty> channel;
+	shared_ptr<CommPartyBF> channel;
 	shared_ptr<SigmaProverComputation> proverComputation;	// underlying sigma computation.
 	bool doneFirstMsg;
 
@@ -311,7 +311,7 @@ public:
 	/**
 	* Constructor that sets the given channel and random.
 	*/
-	SigmaProtocolVerifier(const shared_ptr<CommParty> & channel, const shared_ptr<SigmaVerifierComputation> & verifierComputation,
+	SigmaProtocolVerifier(const shared_ptr<CommPartyBF> & channel, const shared_ptr<SigmaVerifierComputation> & verifierComputation,
 		const shared_ptr<SigmaProtocolMsg> & emptyFirstMessage, const shared_ptr<SigmaProtocolMsg> & emptySecondMessage) {
 		this->channel = channel;
 		this->verifierComputation = verifierComputation;
@@ -363,7 +363,7 @@ public:
 	}
 
 private:
-	shared_ptr<CommParty> channel;
+	shared_ptr<CommPartyBF> channel;
 	shared_ptr<SigmaVerifierComputation> verifierComputation;
 	shared_ptr<SigmaProtocolMsg> a;	// first message from the prover.
 	shared_ptr<SigmaProtocolMsg> z;	// second message from the prover.

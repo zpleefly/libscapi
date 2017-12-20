@@ -1,6 +1,6 @@
 #include "../../include/interactive_mid_protocols/OTOneSidedSimulation.hpp"
 
-OTOneSidedSimDDHSenderAbs::OTOneSidedSimDDHSenderAbs(const shared_ptr<CommParty> & channel, const shared_ptr<PrgFromOpenSSLAES> & random, const shared_ptr<DlogGroup> & dlog)
+OTOneSidedSimDDHSenderAbs::OTOneSidedSimDDHSenderAbs(const shared_ptr<CommPartyBF> & channel, const shared_ptr<PrgFromOpenSSLAES> & random, const shared_ptr<DlogGroup> & dlog)
 	: zkVerifier(channel, make_shared<SigmaDlogVerifierComputation>(dlog, 80, random), make_shared<CmtRTrapdoorCommitPhaseOutput>(), dlog) {
 
 	//The underlying dlog group must be DDH secure.
@@ -28,7 +28,7 @@ OTOneSidedSimDDHSenderAbs::OTOneSidedSimDDHSenderAbs(const shared_ptr<CommParty>
 * @throws IOException if failed to receive a message.
 * @throws ClassNotFoundException
 */
-OTRGroupElementQuadMsg OTOneSidedSimDDHSenderAbs::waitForMessageFromReceiver(CommParty* channel) {
+OTRGroupElementQuadMsg OTOneSidedSimDDHSenderAbs::waitForMessageFromReceiver(CommPartyBF* channel) {
 	vector<byte> raw_msg;
 	channel->readWithSizeIntoVector(raw_msg);
 
@@ -104,7 +104,7 @@ void OTOneSidedSimDDHSenderAbs::checkReceivedTuple(GroupElement* x, GroupElement
 * @param message to send to the receiver
 * @throws IOException if failed to send the message.
 */
-void OTOneSidedSimDDHSenderAbs::sendTupleToReceiver(CommParty* channel, OTSMsg* message) {
+void OTOneSidedSimDDHSenderAbs::sendTupleToReceiver(CommPartyBF* channel, OTSMsg* message) {
 
 	//Send the message by the channel.
 	auto msgStr = message->toString();
@@ -133,7 +133,7 @@ void OTOneSidedSimDDHSenderAbs::sendTupleToReceiver(CommParty* channel, OTSMsg* 
 *	SEND (w0, c0) and (w1, c1) to R<p>
 *	OUTPUT nothing"
 */
-void OTOneSidedSimDDHSenderAbs::transfer(CommParty* channel, OTSInput* input) {
+void OTOneSidedSimDDHSenderAbs::transfer(CommPartyBF* channel, OTSInput* input) {
 
 	/* Runs the following part of the protocol:
 	WAIT for message a from R
@@ -294,7 +294,7 @@ shared_ptr<OTSMsg> OTOneSidedSimDDHOnByteArraySender::computeTuple(OTSInput* inp
 * @throws SecurityLevelException if the given dlog is not DDH secure
 * @throws InvalidDlogGroupException if the given DlogGroup is not valid.
 */
-OTOneSidedSimDDHReceiverAbs::OTOneSidedSimDDHReceiverAbs(const shared_ptr<CommParty> & channel, const shared_ptr<PrgFromOpenSSLAES> & random, const shared_ptr<DlogGroup> & dlog)
+OTOneSidedSimDDHReceiverAbs::OTOneSidedSimDDHReceiverAbs(const shared_ptr<CommPartyBF> & channel, const shared_ptr<PrgFromOpenSSLAES> & random, const shared_ptr<DlogGroup> & dlog)
 	: zkProver(channel, make_shared<SigmaDlogProverComputation>(dlog, 80, random), dlog) {
 	// The underlying dlog group must be DDH secure.
 	auto ddh = dynamic_pointer_cast<DDH>(dlog);
@@ -361,7 +361,7 @@ OTRGroupElementQuadMsg OTOneSidedSimDDHReceiverAbs::computeTuple(byte sigma, big
 * @param a the tuple to send to the sender.
 * @throws IOException
 */
-void OTOneSidedSimDDHReceiverAbs::sendTupleToSender(CommParty* channel, OTRGroupElementQuadMsg a) {
+void OTOneSidedSimDDHReceiverAbs::sendTupleToSender(CommPartyBF* channel, OTRGroupElementQuadMsg a) {
 	//Send the message by the channel.
 	auto msgStr = a.toString();
 	channel->writeWithSize(msgStr);
@@ -392,7 +392,7 @@ void OTOneSidedSimDDHReceiverAbs::sendTupleToSender(CommParty* channel, OTRGroup
 *		OUTPUT  xSigma = cSigma * (kSigma)^(-1)"<p>
 * @return OTROutput, the output of the protocol.
 */
-shared_ptr<OTROutput> OTOneSidedSimDDHReceiverAbs::transfer(CommParty* channel, OTRInput* input) {
+shared_ptr<OTROutput> OTOneSidedSimDDHReceiverAbs::transfer(CommPartyBF* channel, OTRInput* input) {
 	//check if the input is valid.
 	//If input is not instance of OTRBasicInput, throw Exception.
 	auto in = dynamic_cast<OTRBasicInput*>(input);
@@ -492,7 +492,7 @@ void OTOneSidedSimDDHOnGroupElementReceiver::checkReceivedTuple(GroupElement* w0
 * @return OTROutput contains xSigma
 * @throws CheatAttemptException
 */
-shared_ptr<OTROutput> OTOneSidedSimDDHOnGroupElementReceiver::getMsgAndComputeXSigma(CommParty* channel, byte sigma, biginteger & beta) {
+shared_ptr<OTROutput> OTOneSidedSimDDHOnGroupElementReceiver::getMsgAndComputeXSigma(CommPartyBF* channel, byte sigma, biginteger & beta) {
 	vector<byte> raw_msg;
 	channel->readWithSizeIntoVector(raw_msg);
 
@@ -570,7 +570,7 @@ void OTOneSidedSimDDHOnByteArrayReceiver::checkReceivedTuple(GroupElement* w0, G
 * @return OTROutput contains xSigma
 * @throws CheatAttemptException
 */
-shared_ptr<OTROutput> OTOneSidedSimDDHOnByteArrayReceiver::getMsgAndComputeXSigma(CommParty* channel, byte sigma, biginteger & beta) {
+shared_ptr<OTROutput> OTOneSidedSimDDHOnByteArrayReceiver::getMsgAndComputeXSigma(CommPartyBF* channel, byte sigma, biginteger & beta) {
 	vector<byte> raw_msg;
 	channel->readWithSizeIntoVector(raw_msg);
 

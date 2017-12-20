@@ -28,7 +28,7 @@
 #pragma once
 #include "RandomValue.hpp"
 #include "../cryptoInfra/PlainText.hpp"
-#include "../comm/Comm.hpp"
+#include "../comm/CommBF.hpp"
 
 /**
 * Abstract class of the receiver's output of the commit phase.
@@ -313,7 +313,7 @@ public:
 */
 class CmtCommitter {
 protected:
-	shared_ptr<CommParty> channel;
+	shared_ptr<CommPartyBF> channel;
 	// The key to the map is an ID and the value is a structure that has the Committer's
 	// private input x in Zq,the random value used to commit x and the actual commitment.
 	// Each committed value is sent together with an ID so that the receiver can keep it in

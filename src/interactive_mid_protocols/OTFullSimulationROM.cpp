@@ -12,7 +12,7 @@
 * @throws IOException if there was a problem during the communication in the preprocess phase.
 * @throws CommitValueException can occur in case of ElGamal commitment scheme.
 */
-OTFullSimROMDDHOnGroupElementSender::OTFullSimROMDDHOnGroupElementSender(const shared_ptr<CommParty> & channel, const shared_ptr<PrgFromOpenSSLAES> & random,
+OTFullSimROMDDHOnGroupElementSender::OTFullSimROMDDHOnGroupElementSender(const shared_ptr<CommPartyBF> & channel, const shared_ptr<PrgFromOpenSSLAES> & random,
 	const shared_ptr<DlogGroup> & dlog, const shared_ptr<RandomOracle> & oracle) {
 	//The underlying dlog group must be DDH secure.
 	auto ddh = dynamic_pointer_cast<DDH>(dlog);
@@ -55,7 +55,7 @@ OTFullSimROMDDHOnGroupElementSender::OTFullSimROMDDHOnGroupElementSender(const s
 *		SEND (u0,c0) and (u1,c1) to R<p>
 *		OUTPUT nothing<p>
 */
-void OTFullSimROMDDHOnGroupElementSender::transfer(CommParty* channel, OTSInput* input) {
+void OTFullSimROMDDHOnGroupElementSender::transfer(CommPartyBF* channel, OTSInput* input) {
 	//Creates the utility class that executes the transfer phase.
 	OTFullSimOnGroupElementSenderTransferUtil transferUtil(dlog, random);
 	transferUtil.transfer(channel, input, preprocessOutput.get());
@@ -75,7 +75,7 @@ void OTFullSimROMDDHOnGroupElementSender::transfer(CommParty* channel, OTSInput*
 * @throws IOException if there was a problem during the communication in the preprocess phase.
 * @throws CommitValueException can occur in case of ElGamal commitment scheme.
 */
-OTFullSimROMDDHOnByteArraySender::OTFullSimROMDDHOnByteArraySender(const shared_ptr<CommParty> & channel, const shared_ptr<PrgFromOpenSSLAES> & random,
+OTFullSimROMDDHOnByteArraySender::OTFullSimROMDDHOnByteArraySender(const shared_ptr<CommPartyBF> & channel, const shared_ptr<PrgFromOpenSSLAES> & random,
 	const shared_ptr<DlogGroup> & dlog, const shared_ptr<KeyDerivationFunction> & kdf, const shared_ptr<RandomOracle> & oracle) {
 	//The underlying dlog group must be DDH secure.
 	auto ddh = dynamic_pointer_cast<DDH>(dlog);
@@ -119,7 +119,7 @@ OTFullSimROMDDHOnByteArraySender::OTFullSimROMDDHOnByteArraySender(const shared_
 *		SEND (u0,c0) and (u1,c1) to R<p>
 *		OUTPUT nothing<p>
 */
-void OTFullSimROMDDHOnByteArraySender::transfer(CommParty* channel, OTSInput* input) {
+void OTFullSimROMDDHOnByteArraySender::transfer(CommPartyBF* channel, OTSInput* input) {
 	//Creates the utility class that executes the transfer phase.
 	OTFullSimOnByteArraySenderTransferUtil transferUtil(dlog, kdf, random);
 	transferUtil.transfer(channel, input, preprocessOutput.get());
@@ -136,7 +136,7 @@ void OTFullSimROMDDHOnByteArraySender::transfer(CommParty* channel, OTSInput* in
 * @throws CommitValueException can occur in case of ElGamal commitment scheme.
 *
 */
-OTFullSimROMDDHOnGroupElementReceiver::OTFullSimROMDDHOnGroupElementReceiver(const shared_ptr<CommParty> & channel, const shared_ptr<PrgFromOpenSSLAES> & random,
+OTFullSimROMDDHOnGroupElementReceiver::OTFullSimROMDDHOnGroupElementReceiver(const shared_ptr<CommPartyBF> & channel, const shared_ptr<PrgFromOpenSSLAES> & random,
 	const shared_ptr<DlogGroup> & dlog, const shared_ptr<RandomOracle> & oracle) {
 
 	//The underlying dlog group must be DDH secure.
@@ -183,7 +183,7 @@ OTFullSimROMDDHOnGroupElementReceiver::OTFullSimROMDDHOnGroupElementReceiver(con
 *		      REPORT ERROR<p>
 *		OUTPUT  xSigma = cSigma * (uSigma)^(-r)<p>
 */
-shared_ptr<OTROutput> OTFullSimROMDDHOnGroupElementReceiver::transfer(CommParty* channel, OTRInput* input) {
+shared_ptr<OTROutput> OTFullSimROMDDHOnGroupElementReceiver::transfer(CommPartyBF* channel, OTRInput* input) {
 	//Creates the utility class that executes the transfer phase.
 	OTFullSimOnGroupElementReceiverTransferUtil transferUtil(dlog, random);
 	return transferUtil.transfer(channel, input, preprocessOutput.get());
@@ -201,7 +201,7 @@ shared_ptr<OTROutput> OTFullSimROMDDHOnGroupElementReceiver::transfer(CommParty*
 * @throws CommitValueException can occur in case of ElGamal commitment scheme.
 *
 */
-OTFullSimROMDDHOnByteArrayReceiver::OTFullSimROMDDHOnByteArrayReceiver(const shared_ptr<CommParty> & channel, const shared_ptr<PrgFromOpenSSLAES> & random,
+OTFullSimROMDDHOnByteArrayReceiver::OTFullSimROMDDHOnByteArrayReceiver(const shared_ptr<CommPartyBF> & channel, const shared_ptr<PrgFromOpenSSLAES> & random,
 	const shared_ptr<DlogGroup> & dlog, const shared_ptr<KeyDerivationFunction> & kdf, const shared_ptr<RandomOracle> & oracle) {
 
 	//The underlying dlog group must be DDH secure.
@@ -250,7 +250,7 @@ OTFullSimROMDDHOnByteArrayReceiver::OTFullSimROMDDHOnByteArrayReceiver(const sha
 *		      REPORT ERROR<p>
 *		OUTPUT  xSigma = cSigma XOR KDF(|cSigma|,(uSigma)^r)<p>
 */
-shared_ptr<OTROutput> OTFullSimROMDDHOnByteArrayReceiver::transfer(CommParty* channel, OTRInput* input) {
+shared_ptr<OTROutput> OTFullSimROMDDHOnByteArrayReceiver::transfer(CommPartyBF* channel, OTRInput* input) {
 	//Creates the utility class that executes the transfer phase.
 	OTFullSimOnByteArrayReceiverTransferUtil transferUtil(dlog, kdf, random);
 	return transferUtil.transfer(channel, input, preprocessOutput.get());

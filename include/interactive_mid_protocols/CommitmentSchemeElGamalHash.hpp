@@ -66,7 +66,7 @@ public:
 	* Otherwise, it throws invalid_argument.
 	* An established channel has to be provided by the user of the class.
 	*/
-	CmtElGamalHashCommitter(const shared_ptr<CommParty> & channel,
+	CmtElGamalHashCommitter(const shared_ptr<CommPartyBF> & channel,
 							const shared_ptr<DlogGroup> & dlog = make_shared<OpenSSLDlogECF2m>("K-283"),
 							const shared_ptr<CryptographicHash> & hash = make_shared<OpenSSLSHA256>(),
 							const shared_ptr<PrgFromOpenSSLAES> & random = get_seeded_prg());
@@ -128,7 +128,7 @@ public:
 	* Otherwise, it throws IllegalArgumentException.
 	* An established channel has to be provided by the user of the class.
 	*/
-	CmtElGamalHashReceiver(const shared_ptr<CommParty> & channel,
+	CmtElGamalHashReceiver(const shared_ptr<CommPartyBF> & channel,
 						   const shared_ptr<DlogGroup> & dlog = make_shared<OpenSSLDlogECF2m>("K-283"),
 						   const shared_ptr<CryptographicHash> & hash = make_shared<OpenSSLSHA256>());
 

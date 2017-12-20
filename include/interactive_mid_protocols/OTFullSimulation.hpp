@@ -71,7 +71,7 @@ private:
 	* "WAIT for message (h0,h1) from R"
 	* @return the received message
 	*/
-	static OTFullSimDDHReceiverMsg waitForFullSimMessageFromReceiver(CommParty* channel);
+	static OTFullSimDDHReceiverMsg waitForFullSimMessageFromReceiver(CommPartyBF* channel);
 
 public:
 
@@ -88,7 +88,7 @@ public:
 	* @throws CheatAttemptException if the sender suspects that the receiver is trying to cheat in the preprocess phase.
 	* @throws CommitValueException can occur in case of ElGamal commitment scheme.
 	*/
-	static shared_ptr<OTFullSimPreprocessPhaseValues> preProcess(CommParty* channel, DlogGroup* dlog, ZKPOKVerifier* zkVerifier);
+	static shared_ptr<OTFullSimPreprocessPhaseValues> preProcess(CommPartyBF* channel, DlogGroup* dlog, ZKPOKVerifier* zkVerifier);
 };
 
 /**
@@ -116,7 +116,7 @@ public:
 	* @throws CheatAttemptException if the receiver suspects that the sender is trying to cheat in the preprocess phase.
 	* @throws CommitValueException can occur in case of ElGamal commitment scheme.
 	*/
-	static shared_ptr<OTFullSimPreprocessPhaseValues> preProcess(DlogGroup* dlog, ZKPOKProver* zkProver, CommParty* channel, PrgFromOpenSSLAES* random);
+	static shared_ptr<OTFullSimPreprocessPhaseValues> preProcess(DlogGroup* dlog, ZKPOKProver* zkProver, CommPartyBF* channel, PrgFromOpenSSLAES* random);
 
 };
 
@@ -134,7 +134,7 @@ private:
 	* "WAIT for message (h0,h1) from R"
 	* @return the received message.
 	*/
-	OTRGroupElementPairMsg waitForMessageFromReceiver(CommParty* channel);
+	OTRGroupElementPairMsg waitForMessageFromReceiver(CommPartyBF* channel);
 
 protected:
 	shared_ptr<DlogGroup> dlog;
@@ -186,7 +186,7 @@ public:
 	* @return OTROutput, the output of the protocol.
 	* @throws CheatAttemptException if there was a cheat attempt during the execution of the protocol.
 	*/
-	void transfer(CommParty* channel, OTSInput* input, OTFullSimPreprocessPhaseValues* preprocessValues);
+	void transfer(CommPartyBF* channel, OTSInput* input, OTFullSimPreprocessPhaseValues* preprocessValues);
 };
 
 /**
@@ -286,7 +286,7 @@ protected:
 	* @return OTROutput contains xSigma
 	* @throws CheatAttemptException
 	*/
-	virtual shared_ptr<OTROutput> getMsgAndComputeXSigma(CommParty* channel, byte sigma, biginteger & r) = 0;
+	virtual shared_ptr<OTROutput> getMsgAndComputeXSigma(CommPartyBF* channel, byte sigma, biginteger & r) = 0;
 
 public:
 	/**
@@ -326,7 +326,7 @@ public:
 	* @return OTROutput, the output of the protocol.
 	* @throws CheatAttemptException if there was a cheat attempt during the execution of the protocol.
 	*/
-	shared_ptr<OTROutput> transfer(CommParty* channel, OTRInput* input, OTFullSimPreprocessPhaseValues* preprocessValues);
+	shared_ptr<OTROutput> transfer(CommPartyBF* channel, OTRInput* input, OTFullSimPreprocessPhaseValues* preprocessValues);
 };
 
 /**
@@ -355,7 +355,7 @@ protected:
 	* @return OTROutput contains xSigma
 	* @throws CheatAttemptException
 	*/
-	shared_ptr<OTROutput> getMsgAndComputeXSigma(CommParty* channel, byte sigma, biginteger & r) override;
+	shared_ptr<OTROutput> getMsgAndComputeXSigma(CommPartyBF* channel, byte sigma, biginteger & r) override;
 
 public:
 	/**
@@ -405,7 +405,7 @@ public:
 	* @return OTROutput contains xSigma
 	* @throws CheatAttemptException
 	*/
-	shared_ptr<OTROutput> getMsgAndComputeXSigma(CommParty* channel, byte sigma, biginteger & r) override;
+	shared_ptr<OTROutput> getMsgAndComputeXSigma(CommPartyBF* channel, byte sigma, biginteger & r) override;
 
 };
 
@@ -438,7 +438,7 @@ public:
 	* @param dlog must be DDH secure.
 	* @param random
 	*/
-	OTFullSimDDHOnGroupElementSender(const shared_ptr<CommParty> & channel, const shared_ptr<PrgFromOpenSSLAES> & random = make_shared<PrgFromOpenSSLAES>(),
+	OTFullSimDDHOnGroupElementSender(const shared_ptr<CommPartyBF> & channel, const shared_ptr<PrgFromOpenSSLAES> & random = make_shared<PrgFromOpenSSLAES>(),
 		const shared_ptr<DlogGroup> & dlog = make_shared<OpenSSLDlogECF2m>("K-233"));
 
 	/**
@@ -453,7 +453,7 @@ public:
 	*	SEND (u0,c0) and (u1,c1) to R
 	*	OUTPUT nothing
 	*/
-	void transfer(CommParty* channel, OTSInput* input) override;
+	void transfer(CommPartyBF* channel, OTSInput* input) override;
 };
 
 /**
@@ -490,7 +490,7 @@ public:
 	* @throws CheatAttemptException if the sender suspects that the receiver is trying to cheat in the preprocess phase.
 	* @throws CommitValueException can occur in case of ElGamal commitment scheme.
 	*/
-	OTFullSimDDHOnByteArraySender(const shared_ptr<CommParty> & channel, const shared_ptr<PrgFromOpenSSLAES> & random = make_shared<PrgFromOpenSSLAES>(),
+	OTFullSimDDHOnByteArraySender(const shared_ptr<CommPartyBF> & channel, const shared_ptr<PrgFromOpenSSLAES> & random = make_shared<PrgFromOpenSSLAES>(),
 		const shared_ptr<DlogGroup> & dlog = make_shared<OpenSSLDlogECF2m>("K-233"), const shared_ptr<KeyDerivationFunction> & kdf = make_shared<HKDF>(make_shared<OpenSSLHMAC>("SHA-256")));
 
 		/**
@@ -506,7 +506,7 @@ public:
 		*	SEND (u0,c0) and (u1,c1) to R
 		*	OUTPUT nothing
 		*/
-	void transfer(CommParty* channel, OTSInput* input) override;
+	void transfer(CommPartyBF* channel, OTSInput* input) override;
 };
 
 /**
@@ -543,7 +543,7 @@ public:
 	* @throws CheatAttemptException if the receiver suspects that the sender is trying to cheat in the preprocess phase.
 	* @throws CommitValueException can occur in case of ElGamal commitment scheme.
 	*/
-	OTFullSimDDHOnGroupElementReceiver(const shared_ptr<CommParty> & channel, const shared_ptr<PrgFromOpenSSLAES> & random = make_shared<PrgFromOpenSSLAES>(),
+	OTFullSimDDHOnGroupElementReceiver(const shared_ptr<CommPartyBF> & channel, const shared_ptr<PrgFromOpenSSLAES> & random = make_shared<PrgFromOpenSSLAES>(),
 		const shared_ptr<DlogGroup> & dlog = make_shared<OpenSSLDlogECF2m>("K-233"));
 
 	/**
@@ -561,7 +561,7 @@ public:
 	*		      REPORT ERROR
 	*		OUTPUT  xSigma = cSigma * (uSigma)^(-r)
 	*/
-	shared_ptr<OTROutput> transfer(CommParty* channel, OTRInput* input) override;
+	shared_ptr<OTROutput> transfer(CommPartyBF* channel, OTRInput* input) override;
 };
 
 /**
@@ -597,7 +597,7 @@ public:
 	* @throws CheatAttemptException if the receiver suspects that the sender is trying to cheat in the preprocess phase.
 	* @throws CommitValueException can occur in case of ElGamal commitment scheme.
 	*/
-	OTFullSimDDHOnByteArrayReceiver(const shared_ptr<CommParty> & channel, const shared_ptr<PrgFromOpenSSLAES> & random = make_shared<PrgFromOpenSSLAES>(),
+	OTFullSimDDHOnByteArrayReceiver(const shared_ptr<CommPartyBF> & channel, const shared_ptr<PrgFromOpenSSLAES> & random = make_shared<PrgFromOpenSSLAES>(),
 		const shared_ptr<DlogGroup> & dlog = make_shared<OpenSSLDlogECF2m>("K-233"), const shared_ptr<KeyDerivationFunction> & kdf = make_shared<HKDF>(make_shared<OpenSSLHMAC>("SHA-256")));
 
 	/**
@@ -616,7 +616,7 @@ public:
 	*		   REPORT ERROR
 	*	OUTPUT  xSigma = cSigma XOR KDF(|cSigma|,(uSigma)^r)
 	*/
-	shared_ptr<OTROutput> transfer(CommParty* channel, OTRInput* input) override;
+	shared_ptr<OTROutput> transfer(CommPartyBF* channel, OTRInput* input) override;
 
 };
 

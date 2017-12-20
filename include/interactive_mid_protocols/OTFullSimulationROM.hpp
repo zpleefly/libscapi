@@ -36,7 +36,7 @@ public:
 	* @throws CheatAttemptException if the sender suspects that the receiver is trying to cheat in the preprocess phase.
 	* @throws CommitValueException can occur in case of ElGamal commitment scheme.
 	*/
-	OTFullSimROMDDHOnGroupElementSender(const shared_ptr<CommParty> & channel, const shared_ptr<PrgFromOpenSSLAES> & random = make_shared<PrgFromOpenSSLAES>(),
+	OTFullSimROMDDHOnGroupElementSender(const shared_ptr<CommPartyBF> & channel, const shared_ptr<PrgFromOpenSSLAES> & random = make_shared<PrgFromOpenSSLAES>(),
 		const shared_ptr<DlogGroup> & dlog = make_shared<OpenSSLDlogECF2m>("K-233"), const shared_ptr<RandomOracle> & oracle = make_shared<HKDFBasedRO>());
 
 
@@ -52,7 +52,7 @@ public:
 	*		SEND (u0,c0) and (u1,c1) to R
 	*		OUTPUT nothing
 	*/
-	void transfer(CommParty* channel, OTSInput* input) override;
+	void transfer(CommPartyBF* channel, OTSInput* input) override;
 };
 
 /**
@@ -91,7 +91,7 @@ public:
 	* @throws CheatAttemptException if the sender suspects that the receiver is trying to cheat in the preprocess phase.
 	* @throws CommitValueException can occur in case of ElGamal commitment scheme.
 	*/
-	OTFullSimROMDDHOnByteArraySender(const shared_ptr<CommParty> & channel, const shared_ptr<PrgFromOpenSSLAES> & random = make_shared<PrgFromOpenSSLAES>(),
+	OTFullSimROMDDHOnByteArraySender(const shared_ptr<CommPartyBF> & channel, const shared_ptr<PrgFromOpenSSLAES> & random = make_shared<PrgFromOpenSSLAES>(),
 		const shared_ptr<DlogGroup> & dlog = make_shared<OpenSSLDlogECF2m>("K-233"), const shared_ptr<KeyDerivationFunction> & kdf = make_shared<HKDF>(make_shared<OpenSSLHMAC>("SHA-256")),
 		const shared_ptr<RandomOracle> & oracle = make_shared<HKDFBasedRO>());
 
@@ -107,7 +107,7 @@ public:
 	*		SEND (u0,c0) and (u1,c1) to R
 	*		OUTPUT nothing
 	*/
-	void transfer(CommParty* channel, OTSInput* input) override;
+	void transfer(CommPartyBF* channel, OTSInput* input) override;
 };
 
 /**
@@ -142,7 +142,7 @@ public:
 	* @throws CommitValueException can occur in case of ElGamal commitment scheme.
 	*
 	*/
-	OTFullSimROMDDHOnGroupElementReceiver(const shared_ptr<CommParty> & channel, const shared_ptr<PrgFromOpenSSLAES> & random = make_shared<PrgFromOpenSSLAES>(),
+	OTFullSimROMDDHOnGroupElementReceiver(const shared_ptr<CommPartyBF> & channel, const shared_ptr<PrgFromOpenSSLAES> & random = make_shared<PrgFromOpenSSLAES>(),
 		const shared_ptr<DlogGroup> & dlog = make_shared<OpenSSLDlogECF2m>("K-233"), const shared_ptr<RandomOracle> & oracle = make_shared<HKDFBasedRO>());
 
 	/**
@@ -160,7 +160,7 @@ public:
 	*		      REPORT ERROR
 	*		OUTPUT  xSigma = cSigma * (uSigma)^(-r)
 	*/
-	shared_ptr<OTROutput> transfer(CommParty* channel, OTRInput* input) override;
+	shared_ptr<OTROutput> transfer(CommPartyBF* channel, OTRInput* input) override;
 };
 
 /**
@@ -196,7 +196,7 @@ public:
 	* @throws CommitValueException can occur in case of ElGamal commitment scheme.
 	*
 	*/
-	OTFullSimROMDDHOnByteArrayReceiver(const shared_ptr<CommParty> & channel, const shared_ptr<PrgFromOpenSSLAES> & random = make_shared<PrgFromOpenSSLAES>(),
+	OTFullSimROMDDHOnByteArrayReceiver(const shared_ptr<CommPartyBF> & channel, const shared_ptr<PrgFromOpenSSLAES> & random = make_shared<PrgFromOpenSSLAES>(),
 		const shared_ptr<DlogGroup> & dlog = make_shared<OpenSSLDlogECF2m>("K-233"), const shared_ptr<KeyDerivationFunction> & kdf = make_shared<HKDF>(make_shared<OpenSSLHMAC>("SHA-256")),
 		const shared_ptr<RandomOracle> & oracle = make_shared<HKDFBasedRO>());
 
@@ -216,5 +216,5 @@ public:
 	*		      REPORT ERROR
 	*		OUTPUT  xSigma = cSigma XOR KDF(|cSigma|,(uSigma)^r)
 	*/
-	shared_ptr<OTROutput> transfer(CommParty* channel, OTRInput* input) override;
+	shared_ptr<OTROutput> transfer(CommPartyBF* channel, OTRInput* input) override;
 };

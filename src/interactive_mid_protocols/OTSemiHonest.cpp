@@ -53,7 +53,7 @@ void OTSemiHonestDDHOnByteArraySenderMsg::initFromString(const string & row) {
 	}
 }
 
-void OTSemiHonestDDHSenderAbs::transfer(CommParty* channel, OTSInput* input) {
+void OTSemiHonestDDHSenderAbs::transfer(CommPartyBF* channel, OTSInput* input) {
 	//WAIT for message (h0,h1) from R
 	auto message = waitForMessageFromReceiver(channel);
 	
@@ -97,7 +97,7 @@ OTSemiHonestDDHSenderAbs::OTSemiHonestDDHSenderAbs(const shared_ptr<PrgFromOpenS
 * @throws ClassNotFoundException
 * @throws IOException if failed to receive a message.
 */
-shared_ptr<OTRGroupElementPairMsg> OTSemiHonestDDHSenderAbs::waitForMessageFromReceiver(CommParty* channel) {
+shared_ptr<OTRGroupElementPairMsg> OTSemiHonestDDHSenderAbs::waitForMessageFromReceiver(CommPartyBF* channel) {
 	vector<byte> raw_msg;
 	channel->readWithSizeIntoVector(raw_msg);
 
@@ -160,7 +160,7 @@ shared_ptr<GroupElement> OTSemiHonestDDHSenderAbs::computeK1(biginteger & r, OTR
 * @param message to send to the receiver
 * @throws IOException if failed to send the message.
 */
-void OTSemiHonestDDHSenderAbs::sendTupleToReceiver(CommParty* channel, OTSMsg* message) {
+void OTSemiHonestDDHSenderAbs::sendTupleToReceiver(CommPartyBF* channel, OTSMsg* message) {
 
 	//Send the message by the channel.
 	auto msgStr = message->toString();
@@ -263,7 +263,7 @@ shared_ptr<OTSMsg> OTSemiHonestDDHOnByteArraySender::computeTuple(OTSInput* inpu
 *		OUTPUT  xSigma = vSigma XOR KDF(|cSigma|,kSigma)	- in byte array scenario<p>
 *			 OR xSigma = vSigma * (kSigma)^(-1)" 			- in GroupElement scenario<p>
 */
-shared_ptr<OTROutput> OTSemiHonestDDHReceiverAbs::transfer(CommParty* channel, OTRInput* input){
+shared_ptr<OTROutput> OTSemiHonestDDHReceiverAbs::transfer(CommPartyBF* channel, OTRInput* input){
 	//check if the input is valid.
 	//If input is not instance of OTRBasicInput, throw Exception.
 	auto in = dynamic_cast<OTRBasicInput*>(input);
@@ -349,7 +349,7 @@ shared_ptr<OTRGroupElementPairMsg> OTSemiHonestDDHReceiverAbs::computeTuple(bigi
 * @param tuple contains (h0,h1)
 * @throws IOException if failed to send the message.
 */
-void OTSemiHonestDDHReceiverAbs::sendTupleToSender(CommParty* channel, OTRGroupElementPairMsg* tuple) {
+void OTSemiHonestDDHReceiverAbs::sendTupleToSender(CommPartyBF* channel, OTRGroupElementPairMsg* tuple) {
 	//Send the message by the channel.
 	auto msgStr = tuple->toString();
 	channel->writeWithSize(msgStr);
@@ -365,7 +365,7 @@ void OTSemiHonestDDHReceiverAbs::sendTupleToSender(CommParty* channel, OTRGroupE
 * @param message received from the sender. must be OTSOnGroupElementSemiHonestMessage
 * @return OTROutput contains xSigma
 */
-shared_ptr<OTROutput> OTSemiHonestDDHOnGroupElementReceiver::getMsgAndComputeXSigma(CommParty* channel, bool sigma, biginteger & alpha) {
+shared_ptr<OTROutput> OTSemiHonestDDHOnGroupElementReceiver::getMsgAndComputeXSigma(CommPartyBF* channel, bool sigma, biginteger & alpha) {
 	vector<byte> raw_msg;
 	channel->readWithSizeIntoVector(raw_msg);
 
@@ -403,7 +403,7 @@ shared_ptr<OTROutput> OTSemiHonestDDHOnGroupElementReceiver::getMsgAndComputeXSi
 * @param message received from the sender. must be OTSOnByteArraySemiHonestMessage.
 * @return OTROutput contains xSigma
 */
-shared_ptr<OTROutput> OTSemiHonestDDHOnByteArrayReceiver::getMsgAndComputeXSigma(CommParty* channel, bool sigma, biginteger & alpha) {
+shared_ptr<OTROutput> OTSemiHonestDDHOnByteArrayReceiver::getMsgAndComputeXSigma(CommPartyBF* channel, bool sigma, biginteger & alpha) {
 	vector<byte> raw_msg;
 	channel->readWithSizeIntoVector(raw_msg);
 

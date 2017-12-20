@@ -24,7 +24,7 @@
 *		SEND (w0, c0) and (w1, c1) to R<p>
 *		OUTPUT nothing"
 */
-void OTPrivacyOnlyDDHSenderAbs::transfer(CommParty* channel, OTSInput* input) {
+void OTPrivacyOnlyDDHSenderAbs::transfer(CommPartyBF* channel, OTSInput* input) {
 
 	//Wait for message a from R
 	auto message = waitForMessageFromReceiver(channel);
@@ -95,7 +95,7 @@ OTPrivacyOnlyDDHSenderAbs::OTPrivacyOnlyDDHSenderAbs(const shared_ptr<PrgFromOpe
 * @throws IOException if failed to receive a message.
 * @throws ClassNotFoundException
 */
-OTRGroupElementQuadMsg OTPrivacyOnlyDDHSenderAbs::waitForMessageFromReceiver(CommParty* channel) {
+OTRGroupElementQuadMsg OTPrivacyOnlyDDHSenderAbs::waitForMessageFromReceiver(CommPartyBF* channel) {
 	vector<byte> raw_msg;
 	channel->readWithSizeIntoVector(raw_msg);
 
@@ -144,7 +144,7 @@ void OTPrivacyOnlyDDHSenderAbs::checkReceivedTuple(GroupElement* x, GroupElement
 * @param message to send to the receiver
 * @throws IOException if failed to send the message.
 */
-void OTPrivacyOnlyDDHSenderAbs::sendTupleToReceiver(CommParty* channel, OTSMsg* message) {
+void OTPrivacyOnlyDDHSenderAbs::sendTupleToReceiver(CommPartyBF* channel, OTSMsg* message) {
 
 	//Send the message by the channel.
 	auto msgStr = message->toString();
@@ -280,7 +280,7 @@ OTRGroupElementQuadMsg OTPrivacyOnlyDDHReceiverAbs::computeTuple(byte sigma, big
 * @param a the tuple to send to the sender.
 * @throws IOException
 */
-void OTPrivacyOnlyDDHReceiverAbs::sendTupleToSender(CommParty* channel, OTRGroupElementQuadMsg & a) {
+void OTPrivacyOnlyDDHReceiverAbs::sendTupleToSender(CommPartyBF* channel, OTRGroupElementQuadMsg & a) {
 	//Send the message by the channel.
 	auto msgStr = a.toString();
 	channel->writeWithSize(msgStr);
@@ -342,7 +342,7 @@ OTPrivacyOnlyDDHReceiverAbs::OTPrivacyOnlyDDHReceiverAbs(const shared_ptr<PrgFro
 *
 * @return OTROutput, the output of the protocol.
 */
-shared_ptr<OTROutput> OTPrivacyOnlyDDHReceiverAbs::transfer(CommParty* channel, OTRInput* input) {
+shared_ptr<OTROutput> OTPrivacyOnlyDDHReceiverAbs::transfer(CommPartyBF* channel, OTRInput* input) {
 	//check if the input is valid.
 	//If input is not instance of OTRBasicInput, throw Exception.
 	auto in = dynamic_cast<OTRBasicInput*>(input);
@@ -409,7 +409,7 @@ void OTPrivacyOnlyDDHOnGroupElementReceiver::checkReceivedTuple(GroupElement* w0
 * @return OTROutput contains xSigma
 * @throws CheatAttemptException
 */
-shared_ptr<OTROutput> OTPrivacyOnlyDDHOnGroupElementReceiver::getMsgAndComputeXSigma(CommParty* channel, byte sigma, biginteger & beta)  {
+shared_ptr<OTROutput> OTPrivacyOnlyDDHOnGroupElementReceiver::getMsgAndComputeXSigma(CommPartyBF* channel, byte sigma, biginteger & beta)  {
 	vector<byte> raw_msg;
 	channel->readWithSizeIntoVector(raw_msg);
 
@@ -487,7 +487,7 @@ void OTPrivacyOnlyDDHOnByteArrayReceiver::checkReceivedTuple(GroupElement* w0, G
 * @return OTROutput contains xSigma
 * @throws CheatAttemptException
 */
-shared_ptr<OTROutput> OTPrivacyOnlyDDHOnByteArrayReceiver::getMsgAndComputeXSigma(CommParty* channel, byte sigma, biginteger & beta) {
+shared_ptr<OTROutput> OTPrivacyOnlyDDHOnByteArrayReceiver::getMsgAndComputeXSigma(CommPartyBF* channel, byte sigma, biginteger & beta) {
 	vector<byte> raw_msg;
 	channel->readWithSizeIntoVector(raw_msg);
 

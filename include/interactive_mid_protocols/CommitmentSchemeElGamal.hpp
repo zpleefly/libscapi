@@ -213,7 +213,7 @@ protected:
 	* The Receiver needs to be instantiated with the same DlogGroup,
 	* otherwise nothing will work properly.
 	*/
-	CmtElGamalCommitterCore(const shared_ptr<CommParty> & channel, const shared_ptr<DlogGroup> & dlog, const shared_ptr<ElGamalEnc> & elGamal, const shared_ptr<PrgFromOpenSSLAES> & random);
+	CmtElGamalCommitterCore(const shared_ptr<CommPartyBF> & channel, const shared_ptr<DlogGroup> & dlog, const shared_ptr<ElGamalEnc> & elGamal, const shared_ptr<PrgFromOpenSSLAES> & random);
 
 public:
 
@@ -252,7 +252,7 @@ public:
 	* @throws SecurityLevelException
 	* @throws InvalidDlogGroupException
 	*/
-	CmtElGamalOnGroupElementCommitter(const shared_ptr<CommParty> & channel, const shared_ptr<DlogGroup> & dlog = make_shared<OpenSSLDlogECF2m>("K-233"), const shared_ptr<PrgFromOpenSSLAES> & random = get_seeded_prg())
+	CmtElGamalOnGroupElementCommitter(const shared_ptr<CommPartyBF> & channel, const shared_ptr<DlogGroup> & dlog = make_shared<OpenSSLDlogECF2m>("K-233"), const shared_ptr<PrgFromOpenSSLAES> & random = get_seeded_prg())
 		: CmtElGamalCommitterCore(channel, dlog, make_shared<ElGamalOnGroupElementEnc>(dlog), random) {}
 
 	shared_ptr<CmtCCommitmentMsg> generateCommitmentMsg(const shared_ptr<CmtCommitValue> & input, long id) override; 
@@ -310,7 +310,7 @@ private:
 	/**
 	* Sets the given parameters and execute the preprocess phase of the scheme.
 	*/
-	void doConstruct(const shared_ptr<CommParty> & channel, const shared_ptr<DlogGroup> & dlog, const shared_ptr<ElGamalEnc> & elGamal);
+	void doConstruct(const shared_ptr<CommPartyBF> & channel, const shared_ptr<DlogGroup> & dlog, const shared_ptr<ElGamalEnc> & elGamal);
 
 	/**
 	* The pre-process is performed once within the construction of this object.
@@ -321,7 +321,7 @@ private:
 
 protected:
 	shared_ptr<DlogGroup> dlog;
-	shared_ptr<CommParty> channel;
+	shared_ptr<CommPartyBF> channel;
 	shared_ptr<ElGamalEnc> elGamal;
 	shared_ptr<ElGamalPublicKey> publicKey;
 
@@ -334,7 +334,7 @@ public:
 	* The committer needs to be instantiated with the same DlogGroup,
 	* otherwise nothing will work properly.
 	*/
-	CmtElGamalReceiverCore(const shared_ptr<CommParty> & channel, const shared_ptr<DlogGroup> & dlog, const shared_ptr<ElGamalEnc> & elGamal) {
+	CmtElGamalReceiverCore(const shared_ptr<CommPartyBF> & channel, const shared_ptr<DlogGroup> & dlog, const shared_ptr<ElGamalEnc> & elGamal) {
 		doConstruct(channel, dlog, elGamal);
 	}
 
@@ -389,7 +389,7 @@ public:
 	* @param channel used for the communication
 	* @param dlog Dlog group
 	*/
-	CmtElGamalOnGroupElementReceiver(const shared_ptr<CommParty> & channel, const shared_ptr<DlogGroup> & dlog = make_shared<OpenSSLDlogECF2m>("K-233"))
+	CmtElGamalOnGroupElementReceiver(const shared_ptr<CommPartyBF> & channel, const shared_ptr<DlogGroup> & dlog = make_shared<OpenSSLDlogECF2m>("K-233"))
 		: CmtElGamalReceiverCore(channel, dlog, make_shared<ElGamalOnGroupElementEnc>(dlog)) {}
 
 	/**
@@ -442,7 +442,7 @@ class CmtElGamalOnByteArrayCommitter : public CmtElGamalCommitterCore, public Pe
 	* 
 	*/
 public:
-	CmtElGamalOnByteArrayCommitter(const shared_ptr<CommParty> & channel, const shared_ptr<DlogGroup> & dlog = make_shared<OpenSSLDlogECF2m>("K-233"),
+	CmtElGamalOnByteArrayCommitter(const shared_ptr<CommPartyBF> & channel, const shared_ptr<DlogGroup> & dlog = make_shared<OpenSSLDlogECF2m>("K-233"),
 		const shared_ptr<KeyDerivationFunction> & kdf = make_shared<HKDF>(make_shared<OpenSSLHMAC>()), const shared_ptr<PrgFromOpenSSLAES> & random = get_seeded_prg())
 		: CmtElGamalCommitterCore(channel, dlog, make_shared<ElGamalOnByteArrayEnc>(dlog, kdf), random) {}
 	
@@ -493,7 +493,7 @@ public:
 	* @throws SecurityLevelException if the given dlog is not DDH - secure
 	* @throws InvalidDlogGroupException if the given dlog is not valid
 	*/
-	CmtElGamalOnByteArrayReceiver(const shared_ptr<CommParty> & channel, const shared_ptr<DlogGroup> & dlog = make_shared<OpenSSLDlogECF2m>("K-233"),
+	CmtElGamalOnByteArrayReceiver(const shared_ptr<CommPartyBF> & channel, const shared_ptr<DlogGroup> & dlog = make_shared<OpenSSLDlogECF2m>("K-233"),
 		const shared_ptr<KeyDerivationFunction> & kdf = make_shared<HKDF>(make_shared<OpenSSLHMAC>())) : CmtElGamalReceiverCore(channel, dlog, make_shared<ElGamalOnByteArrayEnc>(dlog, kdf)) {
 		this->kdf = kdf;
 	}
@@ -541,7 +541,7 @@ public:
 	/**
 	* Default constructor that gets the channel and creates the ZK provers with default Dlog group.
 	*/
-	CmtElGamalWithProofsCommitter(const shared_ptr<CommParty> & channel, int t, const shared_ptr<DlogGroup> & dlog = make_shared<OpenSSLDlogECF2m>("K-233"), const shared_ptr<PrgFromOpenSSLAES> & prg = get_seeded_prg());
+	CmtElGamalWithProofsCommitter(const shared_ptr<CommPartyBF> & channel, int t, const shared_ptr<DlogGroup> & dlog = make_shared<OpenSSLDlogECF2m>("K-233"), const shared_ptr<PrgFromOpenSSLAES> & prg = get_seeded_prg());
 
 	void proveKnowledge(long id) override; 
 	void proveCommittedValue(long id) override;
@@ -570,7 +570,7 @@ public:
 	* them to create the ZK verifiers.
 	* @param t statistical parameter
 	*/
-	CmtElGamalWithProofsReceiver(const shared_ptr<CommParty> & channel, int t, const shared_ptr<DlogGroup> & dlog = make_shared<OpenSSLDlogECF2m>("K-233"), const shared_ptr<PrgFromOpenSSLAES> & prg = get_seeded_prg());
+	CmtElGamalWithProofsReceiver(const shared_ptr<CommPartyBF> & channel, int t, const shared_ptr<DlogGroup> & dlog = make_shared<OpenSSLDlogECF2m>("K-233"), const shared_ptr<PrgFromOpenSSLAES> & prg = get_seeded_prg());
 
 	bool verifyKnowledge(long id) override; 
 

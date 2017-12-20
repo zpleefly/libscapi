@@ -25,7 +25,7 @@ OTUCDDHOnGroupElementSender::OTUCDDHOnGroupElementSender(const shared_ptr<DlogGr
     // This protocol has no pre process stage.
 }
 
-void OTUCDDHOnGroupElementSender::transfer(CommParty* channel, OTSInput* input) {
+void OTUCDDHOnGroupElementSender::transfer(CommPartyBF* channel, OTSInput* input) {
     //Creates the utility class that executes the transfer phase.
     OTFullSimOnGroupElementSenderTransferUtil transferUtil(dlog, random);
     OTFullSimPreprocessPhaseValues values(g0, g1, h0, h1);
@@ -70,7 +70,7 @@ cout<<"g0 = "<<g0->generateSendableData()->toString()<<endl;
  *		      REPORT ERROR
  *		OUTPUT  xSigma = cSigma * (uSigma)^(-r)
  */
-shared_ptr<OTROutput> OTUCDDHOnGroupElementReceiver::transfer(CommParty* channel, OTRInput* input){
+shared_ptr<OTROutput> OTUCDDHOnGroupElementReceiver::transfer(CommPartyBF* channel, OTRInput* input){
     //Creates the utility class that executes the transfer phase.
     OTFullSimOnGroupElementReceiverTransferUtil transferUtil(dlog, random);
     OTFullSimPreprocessPhaseValues values(g0, g1, h0, h1);
@@ -98,7 +98,7 @@ OTUCDDHOnByteArraySender::OTUCDDHOnByteArraySender(const shared_ptr<DlogGroup> &
     // This protocol has no pre process stage.
 }
 
-void OTUCDDHOnByteArraySender::transfer(CommParty* channel, OTSInput* input) {
+void OTUCDDHOnByteArraySender::transfer(CommPartyBF* channel, OTSInput* input) {
 
     //Creates the utility class that executes the transfer phase.
     OTFullSimOnByteArraySenderTransferUtil transferUtil(dlog, kdf ,random);
@@ -127,7 +127,7 @@ OTUCDDHOnByteArrayReceiver::OTUCDDHOnByteArrayReceiver(const shared_ptr<DlogGrou
     // This protocol has no pre process stage.
 }
 
-shared_ptr<OTROutput> OTUCDDHOnByteArrayReceiver::transfer(CommParty* channel, OTRInput* input) {
+shared_ptr<OTROutput> OTUCDDHOnByteArrayReceiver::transfer(CommPartyBF* channel, OTRInput* input) {
     //Creates the utility class that executes the transfer phase.
     OTFullSimOnByteArrayReceiverTransferUtil transferUtil(dlog, kdf, random);
 
