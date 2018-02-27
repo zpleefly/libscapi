@@ -1,7 +1,7 @@
 export builddir=$(abspath ./build)
 export prefix=$(abspath ./install)
-C=arm-linux-gnueabi-gcc
-CXX=arm-linux-gnueabi-g++
+C=gcc
+CXX=g++
 uname_S := $(shell sh -c 'uname -s 2>/dev/null || echo not')
 ARCH := $(shell getconf LONG_BIT)
 SHARED_LIB_EXT:=.so
@@ -27,7 +27,7 @@ OBJ_FILES     := $(patsubst src/%.cpp,obj/%.o,$(CPP_FILES))
 OUT_DIR        = obj obj/mid_layer obj/comm obj/infra obj/interactive_mid_protocols obj/primitives obj/cryptoInfra obj/circuits
 INC            = -Iinstall/include -Iinstall/include/OTExtensionBristol -Iinstall/include/libOTe -Iinstall/include/libOTe/cryptoTools -Iinstall/include/gmp-6.1.2/include/
 GCC_STANDARD = c++14
-CPP_OPTIONS   := -std=$(GCC_STANDARD) $(INC) -Wall -Wno-narrowing -Wno-uninitialized -Wno-unused-but-set-variable -Wno-unused-function -Wno-unused-variable -Wno-unused-result -Wno-sign-compare -Wno-parentheses -march=armv8-a -mtune=cortex-a53 -mfpu=neon -mfloat-abi=softfp -O3
+CPP_OPTIONS   := -std=$(GCC_STANDARD) $(INC) -Wall -Wno-narrowing -Wno-uninitialized -Wno-unused-but-set-variable -Wno-unused-function -Wno-unused-variable -Wno-unused-result -Wno-sign-compare -Wno-parentheses -march=native -mfpu=neon -mfloat-abi=hard -O3
 $(COMPILE.cpp) = g++ -c $(CPP_OPTIONS) -o $@ $<
 LIBRARIES_DIR  = -Linstall/lib
 LD_FLAGS = 
@@ -35,7 +35,7 @@ SUMO = no
 
 
 all: libs libscapi
-libs: compile-openssl compile-boost compile-json compile-libote compile-ntl compile-gmp
+libs: compile-openssl compile-json compile-libote compile-ntl compile-gmp
 libscapi: directories $(SLib)
 directories: $(OUT_DIR)
 
@@ -103,7 +103,7 @@ compile-gmp:
 	@echo "Compiling the GMP library"
 	@mkdir -p $(builddir)/gmp-6.1.2/
 	@cp -r lib/gmp-6.1.2/. $(builddir)/gmp-6.1.2
-	@cd $(builddir)/gmp-6.1.2/ && ./configure --prefix=$(prefix)/ --host=arm-linux-gnueabi CC=arm-linux-gnueabi-gcc CFLAGS="-march=armv8-a" --disable-option-checking
+	@cd $(builddir)/gmp-6.1.2/ && ./configure --prefix=$(prefix)/ --disable-option-checking
 	@cd $(builddir)/gmp-6.1.2/ && make
 	@cd $(builddir)/gmp-6.1.2/ && make install
 	@mkdir -p $(prefix)/include/gmp-6.1.2/include
@@ -131,7 +131,7 @@ compile-openssl:
 	echo "Compiling the openssl library"
 	@cp -r lib/openssl/ $(builddir)/openssl
 	export CFLAGS="-fPIC"	
-	cd $(builddir)/openssl/; ./config --prefix=$(builddir)/openssl/tmptrgt -no-shared os/compiler:arm-linux-gnueabi-gcc
+	cd $(builddir)/openssl/; ./config --prefix=$(builddir)/openssl/tmptrgt -no-shared 
 	cd $(builddir)/openssl/; make 
 	cd $(builddir)/openssl/; make install
 	@cp $(builddir)/openssl/tmptrgt/lib/*.a $(CURDIR)/install/lib/
@@ -163,7 +163,7 @@ compile-json:
 	@touch compile-json
 
 # Support only in c++14
-compile-libote:compile-boost
+compile-libote:
 	@echo "Compiling libOTe library..."
 	@cp -r lib/libOTe $(builddir)/libOTe
 	@mkdir -p $(builddir)/libOTe/cryptoTools/thirdparty/linux/miracl/
