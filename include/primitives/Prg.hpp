@@ -191,7 +191,10 @@ public:
 	*					are all used up, or throws an exception if the user asks for more randoms.
 	*					If isStrict is true, the user can only use cachedSize*16 random bytes.		
 	*/
-	PrgFromOpenSSLAES( int cachedSize = DEFAULT_NUM_OF_RANDOMS, bool isStrict = false, byte * cache_prealloc = nullptr);
+	PrgFromOpenSSLAES( );
+	PrgFromOpenSSLAES( int cachedSize );
+	PrgFromOpenSSLAES( int cachedSize, bool isStrict );
+	PrgFromOpenSSLAES( int cachedSize, bool isStrict, byte * cache_prealloc );
 
 	//move assignment
 	PrgFromOpenSSLAES& operator=(PrgFromOpenSSLAES&& other);

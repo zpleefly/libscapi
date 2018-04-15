@@ -103,8 +103,61 @@ void ScPrgFromPrf::increaseCtr() {
 	}
 }
 
-PrgFromOpenSSLAES::PrgFromOpenSSLAES(int cachedSize, bool isStrict, byte * cache_prealloc ) : cachedSize(cachedSize), isStrict(isStrict) {
+PrgFromOpenSSLAES::PrgFromOpenSSLAES() : cachedSize(DEFAULT_NUM_OF_RANDOMS), isStrict(false) {
 
+	cipherChunk = (block *)_mm_malloc(sizeof(block) * cachedSize, 16);
+	indexPlaintext = (block *)_mm_malloc(sizeof(block) * cachedSize, 16);
+
+	//assin zero to the array of indices which are set as the plaintext. Note that we only use the list sagnificant long part of each 128 bit.
+	//memset(indexPlaintext, 0, sizeof(block) * cachedSize);
+
+	long *plaintextArray = (long *)indexPlaintext;
+
+	//go over the array and set the 64 list sagnificat bits for evey 128 bit value, we use only half of the 128 bit variables
+	for (long i = 0; i < cachedSize; i++) {
+		plaintextArray[i * 2 + 1] = i;
+		plaintextArray[i * 2] = 0;
+	}
+
+}
+
+PrgFromOpenSSLAES::PrgFromOpenSSLAES(int cachedSize_ ) : cachedSize(cachedSize_), isStrict(false) {
+
+	cipherChunk = (block *)_mm_malloc(sizeof(block) * cachedSize, 16);
+	indexPlaintext = (block *)_mm_malloc(sizeof(block) * cachedSize, 16);
+
+	//assin zero to the array of indices which are set as the plaintext. Note that we only use the list sagnificant long part of each 128 bit.
+	//memset(indexPlaintext, 0, sizeof(block) * cachedSize);
+
+	long *plaintextArray = (long *)indexPlaintext;
+
+	//go over the array and set the 64 list sagnificat bits for evey 128 bit value, we use only half of the 128 bit variables
+	for (long i = 0; i < cachedSize; i++) {
+		plaintextArray[i * 2 + 1] = i;
+		plaintextArray[i * 2] = 0;
+	}
+
+}
+
+PrgFromOpenSSLAES::PrgFromOpenSSLAES(int cachedSize_, bool isStrict_ ) : cachedSize(cachedSize_), isStrict(isStrict_) {
+
+	cipherChunk = (block *)_mm_malloc(sizeof(block) * cachedSize, 16);
+	indexPlaintext = (block *)_mm_malloc(sizeof(block) * cachedSize, 16);
+
+	//assin zero to the array of indices which are set as the plaintext. Note that we only use the list sagnificant long part of each 128 bit.
+	//memset(indexPlaintext, 0, sizeof(block) * cachedSize);
+
+	long *plaintextArray = (long *)indexPlaintext;
+
+	//go over the array and set the 64 list sagnificat bits for evey 128 bit value, we use only half of the 128 bit variables
+	for (long i = 0; i < cachedSize; i++) {
+		plaintextArray[i * 2 + 1] = i;
+		plaintextArray[i * 2] = 0;
+	}
+
+}
+
+PrgFromOpenSSLAES::PrgFromOpenSSLAES(int cachedSize_, bool isStrict_, byte * cache_prealloc ) : cachedSize(cachedSize_), isStrict(isStrict_) {
 
 	//allocate memory for the plaintext which is an array of indices and for the ciphertext which is the output
 	//of the encryption
@@ -118,8 +171,7 @@ PrgFromOpenSSLAES::PrgFromOpenSSLAES(int cachedSize, bool isStrict, byte * cache
 	indexPlaintext = (block *)_mm_malloc(sizeof(block) * cachedSize, 16);
 
 	//assin zero to the array of indices which are set as the plaintext. Note that we only use the list sagnificant long part of each 128 bit.
-//	memset(indexPlaintext, 0, sizeof(block) * cachedSize);
-
+	//memset(indexPlaintext, 0, sizeof(block) * cachedSize);
 
 	long *plaintextArray = (long *)indexPlaintext;
 
