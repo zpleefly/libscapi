@@ -27,7 +27,7 @@ OBJ_FILES     := $(patsubst src/%.cpp,obj/%.o,$(CPP_FILES))
 OUT_DIR        = obj obj/mid_layer obj/comm obj/infra obj/interactive_mid_protocols obj/primitives obj/cryptoInfra obj/circuits
 INC            = -Iinstall/include -Iinstall/include/OTExtensionBristol -Iinstall/include/libOTe -Iinstall/include/libOTe/cryptoTools -Iinstall/include/gmp-6.1.2/include/
 GCC_STANDARD = c++14
-CPP_OPTIONS   := -std=$(GCC_STANDARD) $(INC) -Wall -Wno-narrowing -Wno-uninitialized -Wno-unused-but-set-variable -Wno-unused-function -Wno-unused-variable -Wno-unused-result -Wno-sign-compare -Wno-parentheses -march=native -mfpu=neon -mfloat-abi=hard -O3
+CPP_OPTIONS   := -std=$(GCC_STANDARD) $(INC) -Wall -Wno-narrowing -Wno-uninitialized -Wno-unused-but-set-variable -Wno-unused-function -Wno-unused-variable -Wno-unused-result -Wno-sign-compare -Wno-parentheses -march=native -O3
 $(COMPILE.cpp) = g++ -c $(CPP_OPTIONS) -o $@ $<
 LIBRARIES_DIR  = -Linstall/lib
 LD_FLAGS = 
@@ -35,7 +35,7 @@ SUMO = no
 
 
 all: libs libscapi
-libs: compile-openssl compile-json compile-libote compile-ntl compile-gmp
+libs: compile-openssl compile-ntl compile-gmp
 libscapi: directories $(SLib)
 directories: $(OUT_DIR)
 

@@ -1763,7 +1763,8 @@ FORCE_INLINE int _mm_test_all_zeros(__m128i a, __m128i mask) {
     uint64x1_t hi = vget_high_u64(result);
     uint64x1_t lo = vget_low_u64(result);
 
-	return (hi == 0) && (lo == 0);
+	//return (hi == 0) && (lo == 0);
+	return 0;
 }
 
 FORCE_INLINE __m128i _mm_set_epi64x (__int64 e1, __int64 e0){
