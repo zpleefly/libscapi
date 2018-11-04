@@ -35,7 +35,7 @@ SUMO = no
 
 
 all: libs libscapi
-libs: compile-openssl compile-ntl compile-gmp
+libs: compile-openssl compile-ntl compile-gmp compile-boost
 libscapi: directories $(SLib)
 directories: $(OUT_DIR)
 
@@ -113,7 +113,6 @@ compile-gmp:
 	@rm $(prefix)/include/gmp.h
 	@rm $(prefix)/lib/libgmp.*so*
 	@rm $(prefix)/lib/libgmp.la
-
 	@touch compile-gmp
 
 compile-blake:
@@ -149,8 +148,8 @@ compile-boost:
 	@mkdir -p $(builddir)/
 	echo "Compiling the boost library"
 	@cp -r lib/boost_1_64_0/ $(builddir)/boost_1_64_0
-	@cd $(builddir)/boost_1_64_0/; bash -c "./bjam install toolset=gcc-arm --prefix=. --with-system --with-thread";
-	@cp $(builddir)/boost_1_64_0/lib/*.a $(CURDIR)/install/lib/
+	@cd $(builddir)/boost_1_64_0/; bash -c "./bootstrap.sh --prefix=. && ./b2 --with-system --with-thread";
+	@cp $(builddir)/boost_1_64_0/stage/lib/*.a $(CURDIR)/install/lib/
 	@cp -r $(builddir)/boost_1_64_0/boost/ $(CURDIR)/install/include/
 	@touch compile-boost
 
