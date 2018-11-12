@@ -227,6 +227,8 @@ public:
 	* @param outlen - the required output length
 	*/
 	void getPRGBytes(vector<byte> & outBytes, int outOffset, int outLen) override;
+	byte * getPRGBytesEX(int outLen);
+	void getPRGBytes(byte* & outBytes, int outLen);
 
 	/**
 	* @returns a random variable of the required length (32,64,128). This bytes are set to used and will not be used again
