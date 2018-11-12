@@ -27,7 +27,7 @@ OBJ_FILES     := $(patsubst src/%.cpp,obj/%.o,$(CPP_FILES))
 OUT_DIR        = obj obj/mid_layer obj/comm obj/infra obj/interactive_mid_protocols obj/primitives obj/cryptoInfra obj/circuits
 INC            = -Iinstall/include -Iinstall/include/OTExtensionBristol -Iinstall/include/libOTe -Iinstall/include/libOTe/cryptoTools -Iinstall/include/gmp-6.1.2/include/
 GCC_STANDARD = c++14
-CPP_OPTIONS   := -std=$(GCC_STANDARD) $(INC) -Wall -Wno-narrowing -Wno-uninitialized -Wno-unused-but-set-variable -Wno-unused-function -Wno-unused-variable -Wno-unused-result -Wno-sign-compare -Wno-parentheses -march=native -O3
+CPP_OPTIONS   := -std=$(GCC_STANDARD) $(INC) -Wall -Wno-narrowing -Wno-uninitialized -Wno-unused-but-set-variable -Wno-unused-function -Wno-unused-variable -Wno-unused-result -Wno-sign-compare -Wno-parentheses -march=native -O3 -mfpu=neon
 $(COMPILE.cpp) = g++ -c $(CPP_OPTIONS) -o $@ $<
 LIBRARIES_DIR  = -Linstall/lib
 LD_FLAGS = 
@@ -35,7 +35,7 @@ SUMO = no
 
 
 all: libs libscapi
-libs: compile-openssl compile-ntl compile-gmp
+libs: compile-openssl compile-ntl compile-gmp compile-boost
 libscapi: directories $(SLib)
 directories: $(OUT_DIR)
 
@@ -113,7 +113,6 @@ compile-gmp:
 	@rm $(prefix)/include/gmp.h
 	@rm $(prefix)/lib/libgmp.*so*
 	@rm $(prefix)/lib/libgmp.la
-
 	@touch compile-gmp
 
 compile-blake:
@@ -149,8 +148,8 @@ compile-boost:
 	@mkdir -p $(builddir)/
 	echo "Compiling the boost library"
 	@cp -r lib/boost_1_64_0/ $(builddir)/boost_1_64_0
-	@cd $(builddir)/boost_1_64_0/; bash -c "./bjam install toolset=gcc-arm --prefix=. --with-system --with-thread";
-	@cp $(builddir)/boost_1_64_0/lib/*.a $(CURDIR)/install/lib/
+	@cd $(builddir)/boost_1_64_0/; bash -c "./bootstrap.sh --prefix=. && ./b2 --with-system --with-thread";
+	@cp $(builddir)/boost_1_64_0/stage/lib/*.a $(CURDIR)/install/lib/
 	@cp -r $(builddir)/boost_1_64_0/boost/ $(CURDIR)/install/include/
 	@touch compile-boost
 
